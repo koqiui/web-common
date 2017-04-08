@@ -1,5 +1,5 @@
 var path = require('path');
-var webpack = require('webpack')
+var webpack = require('webpack');
 
 var entryMap = require('./webpack.entry.js');
 
@@ -11,23 +11,23 @@ module.exports = {
     entry: entryMap,
 
     output: {
-        path: resolvePath('dist'),
-        publicPath: '/dist/',
+        path: resolvePath('lib'),
+        publicPath: '/lib/',
         filename: '[name].js'
     },
 
     resolve: {
-        extensions: ['.js', '.es6']
+        extensions: ['.es6', '.js']
     },
 
     module: {
         rules: [
             {
-                test: /\.(js|es6)$/,
+                test: /\.(es6|js)$/,
                 loader: 'babel-loader',
-                exclude: [/node_modules/, resolvePath('test')],
+                exclude: [/node_modules/],
                 include: [resolvePath('src')]
             }
         ]
     }
-}
+};

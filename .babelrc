@@ -1,10 +1,12 @@
 {
   "presets": [
-    ["es2015", {
-      "modules": false,
-      "loose": true
-    }]
+    [
+      "es2015",
+      {
+        "loose": true
+      }
+    ]
   ],
-  "plugins": ["transform-runtime"],
+  "retainLines": true,
   "comments": true
 }

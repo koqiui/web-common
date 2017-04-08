@@ -1,6 +1,7 @@
 // 入口js路径配置
 
 module.exports = {
-    utils: './src/utils.js',
-    index : './src/index.js'
+    'utils': './src/utils.es6',
+    'index': './src/index.es6'
+
 };
