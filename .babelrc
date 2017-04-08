@@ -1,0 +1,10 @@
+{
+  "presets": [
+    ["es2015", {
+      "modules": false,
+      "loose": true
+    }]
+  ],
+  "plugins": ["transform-runtime"],
+  "comments": true
+}
