@@ -1,5 +1,6 @@
 # web-common
 web common js
 
-webpack-dev-server 'mocha-loader!./test/utils.js' --hot --inline --output-filename utils.test.js
-open http://localhost:8080/utils.test
+browserify ./test/utils.js > ./test/utils.test.js
+"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" ./test/index.html
+

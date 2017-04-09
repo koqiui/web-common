@@ -1,6 +1,7 @@
 /**
  * Created by koqiui on 2017-04-09.
  */
+// 如果需要require src/下的es6模块
 require('babel-register');
 //
 var expect = require('chai').expect;
