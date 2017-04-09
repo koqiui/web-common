@@ -9,6 +9,9 @@ var expect = require('chai').expect;
 
 var Utils = require('../lib/utils');
 
+console.log(JSON.stringify(Utils));
+console.log(typeof(Utils.moduleName));
+
 var StringBuilder = Utils.StringBuilder;
 
 describe('utils>[class] StringBuilder', function () {

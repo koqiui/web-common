@@ -49,6 +49,4 @@ Object.assign(String, {
 
 export default  {
     moduleName,
-    //
-    StringBuilder
 }

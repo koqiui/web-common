@@ -1959,9 +1959,7 @@ Object.assign(String, {
 
 
 {
-    moduleName: moduleName,
-    //
-    StringBuilder: StringBuilder };
+    moduleName: moduleName };
 },{"lodash":38}],5:[function(require,module,exports){
 /*!
  * assertion-error
@@ -25213,6 +25211,9 @@ var expect = require('chai').expect;
 //
 
 var Utils = require('../lib/utils');
+
+console.log(JSON.stringify(Utils));
+console.log(typeof(Utils.moduleName));
 
 var StringBuilder = Utils.StringBuilder;
 
