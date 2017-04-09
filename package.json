@@ -1,6 +1,6 @@
 {
   "name": "web-common",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "web common js",
   "scripts": {
     "compile": "babel ./src --out-dir ./lib",
