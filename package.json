@@ -1,7 +1,8 @@
 {
   "name": "web-common",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "web common js",
+  "main" : "./lib/index",
   "scripts": {
     "compile": "babel ./src --out-dir ./lib",
     "prepublic": "npm run compile"
