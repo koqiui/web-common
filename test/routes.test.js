@@ -1929,12 +1929,10 @@ all = all;exports.
 
 clear = clear; /**
                 * Created by koqiui on 2017-04-09.
-                */var moduleName = 'Routes'; //
+                */var moduleName = exports.moduleName = 'Routes'; //
 var __routeMaps = [];function add() {for (var _len = arguments.length, routeMaps = Array(_len), _key = 0; _key < _len; _key++) {routeMaps[_key] = arguments[_key];}for (var i = 0; i < routeMaps.length; i++) {__routeMaps.push(routeMaps[i]);}}function all() {return __routeMaps;}function clear() {__routeMaps.length = 0;}exports.default =
 {
-    moduleName: moduleName
-    //
-};
+    moduleName: moduleName };
 },{}],5:[function(require,module,exports){
 /*!
  * assertion-error
@@ -8100,9 +8098,11 @@ var expect = require('chai').expect;
 var Routes = require('../lib/routes');
 
 console.log(JSON.stringify(Routes));
-console.log(typeof(Routes.moduleName));
 
 describe('routes', function () {
+        it('moduleName', function () {
+            expect(Routes.moduleName).to.equal('Routes');
+        });
 
         it('init', function () {
             expect(Routes.all()).to.be.lengthOf(0);

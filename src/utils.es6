@@ -3,7 +3,7 @@
  */
 import Lo from 'lodash'
 
-const moduleName = 'Utils';
+export const moduleName = 'Utils';
 //
 
 export class StringBuilder {
@@ -48,5 +48,5 @@ Object.assign(String, {
 });
 
 export default  {
-    moduleName,
+    moduleName
 }

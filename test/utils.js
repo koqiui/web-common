@@ -10,11 +10,14 @@ var expect = require('chai').expect;
 var Utils = require('../lib/utils');
 
 console.log(JSON.stringify(Utils));
-console.log(typeof(Utils.moduleName));
 
 var StringBuilder = Utils.StringBuilder;
 
 describe('utils>[class] StringBuilder', function () {
+        it('moduleName', function () {
+            expect(Utils.moduleName).to.equal('Utils');
+        });
+
         it('ctor', function () {
             var sb = new StringBuilder();
             expect(sb.toString()).to.equal('');

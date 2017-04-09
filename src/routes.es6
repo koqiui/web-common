@@ -2,7 +2,7 @@
  * Created by koqiui on 2017-04-09.
  */
 
-const moduleName = 'Routes';
+export const moduleName = 'Routes';
 //
 const __routeMaps = [];
 
@@ -22,5 +22,4 @@ export function clear() {
 
 export default {
     moduleName
-    //
 }

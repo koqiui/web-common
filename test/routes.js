@@ -10,9 +10,11 @@ var expect = require('chai').expect;
 var Routes = require('../lib/routes');
 
 console.log(JSON.stringify(Routes));
-console.log(typeof(Routes.moduleName));
 
 describe('routes', function () {
+        it('moduleName', function () {
+            expect(Routes.moduleName).to.equal('Routes');
+        });
 
         it('init', function () {
             expect(Routes.all()).to.be.lengthOf(0);
