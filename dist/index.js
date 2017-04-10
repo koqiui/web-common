@@ -4,7 +4,7 @@
 var moduleName = 'WC';
 //----------------------------------------------
 
-moduel.exports = {
+module.exports = {
     moduleName: moduleName,
     //
     Lodash: require('lodash'),
