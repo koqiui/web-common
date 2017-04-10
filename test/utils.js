@@ -1,13 +1,10 @@
 /**
  * Created by koqiui on 2017-04-09.
  */
-// 如果需要require src/下的es6模块
-require('babel-register');
-//
 var expect = require('chai').expect;
 //
 
-var Utils = require('../lib/utils');
+var Utils = require('../dist/utils');
 
 console.log(JSON.stringify(Utils));
 
@@ -20,12 +17,12 @@ describe('utils>[class] StringBuilder', function () {
 
         it('ctor', function () {
             var sb = new StringBuilder();
-            expect(sb.toString()).to.equal('');
+            expect(sb.value).to.equal('');
         });
 
         it('ctor + args', function () {
             var sb = new StringBuilder('x', ' ', 'y');
-            expect(sb.toString()).to.equal('x y');
+            expect(sb.value).to.equal('x y');
         });
 
         it('append', function () {
@@ -33,7 +30,7 @@ describe('utils>[class] StringBuilder', function () {
             sb.append('x');
             sb.append(' ');
             sb.append('y');
-            expect(sb.toString()).to.equal('x y');
+            expect(sb.value).to.equal('x y');
         });
 
         it('prepend', function () {
@@ -41,14 +38,14 @@ describe('utils>[class] StringBuilder', function () {
             sb.prepend('x');
             sb.prepend(' ');
             sb.prepend('y');
-            expect(sb.toString()).to.equal('y x');
+            expect(sb.value).to.equal('y x');
         });
 
         it('clear', function () {
             var sb = new StringBuilder('x', ' ', 'y');
-            expect(sb.toString()).to.equal('x y');
+            expect(sb.value).to.equal('x y');
             sb.clear();
-            expect(sb.toString()).to.equal('');
+            expect(sb.value).to.equal('');
         });
     }
 );
@@ -56,12 +53,13 @@ describe('utils>[class] StringBuilder', function () {
 describe('String.[method] builder', function () {
         it('ctor', function () {
             var sb = String.builder();
-            expect(sb.toString()).to.equal('');
+            console.log(sb);
+            expect(sb.value).to.equal('');
         });
 
         it('ctor + args', function () {
             var sb = String.builder('x', ' ', 'y');
-            expect(sb.toString()).to.equal('x y');
+            expect(sb.value).to.equal('x y');
         });
 
         it('append', function () {
@@ -69,7 +67,7 @@ describe('String.[method] builder', function () {
             sb.append('x');
             sb.append(' ');
             sb.append('y');
-            expect(sb.toString()).to.equal('x y');
+            expect(sb.value).to.equal('x y');
         });
 
         it('prepend', function () {
@@ -77,14 +75,14 @@ describe('String.[method] builder', function () {
             sb.prepend('x');
             sb.prepend(' ');
             sb.prepend('y');
-            expect(sb.toString()).to.equal('y x');
+            expect(sb.value).to.equal('y x');
         });
 
         it('clear', function () {
             var sb = String.builder('x', ' ', 'y');
-            expect(sb.toString()).to.equal('x y');
+            expect(sb.value).to.equal('x y');
             sb.clear();
-            expect(sb.toString()).to.equal('');
+            expect(sb.value).to.equal('');
         });
     }
 );

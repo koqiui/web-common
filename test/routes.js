@@ -1,13 +1,10 @@
 /**
  * Created by koqiui on 2017-04-09.
  */
-// 如果需要require src/下的es6模块
-require('babel-register');
-//
 var expect = require('chai').expect;
 //
 
-var Routes = require('../lib/routes');
+var Routes = require('../dist/routes');
 
 console.log(JSON.stringify(Routes));
 

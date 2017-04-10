@@ -6,18 +6,12 @@
     <option name="name" value="default" />
   </component>
   <component name="JavaScriptSettings">
-    <option name="languageLevel" value="ES6" />
+    <option name="languageLevel" value="ES5" />
   </component>
   <component name="JsBowerSettings">
     <node-interpreter value="project" />
     <exe-path>$USER_HOME$/AppData/Roaming/npm/bower.cmd</exe-path>
     <config-path />
-  </component>
-  <component name="JsFlowSettings">
-    <service-enabled>false</service-enabled>
-    <exe-path />
-    <annotation-enable>false</annotation-enable>
-    <other-services-enabled>false</other-services-enabled>
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
