@@ -57,24 +57,24 @@ describe('axios ajax', function () {
 
         it('get user', function (done) {
             axios.get(baseUrl + '/users/1')
-                .then(function (response) {
-                    console.log(response);
-                    done();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            .then(function (response) {
+                console.log(response);
+                done();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         });
 
         it('get users', function (done) {
             axios.get(baseUrl + '/users')
-                .then(function (response) {
-                    console.log(response);
-                    done();
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            .then(function (response) {
+                console.log(response);
+                done();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         });
     }
 );
@@ -89,25 +89,24 @@ describe('jquery ajax', function () {
             ajaxj({
                 url: baseUrl + '/users/1'
             })
-                .done(function (response) {
-                    console.log(response);
-                    done();
-                })
-                .fail(function (error) {
-                    console.log(error);
-                });
+            .done(function (response) {
+                console.log(response);
+                done();
+            })
+            .fail(function (error) {
+                console.log(error);
+            });
         });
 
         it('get users', function (done) {
             ajaxj({url: baseUrl + '/users'})
-                .done(function (response) {
-                    console.log(response);
-                    done();
-                })
-                .fail(function (error) {
-                    console.log(error);
-                });
+            .done(function (response) {
+                console.log(response);
+                done();
+            })
+            .fail(function (error) {
+                console.log(error);
+            });
         });
     }
 );
-

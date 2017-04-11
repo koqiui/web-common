@@ -86,11 +86,3 @@ describe('String.[method] builder', function () {
         });
     }
 );
-
-
-
-
-
-
-
-

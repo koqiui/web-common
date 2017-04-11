@@ -5,13 +5,12 @@ var moduleName = 'Routes';
 //----------------------------------------------
 var __routeMaps = [];
 
-
 module.exports = {
     moduleName: moduleName,
     //
     add: function () {
         var routeMaps = arguments;
-        for (var i = 0; i < routeMaps.length; i++) {
+        for(var i = 0; i < routeMaps.length; i++) {
             __routeMaps.push(routeMaps[i]);
         }
     },

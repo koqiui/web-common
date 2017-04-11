@@ -56,21 +56,21 @@ function isRegExp(obj) {
 }
 
 function isPlainObject(obj, bLooseCheck) {
-    if (!obj || Object.prototype.toString.call(obj) !== "[object Object]" || obj.nodeType || obj.setInterval) {
+    if(!obj || Object.prototype.toString.call(obj) !== "[object Object]" || obj.nodeType || obj.setInterval) {
         return false;
     }
 
     var hasOwnProperty = Object.prototype.hasOwnProperty;
     //
-    if (obj.constructor && !hasOwnProperty.call(obj, "constructor") && !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf")) {
+    if(obj.constructor && !hasOwnProperty.call(obj, "constructor") && !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf")) {
         return false;
     }
 
-    if (bLooseCheck === true) {
+    if(bLooseCheck === true) {
         return true;
     } else {
         var key;
-        for (key in obj) {
+        for(key in obj) {
             // just pass
         }
         return key === undefined || hasOwnProperty.call(obj, key);
@@ -80,14 +80,14 @@ function isPlainObject(obj, bLooseCheck) {
 function isEmptyObject(obj, ignorePropertyPrefix) {
     ignorePropertyPrefix = ignorePropertyPrefix || "";
     //
-    if (ignorePropertyPrefix) {
-        for (var name in obj) {
-            if (!name.indexOf(ignorePropertyPrefix) == 0) {
+    if(ignorePropertyPrefix) {
+        for(var name in obj) {
+            if(!name.indexOf(ignorePropertyPrefix) == 0) {
                 return false;
             }
         }
     } else {
-        for (var name in obj) {
+        for(var name in obj) {
             return false;
         }
     }
@@ -112,9 +112,9 @@ function trim(str) {
 
 //
 function __strEql(valX, valY) {
-    if (valX == null) {
+    if(valX == null) {
         return valY == null;
-    } else if (valY == null) {
+    } else if(valY == null) {
         return valX == null;
     } else {
         return toStr(valX) === toStr(valY);
@@ -123,22 +123,22 @@ function __strEql(valX, valY) {
 
 function strEql(val /* , chkVal1, chkVal2,... */) {
     var chkCount = arguments.length - 1;
-    if (chkCount <= 0) {
+    if(chkCount <= 0) {
         return false;
     }
     var i;
-    if (isArray(arguments[1])) {
+    if(isArray(arguments[1])) {
         var chkArray = arguments[1];
         chkCount = chkArray.length;
-        for (i = 0; i < chkCount; i++) {
-            if (__strEql(val, chkArray[i])) {
+        for(i = 0; i < chkCount; i++) {
+            if(__strEql(val, chkArray[i])) {
                 return true;
             }
         }
     } else {
         chkCount++;
-        for (i = 1; i < chkCount; i++) {
-            if (__strEql(val, arguments[i])) {
+        for(i = 1; i < chkCount; i++) {
+            if(__strEql(val, arguments[i])) {
                 return true;
             }
         }
@@ -178,7 +178,7 @@ var isNoE = isNullOrEmpty;
 var isNoB = isNullOrBlank;
 
 function replace(srcStr, what, byWhat) {
-    if (byWhat == null) {
+    if(byWhat == null) {
         byWhat = "";
     }
     var tmpStr = srcStr.split(what);
@@ -186,11 +186,11 @@ function replace(srcStr, what, byWhat) {
 }
 
 function left(str, length) {
-    if (!isString(str)) {
+    if(!isString(str)) {
         return null;
     }
     var strLen = str.length;
-    if (length >= strLen) {
+    if(length >= strLen) {
         return str;
     } else {
         return str.substring(0, length);
@@ -198,11 +198,11 @@ function left(str, length) {
 }
 
 function right(str, length) {
-    if (!isString(str)) {
+    if(!isString(str)) {
         return null;
     }
     var strLen = str.length;
-    if (length >= strLen) {
+    if(length >= strLen) {
         return str;
     } else {
         return str.substring(strLen - length);
@@ -212,23 +212,23 @@ function right(str, length) {
 function __strPad(srcStr, len, isRight, padStr) {
     srcStr = "" + srcStr;
     var needLen = len - srcStr.length;
-    if (needLen <= 0) {
+    if(needLen <= 0) {
         return srcStr;
     }
-    if (padStr == null) {
+    if(padStr == null) {
         padStr = " ";
     }
-    if (padStr.length <= 0) {
+    if(padStr.length <= 0) {
         throw "padStr 's length must be great than 0 !";
     }
     var appendStr = "";
     do {
         appendStr += padStr;
-        if (appendStr.length >= needLen) {
+        if(appendStr.length >= needLen) {
             appendStr = left(appendStr, needLen);
             break;
         }
-    } while (true);
+    } while(true);
     //
     return isRight === true ? srcStr + appendStr : appendStr + srcStr;
 }
@@ -250,16 +250,16 @@ String.prototype.right = function (length) {
 };
 
 function duplicate(refStr, count) {
-    if (!isNum(count)) {
+    if(!isNum(count)) {
         return null;
     }
     count = Math.floor(count);
     var resultStr = "";
-    if (count <= 0) {
+    if(count <= 0) {
         return resultStr;
     }
     resultStr = refStr;
-    for (var i = 1; i < count; i++) {
+    for(var i = 1; i < count; i++) {
         resultStr += refStr;
     }
     return resultStr;
@@ -270,11 +270,11 @@ String.prototype.duplicate = function (count) {
 };
 
 function startsWith(srcStr, chkStr, bIgnoreCase) {
-    if (!isString(srcStr) || !isString(chkStr)) {
+    if(!isString(srcStr) || !isString(chkStr)) {
         return false;
     }
     bIgnoreCase = bIgnoreCase === true;
-    if (bIgnoreCase) {
+    if(bIgnoreCase) {
         srcStr = srcStr.toLowerCase();
         chkStr = chkStr.toLowerCase();
     }
@@ -282,11 +282,11 @@ function startsWith(srcStr, chkStr, bIgnoreCase) {
 }
 
 function endsWith(srcStr, chkStr, bIgnoreCase) {
-    if (!isString(srcStr) || !isString(chkStr)) {
+    if(!isString(srcStr) || !isString(chkStr)) {
         return false;
     }
     bIgnoreCase = bIgnoreCase === true;
-    if (bIgnoreCase) {
+    if(bIgnoreCase) {
         srcStr = srcStr.toLowerCase();
         chkStr = chkStr.toLowerCase();
     }
@@ -303,11 +303,11 @@ String.prototype.endsWith = function (chkStr, bIgnoreCase) {
 };
 
 function __strContains(srcStr, chkStr, bIgnoreCase) {
-    if (!isString(srcStr) || !isString(chkStr)) {
+    if(!isString(srcStr) || !isString(chkStr)) {
         return false;
     }
     bIgnoreCase = bIgnoreCase === true;
-    if (bIgnoreCase) {
+    if(bIgnoreCase) {
         srcStr = srcStr.toLowerCase();
         chkStr = chkStr.toLowerCase();
     }
@@ -327,23 +327,23 @@ function __extractTemplateHolderParts(holderStr) {
     var tmpIndex = 0;
     var tmpPart = "";
     var inKh = false;
-    while (tmpIndex < holderLen) {
+    while(tmpIndex < holderLen) {
         var tmpChar = holder.charAt(tmpIndex);
-        if (tmpChar == '(') {
-            if (!inKh) {
+        if(tmpChar == '(') {
+            if(!inKh) {
                 inKh = true;
                 tmpPart = tmpPart.trim();
-                if (tmpPart !== "") {
+                if(tmpPart !== "") {
                     holderParts.add(tmpPart);
                     tmpPart = "";
                 }
             } else {
                 tmpPart += tmpChar;
             }
-        } else if (tmpChar == ")") {
-            if (inKh) {
+        } else if(tmpChar == ")") {
+            if(inKh) {
                 tmpPart = tmpPart.trim();
-                if (tmpPart !== "") {
+                if(tmpPart !== "") {
                     holderParts.add(tmpPart);
                     tmpPart = "";
                 }
@@ -351,12 +351,12 @@ function __extractTemplateHolderParts(holderStr) {
             } else {
                 tmpPart += tmpChar;
             }
-        } else if (tmpChar == ".") {
-            if (inKh) {
+        } else if(tmpChar == ".") {
+            if(inKh) {
                 tmpPart += tmpChar;
             } else {
                 tmpPart = tmpPart.trim();
-                if (tmpPart !== "") {
+                if(tmpPart !== "") {
                     holderParts.add(tmpPart);
                     tmpPart = "";
                 }
@@ -367,7 +367,7 @@ function __extractTemplateHolderParts(holderStr) {
         tmpIndex++;
     }
     tmpPart = tmpPart.trim();
-    if (tmpPart !== "") {
+    if(tmpPart !== "") {
         holderParts.add(tmpPart);
         tmpPart = "";
     }
@@ -378,34 +378,34 @@ function __extractTemplateHolderParts(holderStr) {
  * 格式化字符串，形如： {0},{1}..的索引位置，或形如 {pro1}, {prop2.subprop.(a.b).c}, {prop3[0]}的对象式<br/> 对于带key为形如 "a.b"的，可以使用(a.b)标记为原子key
  */
 function format(template) {
-    if (!isString(template)) {
+    if(!isString(template)) {
         return template;
     }
     var params = Array.prototype.slice.call(arguments, 1);
     var paramCount = params.length;
-    if (paramCount === 0) {
+    if(paramCount === 0) {
         return template;
     }
     var nullAs = template.nullAs || "null";
     var resultStr = "";
     var asObject = isPlainObject(params[0]);
     var xReg = null;
-    if (asObject) {
+    if(asObject) {
         params = params[0];
         xReg = /\{(\(?[a-zA-Z_]+(\.[a-zA-Z_]+)*\)?)+(\.(\(?[a-zA-Z_]+(\.[a-zA-Z_]+)*\)?)|\[\d+\])*\}?/mg;
         resultStr = template.replace(xReg, function (match) {
             var holderParts = __extractTemplateHolderParts(match);
             var param = null;
             var curKey = "";
-            for (var i = 0, len = holderParts.length; i < len; i++) {
+            for(var i = 0, len = holderParts.length; i < len; i++) {
                 var tmpPart = holderParts[i];
-                if (tmpPart.indexOf(".") != -1) {
+                if(tmpPart.indexOf(".") != -1) {
                     curKey += "[\"" + tmpPart + "\"]";
                 } else {
                     curKey += "." + tmpPart;
                 }
                 param = eval("params" + curKey);
-                if (param == null) {
+                if(param == null) {
                     break;
                 }
             }
@@ -417,7 +417,7 @@ function format(template) {
         resultStr = template.replace(xReg, function (m) {
             var holder = m.substring(1, m.length - 1).trim();
             var index = parseInt(holder, 10);
-            if (index >= 0 && index < paramCount) {
+            if(index >= 0 && index < paramCount) {
                 var param = params[index];
                 // alert(holder +" : "+param);
                 return "" + (param == null ? nullAs : param);
@@ -465,14 +465,14 @@ var __escapeStrReg = {
  * @example __escapeJsonStr("aaaaaa'bbb/ccc\t'ddd",true) => aaaaaa\'bbb/ccc\t\'ddd
  */
 function __escapeJsonStr(src, useSingleQutoe) {
-    if (src == null || src === "") {
+    if(src == null || src === "") {
         return src;
     } else {
         useSingleQutoe = useSingleQutoe === true;
         // backslash
         __escapeStrReg.backslash.lastIndex = -1;
         src = src.replace(__escapeStrReg.backslash, "\\\\");
-        if (useSingleQutoe) {
+        if(useSingleQutoe) {
             // quote
             __escapeStrReg.quote.lastIndex = -1;
             src = src.replace(__escapeStrReg.quote, "\\'");
@@ -504,7 +504,7 @@ function StringBuilder() {
     this.value = "";
     //
     this.append = function () {
-        for (var i = 0, c = arguments.length; i < c; i++) {
+        for(var i = 0, c = arguments.length; i < c; i++) {
             this.value = this.value + arguments[i];
         }
         //
@@ -517,7 +517,7 @@ function StringBuilder() {
         return this;
     };
     this.prepend = function () {
-        for (var i = 0, c = arguments.length; i < c; i++) {
+        for(var i = 0, c = arguments.length; i < c; i++) {
             this.value = arguments[i] + this.value;
         }
         //
@@ -530,7 +530,7 @@ function StringBuilder() {
     };
 
     //初始参数
-    if (arguments.length > 0) {
+    if(arguments.length > 0) {
         this.append.apply(this, arguments)
     }
     //
@@ -551,16 +551,16 @@ String.builder = function () {
  * @returns
  */
 function parseDimen(dim) {
-    if (dim == null) {
+    if(dim == null) {
         return null;
     }
     var ret = {};
-    if (isNum(dim)) {
+    if(isNum(dim)) {
         ret.value = dim;
         ret.unit = "px";
-    } else if (isString(dim)) {
+    } else if(isString(dim)) {
         var rawNum = ParseFloat(dim);
-        if (isNum(rawNum)) {
+        if(isNum(rawNum)) {
             ret.value = rawNum;
             var numStr = toStr(ret.value);
             var rawUnit = dim.substring(numStr.length).trim();
@@ -572,8 +572,8 @@ function parseDimen(dim) {
 
 //
 function ParseInt(x) {
-    if (isString(x)) {
-        if (x.isBlank()) {
+    if(isString(x)) {
+        if(x.isBlank()) {
             return null;
         }
     }
@@ -582,8 +582,8 @@ function ParseInt(x) {
 }
 
 function ParseFloat(x) {
-    if (isString(x)) {
-        if (x.isBlank()) {
+    if(isString(x)) {
+        if(x.isBlank()) {
             return null;
         }
     }
@@ -592,21 +592,21 @@ function ParseFloat(x) {
 }
 
 Number.prototype.round = function (frgs) {
-    if (!isNum(frgs) || frgs < 0) {
+    if(!isNum(frgs) || frgs < 0) {
         frgs = 0;
     }
-    if (frgs === 0) {
+    if(frgs === 0) {
         return Math.round(this);
     }
     var numStr = this + "";
     var dotIndex = numStr.indexOf(".");
-    if (dotIndex != -1) {
+    if(dotIndex != -1) {
         var intPart = numStr.substring(0, dotIndex);
         var frgPart = dotIndex == numStr.length - 1 ? "" : numStr.substring(dotIndex + 1);
-        if (frgPart.length > frgs) {
+        if(frgPart.length > frgs) {
             var nextDigit = parseInt(frgPart.charAt(frgs), 10);
             frgPart = frgPart.substring(0, frgs);
-            if (nextDigit >= 5) {
+            if(nextDigit >= 5) {
                 var lastDigit = parseInt(frgPart.charAt(frgs - 1), 10);
                 frgPart = frgPart.substring(0, frgs - 1) + (lastDigit + 1);
             }
@@ -629,11 +629,11 @@ Array.prototype.clear = function () {
  * Appends any number of items onto the end of the array.
  */
 Array.prototype.append = function () {
-    for (var i = 0, c = arguments.length, len = this.length; i < c; i++) {
+    for(var i = 0, c = arguments.length, len = this.length; i < c; i++) {
         var tmpItem = arguments[i];
-        if (isArray(tmpItem)) {
+        if(isArray(tmpItem)) {
             var tmpItems = tmpItem;
-            for (var j = 0, k = tmpItems.length; j < k; j++) {
+            for(var j = 0, k = tmpItems.length; j < k; j++) {
                 this[len++] = tmpItems[j];
             }
         } else {
@@ -653,11 +653,11 @@ Array.prototype.add = function () {
  * Prepend any number of items onto the start of the array.
  */
 Array.prototype.prepend = function () {
-    for (var i = 0, c = arguments.length; i < c; i++) {
+    for(var i = 0, c = arguments.length; i < c; i++) {
         var tmpItem = arguments[i];
-        if (isArray(tmpItem)) {
+        if(isArray(tmpItem)) {
             var tmpItems = tmpItem;
-            for (var j = 0, k = tmpItems.length; j < k; j++) {
+            for(var j = 0, k = tmpItems.length; j < k; j++) {
                 this.splice(0, 0, tmpItems[j]);
             }
         } else {
@@ -670,11 +670,11 @@ Array.prototype.prepend = function () {
  * 循环返回给定元素的下一个元素
  */
 Array.prototype.nextCycleElement = function (vItem) {
-    if (this.length === 0) {
+    if(this.length === 0) {
         return undefined;
     }
     var index = this.indexOf(vItem);
-    if (index == -1) {
+    if(index == -1) {
         index = 0;
     } else {
         index++;
@@ -683,7 +683,7 @@ Array.prototype.nextCycleElement = function (vItem) {
 };
 
 Array.prototype.first = function () {
-    if (this.length > 0) {
+    if(this.length > 0) {
         return this[0];
     } else {
         return undefined;
@@ -691,7 +691,7 @@ Array.prototype.first = function () {
 };
 
 Array.prototype.last = function () {
-    if (this.length > 0) {
+    if(this.length > 0) {
         return this[this.length - 1];
     } else {
         return undefined;
@@ -702,22 +702,22 @@ Array.prototype.last = function () {
 Array.prototype.nearest = function (vItem, compFunc) {
     var lastMatch = null;
     //
-    if (this.length > 0) {
-        if (compFunc == null) {
+    if(this.length > 0) {
+        if(compFunc == null) {
             compFunc = function (elA, elB) {
                 return elA == elB ? 0 : (elA < elB ? -1 : 1);
             };
         }
         var tmpArray = this.sort(compFunc);
-        for (var i = 0; i < tmpArray.length; i++) {
+        for(var i = 0; i < tmpArray.length; i++) {
             var tmpItem = tmpArray[i];
-            if (compFunc(vItem, tmpItem) >= 0) {
+            if(compFunc(vItem, tmpItem) >= 0) {
                 lastMatch = tmpItem;
             } else {
                 break;
             }
         }
-        if (lastMatch == null) {
+        if(lastMatch == null) {
             lastMatch = tmpArray[0];
         }
     }
@@ -737,7 +737,7 @@ var __arrayMethodsToCheck = ["slice", "splice", "shift", "unshift"];
  *
  * @return A copy of the array.
  */
-if (typeof Array.prototype.clone != "function") {
+if(typeof Array.prototype.clone != "function") {
     Array.prototype.clone = function () /* :Array */ {
         return this.concat();
     };
@@ -765,9 +765,9 @@ Array.prototype.contains = function (vItem /* :variant */, isFunc /* : function 
 Array.prototype.every = function (fnTest, context) {
     context = context || isInBrowser ? window : null;
     var bResult = true;
-    for (var i = 0, len = this.length; i < len && bResult; i++) {
+    for(var i = 0, len = this.length; i < len && bResult; i++) {
         bResult = bResult && fnTest.call(context, this[i], i, this);
-        if (!bResult) {
+        if(!bResult) {
             break;
         }
     }
@@ -785,8 +785,8 @@ Array.prototype.every = function (fnTest, context) {
 Array.prototype.filter = function (fnTest, context) {
     context = context || isInBrowser ? window : null;
     var aResult = [];
-    for (var i = 0, len = this.length; i < len; i++) {
-        if (fnTest.call(context, this[i], i, this)) {
+    for(var i = 0, len = this.length; i < len; i++) {
+        if(fnTest.call(context, this[i], i, this)) {
             aResult.push(this[i]);
         }
     }
@@ -804,8 +804,8 @@ Array.prototype.filter = function (fnTest, context) {
 Array.prototype.reject = function (fnTest, context) {
     context = context || isInBrowser ? window : null;
     var aResult = [];
-    for (var i = 0, len = this.length; i < len; i++) {
-        if (!fnTest.call(context, this[i], i, this)) {
+    for(var i = 0, len = this.length; i < len; i++) {
+        if(!fnTest.call(context, this[i], i, this)) {
             aResult.push(this[i]);
         }
     }
@@ -821,7 +821,7 @@ Array.prototype.reject = function (fnTest, context) {
  */
 Array.prototype.forEach = function (fnExec, context) {
     context = context || isInBrowser ? window : null;
-    for (var i = 0, len = this.length; i < len; i++) {
+    for(var i = 0, len = this.length; i < len; i++) {
         fnExec.call(context, this[i], i, this);
     }
 };
@@ -837,19 +837,19 @@ Array.prototype.forEach = function (fnExec, context) {
  * @return {Integer} The index of the item in the array if found or -1 if not found.
  */
 Array.prototype.indexOf = function (vItem, iStart, isFunc) {
-    if (iStart == null) {
+    if(iStart == null) {
         iStart = 0;
     }
     var i;
-    if (typeof isFunc == "function") {
-        for (i = iStart, len = this.length; i < len; i++) {
-            if (isFunc(this[i], vItem, i)) {
+    if(typeof isFunc == "function") {
+        for(i = iStart, len = this.length; i < len; i++) {
+            if(isFunc(this[i], vItem, i)) {
                 return i;
             }
         }
     } else {
-        for (i = iStart, len = this.length; i < len; i++) {
-            if (this[i] == vItem) {
+        for(i = iStart, len = this.length; i < len; i++) {
+            if(this[i] == vItem) {
                 return i;
             }
         }
@@ -860,10 +860,10 @@ Array.prototype.indexOf = function (vItem, iStart, isFunc) {
  * 根据提供的函数的判别结果返回第一个符合条件的元素
  */
 Array.prototype.find = function (isFunc) {
-    if (typeof isFunc == "function") {
-        for (var i = 0, len = this.length; i < len; i++) {
+    if(typeof isFunc == "function") {
+        for(var i = 0, len = this.length; i < len; i++) {
             var elem = this[i];
-            if (isFunc(elem, i)) {
+            if(isFunc(elem, i)) {
                 return elem;
             }
         }
@@ -907,19 +907,19 @@ Array.prototype.insertBefore = function (vItem, vBeforeItem) {
  * @return {Integer} The last index of the item in the array if found or -1 if not found.
  */
 Array.prototype.lastIndexOf = function (vItem, iStart, isFunc) {
-    if (iStart == null || iStart >= this.length) {
+    if(iStart == null || iStart >= this.length) {
         iStart = this.length - 1;
     }
     var i;
-    if (typeof(isFunc) == "function") {
-        for (i = iStart; i >= 0; i--) {
-            if (isFunc(this[i], vItem, i)) {
+    if(typeof(isFunc) == "function") {
+        for(i = iStart; i >= 0; i--) {
+            if(isFunc(this[i], vItem, i)) {
                 return i;
             }
         }
     } else {
-        for (i = iStart; i >= 0; i--) {
-            if (this[i] == vItem) {
+        for(i = iStart; i >= 0; i--) {
+            if(this[i] == vItem) {
                 return i;
             }
         }
@@ -938,7 +938,7 @@ Array.prototype.lastIndexOf = function (vItem, iStart, isFunc) {
 Array.prototype.map = function (fnExec, context) {
     context = context || isInBrowser ? window : null;
     var aResult = [];
-    for (var i = 0, len = this.length; i < len; i++) {
+    for(var i = 0, len = this.length; i < len; i++) {
         aResult.push(fnExec.call(context, this[i], i, this));
     }
     return aResult;
@@ -977,7 +977,7 @@ Array.prototype.remove = function (vItem, isFunc) {
  */
 Array.prototype.removeAt = function (iIndex) {
     var vItem;
-    if (iIndex >= 0 && iIndex < this.length) {
+    if(iIndex >= 0 && iIndex < this.length) {
         vItem = this[iIndex];
         this.splice(iIndex, 1);
     }
@@ -995,7 +995,7 @@ Array.prototype.removeAt = function (iIndex) {
  * @return {Boolean} True if the function evaluates to true for some items(as minCount), false if not.
  */
 Array.prototype.some = function (fnTest, context, minCount) {
-    if (typeof context == "number") {
+    if(typeof context == "number") {
         minCount = context || 1;
         context = isInBrowser ? window : null;
     } else {
@@ -1003,10 +1003,10 @@ Array.prototype.some = function (fnTest, context, minCount) {
         context = context || isInBrowser ? window : null;
     }
     var found = 0;
-    for (var i = 0, len = this.length; i < len; i++) {
-        if (fnTest.call(context, this[i], i, this)) {
+    for(var i = 0, len = this.length; i < len; i++) {
+        if(fnTest.call(context, this[i], i, this)) {
             found++;
-            if (found >= minCount) {
+            if(found >= minCount) {
                 return true;
             }
         }
@@ -1037,7 +1037,7 @@ Array.prototype.any = function (fnTest, context) {
 Array.prototype._slice = function (iStart, iStop) {
     iStop = iStop || this.length;
     var aResult = [];
-    for (var i = iStart; i < iStop; i++) {
+    for(var i = iStart; i < iStop; i++) {
         aResult.push(this[i]);
     }
     return aResult;
@@ -1049,7 +1049,7 @@ Array.prototype._slice = function (iStart, iStop) {
  */
 Array.prototype._shift = function () {
     var vItem;
-    if (this.length > 0) {
+    if(this.length > 0) {
         vItem = this[0];
         this.splice(0, 1);
     }
@@ -1072,21 +1072,21 @@ Array.prototype._splice = function (iIndex, iLength) {
     //
     var i;
     //
-    for (i = 0; i < iIndex; i++) {
+    for(i = 0; i < iIndex; i++) {
         aResult.push(this[i]);
     }
-    for (i = iIndex; i < iIndex + iLength; i++) {
+    for(i = iIndex; i < iIndex + iLength; i++) {
         aRemoved.push(this[i]);
     }
-    if (arguments.length > 2) {
-        for (i = 2; i < arguments.length; i++) {
+    if(arguments.length > 2) {
+        for(i = 2; i < arguments.length; i++) {
             aResult.push(arguments[i]);
         }
     }
-    for (i = iIndex + iLength, len = this.length; i < len; i++) {
+    for(i = iIndex + iLength, len = this.length; i < len; i++) {
         aResult.push(this[i]);
     }
-    for (i = 0, len = aResult.length; i < len; i++) {
+    for(i = 0, len = aResult.length; i < len; i++) {
         this[i] = aResult[i];
     }
     this.length = aResult.length;
@@ -1102,7 +1102,7 @@ Array.prototype._splice = function (iIndex, iLength) {
  */
 Array.prototype._unshift = function () {
     var aArgs = [];
-    for (var i = 0, len = arguments.length; i < len; i++) {
+    for(var i = 0, len = arguments.length; i < len; i++) {
         aArgs.push("arguments[" + i + "]");
     }
     eval("this.splice(0,0," + aArgs.join(",") + ")");
@@ -1110,9 +1110,9 @@ Array.prototype._unshift = function () {
 /*
  * Assign the necessary methods.
  */
-for (var i = 0, len = __arrayMethodsToCheck.length; i < len; i++) {
+for(var i = 0, len = __arrayMethodsToCheck.length; i < len; i++) {
     var method = __arrayMethodsToCheck[i];
-    if (Array.prototype[method] == null) {
+    if(Array.prototype[method] == null) {
         Array.prototype[method] = Array.prototype["_" + method];
     }
 }
@@ -1128,7 +1128,7 @@ for (var i = 0, len = __arrayMethodsToCheck.length; i < len; i++) {
  */
 Array.prototype.toMap = function (keyProp) {
     var retMap = {};
-    for (var i = 0; i < this.length; i++) {
+    for(var i = 0; i < this.length; i++) {
         var vItem = this[i];
         var keyVal = vItem[keyProp];
         retMap[keyVal] = vItem;
@@ -1148,7 +1148,7 @@ Array.prototype.toMap = function (keyProp) {
 Array.prototype.sum = function (fnEval, context) {
     context = context || isInBrowser ? window : null;
     var initVal = null;
-    if (typeof fnEval != "function") {
+    if(typeof fnEval != "function") {
         fnEval = function (vItem) {
             return vItem;
         };
@@ -1157,9 +1157,9 @@ Array.prototype.sum = function (fnEval, context) {
     }
     var result = initVal;
     var len = this.length;
-    if (len > 0) {
+    if(len > 0) {
         result = fnEval.call(context, this[0], 0, this);
-        for (var i = 1; i < len; i++) {
+        for(var i = 1; i < len; i++) {
             result += fnEval.call(context, this[i], i, this);
         }
     }
@@ -1177,20 +1177,20 @@ Array.prototype.where = function (filterProps) {
     var proxyProps = filterProps;
     var proxyKeys = [];
     var keyCount = proxyKeys.length;
-    if (proxyProps != null) {
-        for (var key in proxyProps) {
+    if(proxyProps != null) {
+        for(var key in proxyProps) {
             proxyKeys[keyCount++] = key;
         }
         keyCount = proxyKeys.length;
     }
     var fnTest = function (vItem) {
         // 按列值完全比较
-        if (vItem == proxyProps) {
+        if(vItem == proxyProps) {
             return true;
-        } else if (proxyProps != null && vItem != null) {
-            for (var i = 0; i < keyCount; i++) {
+        } else if(proxyProps != null && vItem != null) {
+            for(var i = 0; i < keyCount; i++) {
                 var key = proxyKeys[i];
-                if (proxyProps[key] != vItem[key]) {
+                if(proxyProps[key] != vItem[key]) {
                     return false;
                 }
             }
@@ -1208,49 +1208,49 @@ Array.prototype.where = function (filterProps) {
 function sortArray() {
     var args = arguments;
     var xArray = args[0];
-    if (!isArray(xArray)) {
+    if(!isArray(xArray)) {
         return xArray;
     }
     try {
         xArray = xArray.clone();
-    } catch (ex) {
+    } catch(ex) {
         //
     }
     var compFunc = null;
     var bDesc = false;
-    if (args.length > 1) {
-        if (typeof args[1] == "boolean") {
+    if(args.length > 1) {
+        if(typeof args[1] == "boolean") {
             bDesc = args[1] === true;
-            if (args.length > 2 && typeof args[2] == "function") {
+            if(args.length > 2 && typeof args[2] == "function") {
                 compFunc = args[2];
             }
-        } else if (typeof args[1] == "function") {
+        } else if(typeof args[1] == "function") {
             compFunc = args[1];
-            if (args.length > 2 && typeof args[2] == "boolean") {
+            if(args.length > 2 && typeof args[2] == "boolean") {
                 bDesc = args[2];
             }
         }
     }
-    if (compFunc == null) {
+    if(compFunc == null) {
         compFunc = function (elA, elB) {
             return elA == elB ? 0 : (elA < elB ? -1 : 1);
         };
     }
     var len = xArray.length;
-    for (var i = 0; i < len - 1; i++) {
+    for(var i = 0; i < len - 1; i++) {
         var tmp = xArray[i];
         var indx = i;
         var tmp2;
-        for (var j = i + 1; j < len; j++) {
+        for(var j = i + 1; j < len; j++) {
             tmp2 = xArray[j];
             var result = compFunc(tmp2, tmp);
             result = bDesc ? result > 0 : result < 0;
-            if (result) {
+            if(result) {
                 tmp = tmp2;
                 indx = j;
             }
         }
-        if (indx > i) {
+        if(indx > i) {
             tmp2 = xArray[i];
             xArray[i] = tmp;
             xArray[indx] = tmp2;
@@ -1262,7 +1262,7 @@ function sortArray() {
 /**
  * 对数组进行排序（可指定是否降序及比较函数） compFunc(elA, elB), bDesc
  */
-if (typeof Array.prototype.sort != "function") {
+if(typeof Array.prototype.sort != "function") {
     Array.prototype.sort = function () {
         var args = [this].concat(Array.prototype.slice.call(arguments, 0));
         return sortArray.apply(isInBrowser ? window : null, args);
@@ -1275,49 +1275,49 @@ if (typeof Array.prototype.sort != "function") {
 function moveArrayElementsAt(xArray, indices, where) {
     xArray = xArray || [];
     var len = xArray.length;
-    if (len <= 1) {
+    if(len <= 1) {
         return null;
     }
     indices = indices || [];
     // console.log(">> 1 :: " + indices);
-    if (isNum(indices)) {
+    if(isNum(indices)) {
         indices = [indices];
     }
     indices = indices.sort();
     // console.log(">> 2 :: " + indices);
-    if (indices.length === 0) {
+    if(indices.length === 0) {
         return null;
     }
     var minIndex = indices[0];
-    if (minIndex === 0 && (where === "first" || where === "prev")) {
+    if(minIndex === 0 && (where === "first" || where === "prev")) {
         return null;
     }
     var maxIndex = indices[indices.length - 1];
-    if (maxIndex === (len - 1) && (where === "last" || where === "next")) {
+    if(maxIndex === (len - 1) && (where === "last" || where === "next")) {
         return null;
     }
     var offset = -1;
-    if (where === "first") {
+    if(where === "first") {
         offset = 0 - minIndex;
-    } else if (where === "prev") {
+    } else if(where === "prev") {
         offset = -1;
-    } else if (where === "next") {
+    } else if(where === "next") {
         offset = 1;
-    } else if (where === "last") {
+    } else if(where === "last") {
         offset = (len - 1) - maxIndex;
     } else {
         return null;
     }
     //
     var tmpArray = [];
-    for (var i = 0; i < len; i++) {
+    for(var i = 0; i < len; i++) {
         tmpArray[i] = xArray[i];
     }
     //
     xArray.clear();
     //
     var indexChanges = [];
-    for (var i = 0; i < indices.length; i++) {
+    for(var i = 0; i < indices.length; i++) {
         var index = indices[i];
         var indexNew = index + offset;
         xArray[indexNew] = tmpArray[index];
@@ -1327,11 +1327,11 @@ function moveArrayElementsAt(xArray, indices, where) {
         };
     }
     //
-    for (var i = 0, j = 0; i < len; i++) {
+    for(var i = 0, j = 0; i < len; i++) {
         var newElem = xArray[i];
-        if (typeof newElem === "undefined") {
-            while (true) {
-                if (indices.indexOf(j) == -1) {
+        if(typeof newElem === "undefined") {
+            while(true) {
+                if(indices.indexOf(j) == -1) {
                     break;
                 }
                 j++;
@@ -1350,15 +1350,15 @@ Array.prototype.move = function (indices, where) {
 // 不改变当前数组，返回元素不重复的新数组
 Array.prototype.unique = function (eqlFunc) {
     var retArray = [];
-    if (typeof(eqlFunc) != "function") {
+    if(typeof(eqlFunc) != "function") {
         eqlFunc = function (A, B) {
             return A == B;
         };
     }
     var k = 0;
-    for (var i = 0, j = this.length; i < j; i++) {
+    for(var i = 0, j = this.length; i < j; i++) {
         var tmpItem = this[i];
-        if (retArray.indexOf(tmpItem, 0, eqlFunc) == -1) {
+        if(retArray.indexOf(tmpItem, 0, eqlFunc) == -1) {
             retArray[k++] = tmpItem;
         }
     }
@@ -1368,7 +1368,7 @@ Array.prototype.unique = function (eqlFunc) {
 // 查找重复的元素，返回重复元素组成的新数组
 Array.prototype.findDuplicated = function (eqlFunc) {
     var retArray = [];
-    if (typeof(eqlFunc) != "function") {
+    if(typeof(eqlFunc) != "function") {
         eqlFunc = function (A, B) {
             return A == B;
         };
@@ -1376,9 +1376,9 @@ Array.prototype.findDuplicated = function (eqlFunc) {
     var k = 0,
         m = 0;
     var uniqueOnes = [];
-    for (var i = 0, j = this.length; i < j; i++) {
+    for(var i = 0, j = this.length; i < j; i++) {
         var tmpItem = this[i];
-        if (uniqueOnes.indexOf(tmpItem, 0, eqlFunc) == -1) {
+        if(uniqueOnes.indexOf(tmpItem, 0, eqlFunc) == -1) {
             uniqueOnes[k++] = tmpItem;
         } else {
             retArray[m++] = tmpItem;
@@ -1394,7 +1394,7 @@ function copyAsArray(srcArray) {
     srcArray = srcArray || [];
     var retArray = [];
     var len = srcArray.length;
-    for (var i = 0; i < len; i++) {
+    for(var i = 0; i < len; i++) {
         retArray[i] = srcArray[i];
     }
     return retArray;
@@ -1402,21 +1402,21 @@ function copyAsArray(srcArray) {
 
 // 声明名字空间
 function declare(namespace) {
-    if (typeof namespace != "string") {
+    if(typeof namespace != "string") {
         return null;
     }
     namespace = namespace.trim();
-    if (namespace === "") {
+    if(namespace === "") {
         return null;
     }
     var names = namespace.split(".");
     var ns = [];
     var nsName = "";
-    for (var i = 0; i < names.length; i++) {
+    for(var i = 0; i < names.length; i++) {
         ns[i] = names[i];
         nsName = ns.join(".");
-        if (eval('(typeof ' + nsName + ' == "undefined")')) {
-            if (i === 0) {
+        if(eval('(typeof ' + nsName + ' == "undefined")')) {
+            if(i === 0) {
                 eval("var " + nsName + " = window." + nsName + " = {};");
             } else {
                 eval(nsName + " = {};");
@@ -1428,15 +1428,15 @@ function declare(namespace) {
 
 // 返回绑定后的代理（主要用于事件处理）
 function makeProxy(fn, context) {
-    if (typeof context === "string") {
+    if(typeof context === "string") {
         var tmp = fn[context];
         context = fn;
         fn = tmp;
     }
-    if (context == null) {
+    if(context == null) {
         context = isInBrowser ? window : null;
     }
-    if (!isFunction(fn)) {
+    if(!isFunction(fn)) {
         return undefined;
     }
     var args = Array.prototype.slice.call(arguments, 2);
@@ -1449,12 +1449,12 @@ function makeProxy(fn, context) {
 // 判断某年是否为闰年
 function isLeapYear(chkYear) {
     var theYear = null;
-    if (isDate(chkYear)) {
+    if(isDate(chkYear)) {
         chkYear = chkYear.getFullYear();
     } else {
         theYear = ParseInt(chkYear);
     }
-    if (!isNum(theYear)) {
+    if(!isNum(theYear)) {
         return false;
     }
     return (theYear % 4 === 0 && ((theYear % 100 !== 0) || (theYear % 400 === 0)));
@@ -1474,7 +1474,7 @@ function getYearMonthDays(year, month) {
 
 Date.prototype.format = function (format) {
     /* yyyy-MM-dd HH:mm:ss.SSS */
-    if (format == null) {
+    if(format == null) {
         format = "yyyy-MM-dd";
     }
     var result = format.replace(/yyyy/, this.getFullYear());
@@ -1501,18 +1501,18 @@ Date.prototype.format = function (format) {
     return result;
 };
 
-if (Date._parse == null) {
+if(Date._parse == null) {
     Date._parse = Date.parse;
     //
     Date.parse = function (dateStr, strictMode) {
-        if (!dateStr) {
+        if(!dateStr) {
             return null;
         }
-        if (isDate(dateStr)) {
+        if(isDate(dateStr)) {
             return dateStr;
         }
         strictMode = strictMode === true;
-        if (strictMode) {
+        if(strictMode) {
             dateStr = dateStr.replace(/-/g, "/");
             return Date._parse(dateStr);
         } else {
@@ -1528,10 +1528,10 @@ if (Date._parse == null) {
             dateStr = dateStr.replace(/-/g, "/");
             // 解析毫秒
             var msIndex = dateStr.indexOf(".");
-            if (msIndex != -1) {
+            if(msIndex != -1) {
                 var ms = parseInt(dateStr.substring(msIndex + 1), 10);
                 dateStr = dateStr.substring(0, msIndex);
-                if (isNum(ms) && ms > 0) {
+                if(isNum(ms) && ms > 0) {
                     return Date._parse(dateStr) + ms;
                 } else {
                     return Date._parse(dateStr);
@@ -1545,11 +1545,11 @@ if (Date._parse == null) {
 
 //
 Date.parseAsDate = function (dateStr) {
-    if (!dateStr) {
+    if(!dateStr) {
         return null;
-    } else if (isDate(dateStr)) {
+    } else if(isDate(dateStr)) {
         return dateStr;
-    } else if (isNum(dateStr)) {
+    } else if(isNum(dateStr)) {
         return new Date(dateStr);
     } else {
         return new Date(Date.parse(dateStr));
@@ -1557,7 +1557,7 @@ Date.parseAsDate = function (dateStr) {
 };
 //
 Date.isValidDate = function (dateStr) {
-    if (isDate(dateStr)) {
+    if(isDate(dateStr)) {
         return true;
     }
     var result = Date.parse(dateStr, true);
@@ -1566,7 +1566,7 @@ Date.isValidDate = function (dateStr) {
 
 Date.format = function (dateOrStr, format) {
     var date = Date.parseAsDate(dateOrStr);
-    if (date) {
+    if(date) {
         return date.format(format || "yyyy-MM-dd");
     } else {
         return null;
@@ -1581,10 +1581,10 @@ Date.prototype.getMonthDays = function () {
     return getYearMonthDays(this.getFullYear(), this.getMonth() + 1);
 };
 // toStdDateStr
-if (Date.prototype._toString == null) {
+if(Date.prototype._toString == null) {
     Date.prototype._toString = Date.prototype.toString;
     Date.prototype.toString = function (format) {
-        if (typeof format == "undefined") {
+        if(typeof format == "undefined") {
             return this._toString();
         } else {
             return this.format(format);
@@ -1593,11 +1593,11 @@ if (Date.prototype._toString == null) {
 }
 //
 Date.prototype.diff = function (that, part) {
-    if (part == null) {
+    if(part == null) {
         part = "milliSecond";
     }
     var diffMs = this - that;
-    switch (part.toLowerCase()) {
+    switch(part.toLowerCase()) {
         case 'year':
             return this.getFullYear() - that.getFullYear();
         case 'month':
@@ -1655,10 +1655,10 @@ Date.prototype.endTime = function () {
 };
 //
 Date.prototype.add = function (count, part) {
-    if (part == null) {
+    if(part == null) {
         part = "milliSecond";
     }
-    switch (part.toLowerCase()) {
+    switch(part.toLowerCase()) {
         case 'year':
             var base = this.asJSON();
             base.year += count;
@@ -1715,10 +1715,10 @@ Date.prototype.addQuarters = function (count) {
     return this.add(count, 'quarter');
 };
 Date.prototype.getPart = function (part) {
-    if (part == null) {
+    if(part == null) {
         part = "milliSecond";
     }
-    switch (part.toLowerCase()) {
+    switch(part.toLowerCase()) {
         case 'year':
             return this.getFullYear();
         case 'month':
@@ -1746,7 +1746,7 @@ Date.prototype.getPart = function (part) {
 
 // => { days : , hours : }
 function calcDiffHours(dtFrom, dtTo, dayValve) {
-    if (!isNum(dayValve) || dayValve < 0) {
+    if(!isNum(dayValve) || dayValve < 0) {
         dayValve = 1;
     }
     var fromDate = Date.parseAsDate(dtFrom);
@@ -1756,8 +1756,8 @@ function calcDiffHours(dtFrom, dtTo, dayValve) {
     // console.log("diffDays :" + diffDays);
     var diffHours = toDate.diff(fromDate, 'hour');
     // console.log("diffHours :" + diffHours);
-    if (toDate >= fromDate) {
-        if (diffDays >= dayValve) {
+    if(toDate >= fromDate) {
+        if(diffDays >= dayValve) {
             diffHours = diffHours - diffDays * 24;
         } else {
             diffDays = 0;
@@ -1777,7 +1777,7 @@ function makeDiffHoursStr(dtFrom, dtTo, dayValve) {
     var diff = calcDiffHours(dtFrom, dtTo, dayValve);
     console.log(diff.days + " days , " + diff.hours + " hours");
     var diffHoursStr;
-    if (diff.days != 0 && diff.hours != 0) {
+    if(diff.days != 0 && diff.hours != 0) {
         diffHoursStr = (diff.days > 0) ? diff.days + "天" : diff.hours + "小时";
     } else {
         diffHoursStr = "0天"
@@ -1797,7 +1797,7 @@ function getObjAttr(_objToEval, attrName) {
 function __parseJson(jsonStr) {
     try {
         return eval('(' + jsonStr + ')');
-    } catch (exp) {
+    } catch(exp) {
         throw new TypeError("JSON parse error !");
     }
 }
@@ -1805,32 +1805,32 @@ function __parseJson(jsonStr) {
 function __stringifyJson(obj) {
     var dblQuote = '"';
     var Callee = arguments.callee;
-    if (obj == null) {
+    if(obj == null) {
         return 'null';
-    } else if (isBoolean(obj)) {
+    } else if(isBoolean(obj)) {
         return obj.toString();
-    } else if (isNumber(obj)) {
+    } else if(isNumber(obj)) {
         return isFinite(obj) ? obj.toString() : 'null';
-    } else if (isString(obj)) {
+    } else if(isString(obj)) {
         return dblQuote + __escapeJsonStr(obj) + dblQuote;
-    } else if (isDate(obj)) {
+    } else if(isDate(obj)) {
         return dblQuote + obj.format('yyyy-MM-dd HH:mm:ss') + dblQuote;
-    } else if (isArray(obj)) {
+    } else if(isArray(obj)) {
         var count = obj.length;
         var elemStrs = [];
-        for (var i = 0; i < count; i++) {
+        for(var i = 0; i < count; i++) {
             elemStrs[i] = Callee(obj[i]);
         }
         return "[" + elemStrs.join(",") + "]";
-    } else if (typeof(obj.toJSON) == "function") {
+    } else if(typeof(obj.toJSON) == "function") {
         return obj.toJSON();
     } else // if(isPlainObject(obj)) //Strict Check ...
     {
         var attrStrs = [];
         var index = 0;
         var hasOwnProperty = Object.hasOwnProperty;
-        for (var attr in obj) {
-            if (hasOwnProperty.call(obj, attr)) {
+        for(var attr in obj) {
+            if(hasOwnProperty.call(obj, attr)) {
                 var value = obj[attr];
                 attrStrs[index++] = Callee(attr) + ":" + Callee(value);
             }
@@ -1850,13 +1850,13 @@ function isJSONDefined() {
 }
 
 //
-if (!isJSONDefined()) {
+if(!isJSONDefined()) {
     JSON = {};
     JSON.parse = __parseJson;
     JSON.stringify = __stringifyJson;
 }
 
-if (isFunction(JSON.parse)) {
+if(isFunction(JSON.parse)) {
     JSON.decode = JSON.parse;
     //
     JSON.decodeStr = function (str) {
@@ -1864,7 +1864,7 @@ if (isFunction(JSON.parse)) {
     };
 }
 
-if (isFunction(JSON.stringify)) {
+if(isFunction(JSON.stringify)) {
     JSON.encode = JSON.stringify;
     //
     JSON.encodeStr = function (str) {
@@ -1878,23 +1878,23 @@ function merge(original, overwrite, includeFunc) {
     includeFunc = includeFunc !== false;
     var hasOwnProperty = Object.prototype.hasOwnProperty;
     //
-    if (overwrite == null) {
+    if(overwrite == null) {
         original = null;
-    } else if (isPlainObject(overwrite)) {
-        for (var key in overwrite) {
-            if (hasOwnProperty.call(overwrite, key)) {
+    } else if(isPlainObject(overwrite)) {
+        for(var key in overwrite) {
+            if(hasOwnProperty.call(overwrite, key)) {
                 var orgVal = original[key];
                 var value = overwrite[key];
                 original[key] = merge(orgVal, value);
             }
         }
-    } else if (isArray(overwrite)) {
+    } else if(isArray(overwrite)) {
         original = [];
         var items = overwrite;
-        for (var i = 0; i < items.length; i++) {
+        for(var i = 0; i < items.length; i++) {
             original[i] = merge({}, items[i]);
         }
-    } else if (typeof overwrite == "function" && includeFunc) {
+    } else if(typeof overwrite == "function" && includeFunc) {
         original = overwrite;
     } else {
         original = overwrite;
@@ -1911,7 +1911,7 @@ function merge(original, overwrite, includeFunc) {
  */
 function KeyMap(name) {
     this.name = "";
-    if (name != null) {
+    if(name != null) {
         this.name = "" + name;
     }
     /**
@@ -1922,7 +1922,7 @@ function KeyMap(name) {
      * clear all key/value pairs
      */
     this.clear = function () {
-        for (var xKey in __data) {
+        for(var xKey in __data) {
             delete __data[xKey];
         }
         //
@@ -1936,7 +1936,7 @@ function KeyMap(name) {
     };
     //
     this.from = function (json) {
-        if (json == null) {
+        if(json == null) {
             json = {};
         }
         __data = json;
@@ -1975,11 +1975,11 @@ function KeyMap(name) {
     //
     this.data = function (key, value) {
         var argCount = arguments.length;
-        if (argCount == 0) {
+        if(argCount == 0) {
             return __data;
-        } else if (argCount == 1) {
+        } else if(argCount == 1) {
             return this.get(key);
-        } else if (argCount == 2) {
+        } else if(argCount == 2) {
             this.set(key, value);
         }
     };
@@ -2003,7 +2003,7 @@ function KeyMap(name) {
      * @returns {Boolean} whether added successfully
      */
     this.add = function (key, value) {
-        if (!this.contains(key)) {
+        if(!this.contains(key)) {
             __data[key] = value;
             return true;
         }
@@ -2029,7 +2029,7 @@ function KeyMap(name) {
     this.keys = function () {
         var retKeys = [];
         var keyCount = retKeys.length;
-        for (var xKey in __data) {
+        for(var xKey in __data) {
             retKeys[keyCount++] = xKey;
         }
         return retKeys;
@@ -2042,7 +2042,7 @@ function KeyMap(name) {
     this.values = function () {
         var retValues = [];
         var valCount = retValues.length;
-        for (var xKey in __data) {
+        for(var xKey in __data) {
             retValues[valCount++] = __data[xKey];
         }
         return retValues;
@@ -2054,7 +2054,7 @@ function KeyMap(name) {
      */
     this.size = function () {
         var retSize = 0;
-        for (var xKey in __data) {
+        for(var xKey in __data) {
             retSize++;
         }
         return retSize;
@@ -2081,7 +2081,7 @@ function KeyMap(name) {
         var tmpData = merge({}, __data);
         this.clear();
         //
-        for (var i = _keys.length - 1; i >= 0; i--) {
+        for(var i = _keys.length - 1; i >= 0; i--) {
             var key = _keys[i];
             __data[key] = tmpData[key];
         }
@@ -2104,7 +2104,7 @@ function KeyMap(name) {
         var _keysCount = _keys.length;
         var itemStrArray = [];
         var itemStrCount = 0;
-        for (var i = 0; i < _keysCount; i++) {
+        for(var i = 0; i < _keysCount; i++) {
             var tmpKey = _keys[i];
             var tmpValue = this.get(tmpKey);
             itemStrArray[itemStrCount++] = JSON.stringify(tmpKey + "") + ":" + JSON.stringify(tmpValue);
@@ -2131,8 +2131,8 @@ function sortByKey(json, compFunc) {
     //
     json = json || null;
     //
-    if (json != null) {
-        if (typeof compFunc !== "function") {
+    if(json != null) {
+        if(typeof compFunc !== "function") {
             compFunc = function (elA, elB) {
                 return elA == elB ? 0 : (elA < elB ? -1 : 1);
             };
@@ -2143,7 +2143,7 @@ function sortByKey(json, compFunc) {
         //
         var tmpKeys = tmpMap.keys();
         tmpKeys = tmpKeys.sort(compFunc);
-        for (var i = 0; i < tmpKeys.length; i++) {
+        for(var i = 0; i < tmpKeys.length; i++) {
             var tmpKey = tmpKeys[i];
             var tmpValue = tmpMap.get(tmpKey);
             retJson[tmpKey] = tmpValue;
@@ -2154,23 +2154,23 @@ function sortByKey(json, compFunc) {
 }
 // [], key, [value1,value2,...]
 function makeCrossCombsWith(srcCombs, key, values) {
-    if (srcCombs == null) {
+    if(srcCombs == null) {
         srcCombs = [];
     }
     values = values || [];
     //
     var retCombs = [];
     var srcLen = srcCombs.length;
-    if (srcLen == 0) {
-        for (var j = 0; j < values.length; j++) {
+    if(srcLen == 0) {
+        for(var j = 0; j < values.length; j++) {
             var json = {};
             json[key + ""] = values[j];
             retCombs.add(json);
         }
     } else {
-        for (var i = 0; i < srcLen; i++) {
+        for(var i = 0; i < srcLen; i++) {
             var srcJson = srcCombs[i];
-            for (var j = 0; j < values.length; j++) {
+            for(var j = 0; j < values.length; j++) {
                 var json = merge({}, srcJson);
                 json[key + ""] = values[j];
                 retCombs.add(json);
@@ -2179,17 +2179,17 @@ function makeCrossCombsWith(srcCombs, key, values) {
     }
     return retCombs;
 }
-// 生成 交叉组合项
+// 生成 交叉组合项（比如商品规格组合）
 // key2ValuesMap :: key => [value1,value2,...]
 function makeCrossCombsFor(key2ValuesMap) {
     var retCombs = [];
     //
     var tmpMap = KeyMap.from(key2ValuesMap);
     var tmpKeys = tmpMap.keys();
-    for (var i = 0; i < tmpKeys.length; i++) {
+    for(var i = 0; i < tmpKeys.length; i++) {
         var tmpKey = tmpKeys[i];
         var values = tmpMap.get(tmpKey);
-        if (values != null && values.length > 0) {
+        if(values != null && values.length > 0) {
             // 只考虑有效的
             retCombs = makeCrossCombsWith(retCombs, tmpKey, values);
         }
@@ -2207,7 +2207,7 @@ function LimitedQueue(limitSize) {
     };
     // 设置相同元素判断函数
     this.setJudger = function (theJudger) {
-        if (typeof theJudger == "function") {
+        if(typeof theJudger == "function") {
             sameJudger = theJudger;
         }
         //
@@ -2216,15 +2216,15 @@ function LimitedQueue(limitSize) {
     //
     this.add = function (el) {
         var curIndex = dataList.indexOf(el, 0, sameJudger);
-        if (curIndex != -1) {
+        if(curIndex != -1) {
             var tmpArray = [];
-            for (var i = curIndex; i > 0; i--) {
+            for(var i = curIndex; i > 0; i--) {
                 dataList[i] = dataList[i - 1];
             }
             dataList[0] = el;
         } else {
             dataList.unshift(el);
-            if (dataList.length > dataSize) {
+            if(dataList.length > dataSize) {
                 dataList.length = dataSize;
             }
         }
@@ -2239,15 +2239,15 @@ function LimitedQueue(limitSize) {
 
 // 把json数据拆分成(key, value, jsonData)对传递给 keyValSetter 回调函数供其使用
 function syncDataBy(jsonData, keyValSetter) {
-    if (jsonData == null || typeof keyValSetter != "function") {
+    if(jsonData == null || typeof keyValSetter != "function") {
         return;
     }
     var hasOwnProperty = Object.hasOwnProperty;
-    for (var key in jsonData) {
-        if (hasOwnProperty.call(jsonData, key)) {
+    for(var key in jsonData) {
+        if(hasOwnProperty.call(jsonData, key)) {
             try {
                 keyValSetter(key, jsonData[key], jsonData);
-            } catch (ex) {
+            } catch(ex) {
                 //
             }
         }
@@ -2265,20 +2265,20 @@ function compareArrays(theArray, refArray, eqlFunc, isFunc) {
         same: [],
         diff: []
     };
-    if (refArray == null) {
+    if(refArray == null) {
         refArray = [];
     }
-    if (theArray == null) {
+    if(theArray == null) {
         theArray = [];
     }
     var refCount = refArray.length;
     var theCount = theArray.length;
-    if (refCount === 0) {
+    if(refCount === 0) {
         result.more = theArray;
-    } else if (theCount === 0) {
+    } else if(theCount === 0) {
         result.less = refArray;
     } else {
-        if (typeof(eqlFunc) != "function") {
+        if(typeof(eqlFunc) != "function") {
             eqlFunc = function (A, B) {
                 return A == B;
             };
@@ -2290,14 +2290,14 @@ function compareArrays(theArray, refArray, eqlFunc, isFunc) {
         var less = result.less;
         var same = result.same;
         var diff = result.diff;
-        for (var i = refCount - 1, j = theCount - 1; i >= 0 || j >= 0;) {
+        for(var i = refCount - 1, j = theCount - 1; i >= 0 || j >= 0;) {
             var refObj = i >= 0 ? refArray[i] : undefined;
             var theObj = j >= 0 ? theArray[j] : undefined;
-            if (i >= 0) {
+            if(i >= 0) {
                 var theIndex = theArray.indexOf(refObj, null, isFunc);
-                if (theIndex != -1) {
+                if(theIndex != -1) {
                     theObj = theArray[theIndex];
-                    if (eqlFunc(theObj, refObj)) {
+                    if(eqlFunc(theObj, refObj)) {
                         same[same.length] = theObj;
                     } else {
                         diff[diff.length] = theObj;
@@ -2332,12 +2332,12 @@ function compareArrays(theArray, refArray, eqlFunc, isFunc) {
  */
 function compareRecordsById(newRecords, oldRecords, idColNameOrIdEqlFunc, recEqlFunc) {
     var idEqlFunc = null;
-    if (typeof(idColNameOrIdEqlFunc) == "function") {
+    if(typeof(idColNameOrIdEqlFunc) == "function") {
         idEqlFunc = idColNameOrIdEqlFunc;
     } else {
         var idColName = idColNameOrIdEqlFunc;
-        if (typeof(idColName) == "string") {
-            if ((idColName = idColName.trim()) === "") {
+        if(typeof(idColName) == "string") {
+            if((idColName = idColName.trim()) === "") {
                 idColName = "id";
             }
         } else {
@@ -2345,9 +2345,9 @@ function compareRecordsById(newRecords, oldRecords, idColNameOrIdEqlFunc, recEql
         }
         idEqlFunc = function (record1, record2) {
             // 按 idColName 标识两个列表中的同一条记录
-            if (record1 == record2) {
+            if(record1 == record2) {
                 return true;
-            } else if (record1 != null && record2 != null) {
+            } else if(record1 != null && record2 != null) {
                 return record1[idColName] == record2[idColName];
             } else {
                 return false;
@@ -2356,23 +2356,23 @@ function compareRecordsById(newRecords, oldRecords, idColNameOrIdEqlFunc, recEql
     }
     //
     // var hasOwnProperty = Object.hasOwnProperty;
-    if (typeof(recEqlFunc) != "function") {
+    if(typeof(recEqlFunc) != "function") {
         recEqlFunc = function (record1, record2) {
             // 按列值完全比较
-            if (record1 == record2) {
+            if(record1 == record2) {
                 return true;
-            } else if (record1 != null && record2 != null) {
+            } else if(record1 != null && record2 != null) {
                 var colName;
-                for (colName in record1) {
+                for(colName in record1) {
                     // if(hasOwnProperty.call(record1, colName)) {
-                    if (record1[colName] != record2[colName]) {
+                    if(record1[colName] != record2[colName]) {
                         return false;
                     }
                     // }
                 }
-                for (colName in record2) {
+                for(colName in record2) {
                     // if(hasOwnProperty.call(record2, colName)) {
-                    if (record1[colName] != record2[colName]) {
+                    if(record1[colName] != record2[colName]) {
                         return false;
                     }
                     // }
@@ -2397,10 +2397,10 @@ function compareRecordsById(newRecords, oldRecords, idColNameOrIdEqlFunc, recEql
 
 //
 function getClassOf(obj) {
-    if (obj == null) {
+    if(obj == null) {
         return null;
     }
-    if (isFunction(obj)) {
+    if(isFunction(obj)) {
         return Function;
     } else {
         return obj.constructor;
@@ -2408,13 +2408,13 @@ function getClassOf(obj) {
 }
 
 function getFuncName(func) {
-    if (!isFunction(func)) {
+    if(!isFunction(func)) {
         return null;
     }
     var funcDeclRegExp = /^function(\s)+([\w\$]+?(\s)*\()/i;
     var funcStr = func.toString().trim();
     var funcDeclParts = funcStr.match(funcDeclRegExp);
-    if (funcDeclParts != null && funcDeclParts.length > 0) {
+    if(funcDeclParts != null && funcDeclParts.length > 0) {
         // alert(funcDeclParts.join("\n---\n"));
         var funcDecl = funcDeclParts[0].trim();
         var funcName = funcDecl.substring(8, funcDecl.length - 1);
@@ -2438,7 +2438,7 @@ function getClassNameOf(obj) {
  * @return
  */
 function isMoneyStr(numStr, allowSign) {
-    if (numStr == null) {
+    if(numStr == null) {
         return false;
     }
     numStr = "" + numStr;
@@ -2448,7 +2448,7 @@ function isMoneyStr(numStr, allowSign) {
 }
 // 是否整数
 function isIntStr(numStr) {
-    if (numStr == null) {
+    if(numStr == null) {
         return false;
     }
     numStr = "" + numStr;
@@ -2458,7 +2458,7 @@ function isIntStr(numStr) {
 
 // 是否自然数
 function isNatualStr(numStr) {
-    if (numStr == null) {
+    if(numStr == null) {
         return false;
     }
     numStr = "" + numStr;
@@ -2483,7 +2483,7 @@ function isDigitsOrHyphenStr(checkStr) {
 }
 
 function isMobile(checkStr) {
-    if (checkStr == null || checkStr.length != 11) {
+    if(checkStr == null || checkStr.length != 11) {
         return false;
     }
     var regExp = /^1[3|4|5|7|8]\d{9}$/;
@@ -2491,19 +2491,19 @@ function isMobile(checkStr) {
 }
 
 function isTelNo(checkStr) {
-    if (checkStr == null || checkStr.length < 7) {
+    if(checkStr == null || checkStr.length < 7) {
         return false;
     }
     var regExp = /(^([0][1-9][0-9]-?)?[0-9]{8}$)|(^([0][1-9]{3}-?)?[0-9]{7}$)/;
     return regExp.test(checkStr);
 }
 
-function isPhoneNumber(checkStr) {
+function isPhoneNo(checkStr) {
     return isMobile(checkStr) || isTelNo(checkStr);
 }
 
 function isHexColor(checkStr) {
-    if (checkStr == null || checkStr.length < 4) {
+    if(checkStr == null || checkStr.length < 4) {
         return false;
     }
     var regExp = /^#[0-9a-fA-F]{3,6}$/;
@@ -2550,15 +2550,15 @@ var __cityCodeForIdentity = {
 };
 
 function isIdentity(code) {
-    if (!code || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(code)) {
+    if(!code || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(code)) {
         console.log("身份证号格式错误");
         return false;
-    } else if (!__cityCodeForIdentity[code.substr(0, 2)]) {
+    } else if(!__cityCodeForIdentity[code.substr(0, 2)]) {
         console.log("省份编码错误");
         return false;
     } else {
         // 18位身份证需要验证最后一位校验位
-        if (code.length == 18) {
+        if(code.length == 18) {
             code = code.split('');
             // ∑(ai×Wi)(mod 11)
             // 加权因子
@@ -2568,13 +2568,13 @@ function isIdentity(code) {
             var sum = 0;
             var ai = 0;
             var wi = 0;
-            for (var i = 0; i < 17; i++) {
+            for(var i = 0; i < 17; i++) {
                 ai = code[i];
                 wi = factor[i];
                 sum += ai * wi;
             }
             var last = parity[sum % 11];
-            if (parity[sum % 11] != code[17]) {
+            if(parity[sum % 11] != code[17]) {
                 console.log("校验位错误");
                 return false;
             }
@@ -2585,16 +2585,16 @@ function isIdentity(code) {
 
 //
 function checkPassword(chkStr, strict) {
-    if (typeof chkStr != "string") {
+    if(typeof chkStr != "string") {
         return "密码必须为字符串";
     }
-    if (!/^[a-zA-Z_0-9]{6,16}$/ig.test(chkStr)) {
+    if(!/^[a-zA-Z_0-9]{6,16}$/ig.test(chkStr)) {
         return "密码必须为6~16位由字母、数字和下划线组成的字符串";
     }
     //
     strict = strict === true;
-    if (strict) {
-        if (/^[a-zA-Z]+$/ig.test(chkStr) || /^[0-9]+$/ig.test(chkStr)) {
+    if(strict) {
+        if(/^[a-zA-Z]+$/ig.test(chkStr) || /^[0-9]+$/ig.test(chkStr)) {
             return "密码不能为纯字母或纯数字";
         }
     }
@@ -2659,7 +2659,7 @@ function getPageInfo() {
 
 //
 function getServerBase(docLoc) {
-    if (typeof docLoc == "undefined") {
+    if(typeof docLoc == "undefined") {
         docLoc = window.location.href;
     }
     var slashIndex = docLoc.indexOf("://") + 3;
@@ -2669,13 +2669,13 @@ function getServerBase(docLoc) {
 
 // 获取带有 protocol :// hostname[:port] 的全路径url
 function getServerBasedUrl(appBasedUrl, refServerUrl) {
-    if (appBasedUrl == null) {
+    if(appBasedUrl == null) {
         appBasedUrl = "/";
     }
     //
-    if (appBasedUrl.indexOf("://") == -1) {
+    if(appBasedUrl.indexOf("://") == -1) {
         // 处理serverBase问题
-        if (typeof refServerUrl == "undefined") {
+        if(typeof refServerUrl == "undefined") {
             refServerUrl = window.location.href;
         }
         //
@@ -2700,14 +2700,14 @@ function base64StrToDataURL(mimeType, base64Str) {
 
 // 播放音频文件
 function playAudio(dataOrUrl, useProxy) {
-    if (dataOrUrl == null) {
+    if(dataOrUrl == null) {
         return;
     }
     //
     useProxy = useProxy === true;
     //
     var tmpAudio = null;
-    if (useProxy || !window.Audio) {
+    if(useProxy || !window.Audio) {
         tmpAudio = document.createElement("audio");
         tmpAudio = document.body.appendChild(tmpAudio);
         tmpAudio.onended = function () {
@@ -2719,18 +2719,18 @@ function playAudio(dataOrUrl, useProxy) {
     tmpAudio.src = dataOrUrl;
     try {
         tmpAudio.play();
-    } catch (ex) {
+    } catch(ex) {
         console.error(ex);
     }
 }
 
 // 语音朗读文本（=> makeTextAudioUrl）
 function speakText(text, useProxy, failToDefaultAudio) {
-    if (!useProxy && !(window.SpeechSynthesisUtterance && window.speechSynthesis)) {
+    if(!useProxy && !(window.SpeechSynthesisUtterance && window.speechSynthesis)) {
         useProxy = true;
     }
-    if (useProxy) {
-        if (typeof makeTextAudioUrl == "function") {
+    if(useProxy) {
+        if(typeof makeTextAudioUrl == "function") {
             var textAudioUrl = makeTextAudioUrl(text, true);
             playAudio(textAudioUrl, true);
         } else {
@@ -2750,9 +2750,9 @@ function speakText(text, useProxy, failToDefaultAudio) {
 function setPageTitle(docTitle, domId) {
     document.title = docTitle;
     //
-    if (typeof domId == "string") {
+    if(typeof domId == "string") {
         var dom = getDomById(domId);
-        if (dom != null) {
+        if(dom != null) {
             dom.innerText = docTitle;
         }
     }
@@ -2763,13 +2763,13 @@ var __hidden_link_id_for_page = genUniqueStr();
 // beforeOpen 指定打开目标frame时作为打开前的回调函数
 // target 在当前窗口打开时作为是否替换标记参数（替换当前页面而不保留历史）
 function setPageUrl(url, target, beforeOpen) {
-    if (typeof target == "string") {
-        if (target == "_self") {
+    if(typeof target == "string") {
+        if(target == "_self") {
             window.location.href = url;
             return;
         }
         var dom = getDomById(__hidden_link_id_for_page);
-        if (dom == null) {
+        if(dom == null) {
             dom = document.createElement("A");
             dom.id = __hidden_link_id_for_page;
             dom.style.display = "none";
@@ -2777,14 +2777,14 @@ function setPageUrl(url, target, beforeOpen) {
         }
         dom.target = target;
         dom.href = url;
-        if (typeof beforeOpen == "function") {
+        if(typeof beforeOpen == "function") {
             dom.onclick = function () {
                 return beforeOpen();
             };
         }
         dom.click();
     } else {
-        if (target === true) {
+        if(target === true) {
             window.location.replace(url);
         } else {
             window.location.assign(url);
@@ -2808,10 +2808,10 @@ function __RepeatChecker() {
         var curTime = new Date().getTime();
         var lastTime = cachedCodeTimeMap[uniqueCode];
         cachedCodeTimeMap[uniqueCode] = curTime;
-        if (lastTime == null) {
+        if(lastTime == null) {
             return true;
         } else {
-            if (typeof interval == "undefined") {
+            if(typeof interval == "undefined") {
                 interval = defaultInterval;
             }
             return curTime - lastTime >= interval;
@@ -2847,9 +2847,9 @@ TaskDelayer.newOne = function () {
 var __cachedHostWin;
 
 function getHostWindow() {
-    if (typeof __cachedHostWin == "undefined") {
+    if(typeof __cachedHostWin == "undefined") {
         var hostWin = window.parent;
-        if (hostWin != null && hostWin != window) {
+        if(hostWin != null && hostWin != window) {
             __cachedHostWin = hostWin.window;
         } else {
             __cachedHostWin = null;
@@ -2873,7 +2873,7 @@ function isIframePage() {
 }
 
 function getWindowFrame() {
-    if (hasHostWindow()) {
+    if(hasHostWindow()) {
         return window.frameElement;
     } else {
         return null;
@@ -2889,12 +2889,12 @@ function getWindowFrame() {
  */
 function callHostFunc(callback) {
     var hostWin = getHostWindow();
-    if (hostWin != null) {
+    if(hostWin != null) {
         var callbackFunc = callback;
-        if (typeof callback == "string") {
+        if(typeof callback == "string") {
             callbackFunc = hostWin[callback];
         }
-        if (typeof callbackFunc == "function") {
+        if(typeof callbackFunc == "function") {
             var argCount = arguments.length;
             var args = argCount > 1 ? Array.prototype.slice.call(arguments, 1) : [];
             return callbackFunc.apply(hostWin, args);
@@ -2924,9 +2924,9 @@ function echoHostWindow() {
  */
 function parseUrl(url, toDecode) {
     toDecode = toDecode === true;
-    if (typeof url == "undefined") {
+    if(typeof url == "undefined") {
         url = window.location.href;
-    } else if (typeof url == "boolean") {
+    } else if(typeof url == "boolean") {
         toDecode = url;
         url = window.location.href;
     }
@@ -2936,7 +2936,7 @@ function parseUrl(url, toDecode) {
     var result = {};
     var colonIndex = url.indexOf("://");
     var remainUrl = null;
-    if (colonIndex != -1) {
+    if(colonIndex != -1) {
         result.scheme = url.substring(0, colonIndex);
         var slashIndex1 = colonIndex + 3;
         var slashIndex2 = url.indexOf("/", slashIndex1);
@@ -2950,14 +2950,14 @@ function parseUrl(url, toDecode) {
     }
     //
     var fragIndex = remainUrl.indexOf("#");
-    if (fragIndex != -1) {
+    if(fragIndex != -1) {
         result.url = remainUrl.substring(0, fragIndex);
         var fragStr = remainUrl.substring(fragIndex).replace(/^[^#]*#?(.*)$/, '$1').trim();
         result.hash = fragStr;
         result.frags = {};
-        if (fragStr !== "") {
+        if(fragStr !== "") {
             var frags = fragStr.split("&");
-            for (var i = 0, j = frags.length; i < j; i++) {
+            for(var i = 0, j = frags.length; i < j; i++) {
                 var nameValue = frags[i].split("=");
                 var xName = toDecode ? decodeURIComponent(nameValue[0]) : nameValue[0];
                 var xValue = toDecode ? decodeURIComponent(nameValue[1]) : nameValue[1];
@@ -2975,11 +2975,11 @@ function parseUrl(url, toDecode) {
     var paramStart = flagStart == -1 ? -1 : flagStart + 1;
     //
     result.params = {};
-    if (paramStart != -1) {
+    if(paramStart != -1) {
         var paramStr = remainUrl.substring(paramStart).trim();
         var params = paramStr.length > 0 ? paramStr.split("&") : [];
 
-        for (var i = 0, j = params.length; i < j; i++) {
+        for(var i = 0, j = params.length; i < j; i++) {
             var nameValue = params[i].split("=");
             var xName = toDecode ? decodeURIComponent(nameValue[0]) : nameValue[0];
             var xValue = toDecode ? decodeURIComponent(nameValue[1]) : nameValue[1];
@@ -2999,49 +2999,49 @@ function extractUrlParams(url, toDecode) {
  * 把参数map对象追加到baseUrl后，形成新的url
  */
 function concatUrlParams(baseUrl, params, toEncode) {
-    if (params == null) {
+    if(params == null) {
         return baseUrl;
     }
     var fragStr = null;
     var fragIndex = baseUrl.indexOf("#");
-    if (fragIndex != -1) {
+    if(fragIndex != -1) {
         fragStr = baseUrl.substring(fragIndex).replace(/^[^#]*#?(.*)$/, '$1').trim();
         fragStr = fragStr === "" ? null : fragStr;
         baseUrl = baseUrl.substring(0, fragIndex);
     }
     toEncode = toEncode === true;
     var appendStr = "";
-    if (typeof params == "string") {
+    if(typeof params == "string") {
         appendStr = params;
     } else {
         var hasOwnProperty = Object.hasOwnProperty;
         var paramStrs = [];
         var index = 0;
-        for (var attr in params) {
-            if (hasOwnProperty.call(params, attr)) {
+        for(var attr in params) {
+            if(hasOwnProperty.call(params, attr)) {
                 var value = params[attr];
-                if (typeof value == "function") {
+                if(typeof value == "function") {
                     value = value();
                 }
-                if (value == null) {
+                if(value == null) {
                     continue;
                 }
-                if (isArray(value)) {
+                if(isArray(value)) {
                     var len = value.length;
-                    for (var i = 0; i < len; i++) {
-                        if (toEncode) {
+                    for(var i = 0; i < len; i++) {
+                        if(toEncode) {
                             paramStrs[index++] = encodeURIComponent(attr) + "=" + encodeURIComponent(value[i]);
                         } else {
                             paramStrs[index++] = attr + "=" + value[i];
                         }
                     }
                 } else {
-                    if (isDate(value)) {
+                    if(isDate(value)) {
                         value = value.format('yyyy-MM-dd HH:mm:ss');
-                    } else if (isPlainObject(value)) {
+                    } else if(isPlainObject(value)) {
                         value = JSON.encode(value);
                     }
-                    if (toEncode) {
+                    if(toEncode) {
                         paramStrs[index++] = encodeURIComponent(attr) + "=" + encodeURIComponent(value);
                     } else {
                         paramStrs[index++] = attr + "=" + value;
@@ -3052,11 +3052,11 @@ function concatUrlParams(baseUrl, params, toEncode) {
         appendStr = paramStrs.join("&");
     }
     var cntStr = "";
-    if (baseUrl == null) {
+    if(baseUrl == null) {
         baseUrl = "";
-    } else if (baseUrl.indexOf("?") == -1) {
+    } else if(baseUrl.indexOf("?") == -1) {
         cntStr = "?";
-    } else if (!baseUrl.endsWith("?")) {
+    } else if(!baseUrl.endsWith("?")) {
         cntStr = "&";
     }
     return baseUrl + cntStr + appendStr + (fragStr == null ? "" : "#" + fragStr);
@@ -3092,15 +3092,15 @@ function makeFuncCallScript(funcName, args) {
     sb.append(funcName);
     sb.append("(");
     //
-    if (args == null) {
+    if(args == null) {
         args = [];
-    } else if (isPlainObject(args)) {
+    } else if(isPlainObject(args)) {
         args = [args];
     }
-    for (var i = 0; i < args.length; i++) {
+    for(var i = 0; i < args.length; i++) {
         var arg = args[i];
         var argStr = isFunction(arg) ? __stringifyJson(getFuncName(arg)) : __stringifyJson(arg);
-        if (i > 0) {
+        if(i > 0) {
             sb.append(", ");
         }
         sb.append(argStr);
@@ -3130,7 +3130,7 @@ function setDlgPageArg(argName, argValue) {
 
 // 组成对话框页面url（页面url + argName）
 function makeDlgPageUrl(pageUrl, argName, extParams) {
-    if (pageUrl.charAt(0) == "/" && typeof getAppUrl == "function") {
+    if(pageUrl.charAt(0) == "/" && typeof getAppUrl == "function") {
         pageUrl = getAppUrl(pageUrl);
     }
     var theParams = extParams == null ? {} : merge({}, extParams);
@@ -3143,7 +3143,7 @@ function makeDlgPageUrl(pageUrl, argName, extParams) {
 // 从宿主窗口获取参数（argName 可以忽略）
 function getDlgArgForMe() {
     var hostWin = getHostWindow();
-    if (hostWin == null) { // 不在iframe中
+    if(hostWin == null) { // 不在iframe中
         // 返回的值为 undefined
         return;
     }
@@ -3160,23 +3160,23 @@ function getDlgArgForMe() {
  */
 function openWindow(pageUrl, options) {
     var args = '';
-    if (typeof(options) == 'undefined') {
+    if(typeof(options) == 'undefined') {
         options = {};
     }
-    if (typeof(options.name) == 'undefined') {
+    if(typeof(options.name) == 'undefined') {
         options.name = 'win' + Math.round(Math.random() * 100000);
     }
-    if (typeof(options.height) != 'undefined' && typeof(options.fullscreen) == 'undefined') {
+    if(typeof(options.height) != 'undefined' && typeof(options.fullscreen) == 'undefined') {
         args += "height=" + options.height + ",";
     }
-    if (typeof(options.width) != 'undefined' && typeof(options.fullscreen) == 'undefined') {
+    if(typeof(options.width) != 'undefined' && typeof(options.fullscreen) == 'undefined') {
         args += "width=" + options.width + ",";
     }
-    if (typeof(options.fullscreen) != 'undefined') {
+    if(typeof(options.fullscreen) != 'undefined') {
         args += "width=" + screen.availWidth + ",";
         args += "height=" + screen.availHeight + ",";
     }
-    if (typeof(options.center) == 'undefined') {
+    if(typeof(options.center) == 'undefined') {
         options.x = 0;
         options.y = 0;
         args += "screenx=" + options.x + ",";
@@ -3184,7 +3184,7 @@ function openWindow(pageUrl, options) {
         args += "left=" + options.x + ",";
         args += "top=" + options.y + ",";
     }
-    if (typeof(options.center) != 'undefined' && typeof(options.fullscreen) == 'undefined') {
+    if(typeof(options.center) != 'undefined' && typeof(options.fullscreen) == 'undefined') {
         options.y = Math.floor((screen.availHeight - (options.height || screen.height)) / 2) - (screen.height - screen.availHeight);
         options.x = Math.floor((screen.availWidth - (options.width || screen.width)) / 2) - (screen.width - screen.availWidth);
         args += "screenx=" + options.x + ",";
@@ -3192,16 +3192,16 @@ function openWindow(pageUrl, options) {
         args += "left=" + options.x + ",";
         args += "top=" + options.y + ",";
     }
-    if (typeof(options.scrollbars) != 'undefined') {
+    if(typeof(options.scrollbars) != 'undefined') {
         args += "scrollbars=1,";
     }
-    if (typeof(options.menubar) != 'undefined') {
+    if(typeof(options.menubar) != 'undefined') {
         args += "menubar=1,";
     }
-    if (typeof(options.locationbar) != 'undefined') {
+    if(typeof(options.locationbar) != 'undefined') {
         args += "location=1,";
     }
-    if (typeof(options.resizable) != 'undefined') {
+    if(typeof(options.resizable) != 'undefined') {
         args += "resizable=1,";
     }
 
@@ -3231,10 +3231,9 @@ function closePageWindow() {
     window.close();
 }
 
-
 // 简单的html转换
 function escapeHtmlStr(srcStr) {
-    if (srcStr == null) {
+    if(srcStr == null) {
         return null;
     }
     var htmlStr = "" + srcStr;
@@ -3249,48 +3248,48 @@ function escapeHtmlStr(srcStr) {
 function loadJs(jsSrc, parent, id) {
     //loadCallback(newlyLoaded, jsUrl)
     var loadCallback = null;
-    if (typeof parent == "function") {
+    if(typeof parent == "function") {
         loadCallback = parent;
         parent = null;
     }
     //
-    if (typeof parent == "string") {
+    if(typeof parent == "string") {
         var tmpParents = document.getElementsByTagName(parent);
-        if (tmpParents.length > 0) {
+        if(tmpParents.length > 0) {
             parent = tmpParents[0];
         } else {
             parent = null;
         }
     }
-    if (parent == null) {
+    if(parent == null) {
         parent = document.body;
     }
     //
-    if (typeof id == "function") {
+    if(typeof id == "function") {
         loadCallback = id;
         id = null;
     }
     //
-    if (id == null) {
+    if(id == null) {
         // 自动生成id;
         var lastSlashIndex = jsSrc.lastIndexOf("/");
-        if (lastSlashIndex == -1) {
+        if(lastSlashIndex == -1) {
             lastSlashIndex = jsSrc.lastIndexOf("\\");
         }
         var dotIndex = -1;
-        if (lastSlashIndex == -1) {
+        if(lastSlashIndex == -1) {
             dotIndex = jsSrc.indexOf(".js", 0);
-            if (dotIndex == -1) {
+            if(dotIndex == -1) {
                 dotIndex = jsSrc.indexOf("?", 0);
             }
         } else {
             dotIndex = jsSrc.indexOf(".js", lastSlashIndex + 1);
-            if (dotIndex == -1) {
+            if(dotIndex == -1) {
                 dotIndex = jsSrc.indexOf("?", lastSlashIndex + 1);
             }
         }
         id = jsSrc;
-        if (dotIndex != -1) {
+        if(dotIndex != -1) {
             id = jsSrc.substring(0, dotIndex) + ".js";
         }
         // id = replace(id, "\" );
@@ -3298,16 +3297,16 @@ function loadJs(jsSrc, parent, id) {
     // console.log("script id : " + id);
     var allScripts = document.getElementsByTagName("script");
     var existedJs = null;
-    for (var i = 0, c = allScripts.length; i < c; i++) {
+    for(var i = 0, c = allScripts.length; i < c; i++) {
         var tmpScript = allScripts[i];
-        if (tmpScript.id == id) {
+        if(tmpScript.id == id) {
             existedJs = tmpScript;
             break;
         }
     }
-    if (existedJs != null) {
-        if (existedJs.src == null || existedJs.src == "") {
-            if (loadCallback != null) {
+    if(existedJs != null) {
+        if(existedJs.src == null || existedJs.src == "") {
+            if(loadCallback != null) {
                 existedJs.onload = function () {
                     loadCallback(true, jsSrc);
                 };
@@ -3315,7 +3314,7 @@ function loadJs(jsSrc, parent, id) {
             existedJs.src = jsSrc;
         } else {
             //console.log("已经加载过：" + jsSrc);
-            if (loadCallback != null) {
+            if(loadCallback != null) {
                 loadCallback(false, jsSrc);
             }
         }
@@ -3327,7 +3326,7 @@ function loadJs(jsSrc, parent, id) {
     //script.charset = 'utf-8';
     script.src = jsSrc;
     script.id = id;
-    if (loadCallback != null) {
+    if(loadCallback != null) {
         script.onload = function () {
             loadCallback(true, jsSrc);
         };
@@ -3339,48 +3338,48 @@ function loadJs(jsSrc, parent, id) {
 function loadCss(cssSrc, parent, id) {
     //loadCallback(newlyLoaded, cssUrl)
     var loadCallback = null;
-    if (typeof parent == "function") {
+    if(typeof parent == "function") {
         loadCallback = parent;
         parent = null;
     }
     //
-    if (typeof parent == "string") {
+    if(typeof parent == "string") {
         var tmpParents = document.getElementsByTagName(parent);
-        if (tmpParents.length > 0) {
+        if(tmpParents.length > 0) {
             parent = tmpParents[0];
         } else {
             parent = null;
         }
     }
-    if (parent == null) {
+    if(parent == null) {
         parent = document.head;
     }
     //
-    if (typeof id == "function") {
+    if(typeof id == "function") {
         loadCallback = id;
         id = null;
     }
     //
-    if (id == null) {
+    if(id == null) {
         // 自动生成id;
         var lastSlashIndex = cssSrc.lastIndexOf("/");
-        if (lastSlashIndex == -1) {
+        if(lastSlashIndex == -1) {
             lastSlashIndex = cssSrc.lastIndexOf("\\");
         }
         var dotIndex = -1;
-        if (lastSlashIndex == -1) {
+        if(lastSlashIndex == -1) {
             dotIndex = cssSrc.indexOf(".css", 0);
-            if (dotIndex == -1) {
+            if(dotIndex == -1) {
                 dotIndex = cssSrc.indexOf("?", 0);
             }
         } else {
             dotIndex = cssSrc.indexOf(".css", lastSlashIndex + 1);
-            if (dotIndex == -1) {
+            if(dotIndex == -1) {
                 dotIndex = cssSrc.indexOf("?", lastSlashIndex + 1);
             }
         }
         id = cssSrc;
-        if (dotIndex != -1) {
+        if(dotIndex != -1) {
             id = cssSrc.substring(0, dotIndex) + ".css";
         }
         // id = replace(id, "\" );
@@ -3388,16 +3387,16 @@ function loadCss(cssSrc, parent, id) {
     // console.log("link css id : " + id);
     var allLinks = document.getElementsByTagName("link");
     var existedCss = null;
-    for (var i = 0, c = allLinks.length; i < c; i++) {
+    for(var i = 0, c = allLinks.length; i < c; i++) {
         var tmpLink = allLinks[i];
-        if (tmpLink.id == id) {
+        if(tmpLink.id == id) {
             existedCss = tmpLink;
             break;
         }
     }
-    if (existedCss != null) {
-        if (existedCss.href == null || existedCss.href == "") {
-            if (loadCallback != null) {
+    if(existedCss != null) {
+        if(existedCss.href == null || existedCss.href == "") {
+            if(loadCallback != null) {
                 existedCss.onload = function () {
                     loadCallback(true, cssSrc);
                 };
@@ -3405,7 +3404,7 @@ function loadCss(cssSrc, parent, id) {
             existedCss.href = cssSrc;
         } else {
             //console.log("已经加载过：" + cssSrc);
-            if (loadCallback != null) {
+            if(loadCallback != null) {
                 loadCallback(false, cssSrc);
             }
         }
@@ -3418,7 +3417,7 @@ function loadCss(cssSrc, parent, id) {
     link.rel = 'stylesheet';
     link.id = id;
     link.href = cssSrc;
-    if (loadCallback != null) {
+    if(loadCallback != null) {
         link.onload = function () {
             loadCallback(true, cssSrc);
         };
@@ -3429,16 +3428,16 @@ function loadCss(cssSrc, parent, id) {
 // 提取文件名部分
 // /opt/data/aaa-bbb.jpg >> aaa-bbb.jpg
 function extractShortFileName(filePath) {
-    if (isNoB(filePath)) {
+    if(isNoB(filePath)) {
         return "";
     }
     // check for Unix-style path
     var pos = filePath.lastIndexOf("/");
-    if (pos == -1) {
+    if(pos == -1) {
         // check for Windows-style path
         pos = filePath.lastIndexOf("\\");
     }
-    if (pos != -1) {
+    if(pos != -1) {
         // any sort of path separator found
         return filePath.substring(pos + 1);
     } else {
@@ -3450,7 +3449,7 @@ function extractShortFileName(filePath) {
 // 提取文件扩展名
 // /opt/data/aaa-bbb.jpg >> .jpg
 function extractFileNameExt(fileName) {
-    if (isNoB(fileName)) {
+    if(isNoB(fileName)) {
         return "";
     }
     var dotIndex = fileName.lastIndexOf('.');
@@ -3473,18 +3472,18 @@ function addFileNamePart(orgFileName, partToAdd) {
     var parentPath = null;
     var pathSep = "/";
     var pos = orgFileName.lastIndexOf(pathSep);
-    if (pos == -1) {
+    if(pos == -1) {
         pathSep = "\\";
         // check for Windows-style path
         pos = orgFileName.lastIndexOf(pathSep);
     }
-    if (pos != -1) {
+    if(pos != -1) {
         parentPath = orgFileName.substring(0, pos);
     }
     //
     var shortFileName = extractShortFileName(orgFileName);
     var fileNameExt = extractFileNameExt(shortFileName);
-    if (fileNameExt == "") {
+    if(fileNameExt == "") {
         return (parentPath == null ? "" : parentPath + pathSep) + shortFileName + partToAdd;
     }
     //
@@ -3524,7 +3523,7 @@ var __mailboxHomeUrls = {
 };
 // 获取邮箱的登录url
 function getMailHomeUrl(email) {
-    if (!isValidEmail(email)) {
+    if(!isValidEmail(email)) {
         return null;
     }
     var mailBox = email.substring(email.indexOf("@"));
@@ -3535,18 +3534,18 @@ function getMailHomeUrl(email) {
  * 获取密码文本的强度 返回 => W : weak 弱, M : middle 中, S : strong 强
  */
 function getPasswordStrength(password) {
-    if (isNoB(password)) {
+    if(isNoB(password)) {
         return null;
     }
-    if (password.length >= 6) {
-        if (/[a-zA-Z]+/.test(password) && /[0-9]+/.test(password) && /\W+\D+/.test(password)) {
+    if(password.length >= 6) {
+        if(/[a-zA-Z]+/.test(password) && /[0-9]+/.test(password) && /\W+\D+/.test(password)) {
             return "S";
-        } else if (/[a-zA-Z]+/.test(password) || /[0-9]+/.test(password) || /\W+\D+/.test(password)) {
-            if (/[a-zA-Z]+/.test(password) && /[0-9]+/.test(password)) {
+        } else if(/[a-zA-Z]+/.test(password) || /[0-9]+/.test(password) || /\W+\D+/.test(password)) {
+            if(/[a-zA-Z]+/.test(password) && /[0-9]+/.test(password)) {
                 return "M";
-            } else if (/\[a-zA-Z]+/.test(password) && /\W+\D+/.test(password)) {
+            } else if(/\[a-zA-Z]+/.test(password) && /\W+\D+/.test(password)) {
                 return "M";
-            } else if (/[0-9]+/.test(password) && /\W+\D+/.test(password)) {
+            } else if(/[0-9]+/.test(password) && /\W+\D+/.test(password)) {
                 return "M";
             } else {
                 return "W";
@@ -3596,7 +3595,7 @@ function CondMonitor(name) {
     var _times = 0;
     //
     this.interval = function (interval) {
-        if (typeof interval == "number" && interval > 0) {
+        if(typeof interval == "number" && interval > 0) {
             _interval = interval;
         }
         //
@@ -3604,10 +3603,10 @@ function CondMonitor(name) {
     };
     //
     this.timeout = function (timeout, timeoutHandler) {
-        if (typeof timeout == "number" && timeout > 0) {
+        if(typeof timeout == "number" && timeout > 0) {
             _timeout = timeout;
         }
-        if (typeof timeoutHandler == "function") {
+        if(typeof timeoutHandler == "function") {
             _timeoutHandler = timeoutHandler;
         }
         //
@@ -3615,7 +3614,7 @@ function CondMonitor(name) {
     };
     //
     this.when = function (evalExpr) {
-        if (evalExpr != null) {
+        if(evalExpr != null) {
             _evalExpr = evalExpr;
         }
         //
@@ -3623,7 +3622,7 @@ function CondMonitor(name) {
     };
     //
     this.then = function (execFunc) {
-        if (typeof execFunc == "function") {
+        if(typeof execFunc == "function") {
             _execFunc = execFunc;
         }
         //
@@ -3631,19 +3630,19 @@ function CondMonitor(name) {
     };
     //
     this.start = function () {
-        if (_timer != null) {
+        if(_timer != null) {
             clearInterval(_timer);
         }
         _times = 0;
         //
-        if (_evalExpr == null || _execFunc == null) {
+        if(_evalExpr == null || _execFunc == null) {
             console.error(_name + ">> 请先设置when(...)条件 和 执行then(...)函数");
             //
             return this;
         }
         //
         var proxyFunc = _evalExpr;
-        if (typeof _evalExpr != "function") {
+        if(typeof _evalExpr != "function") {
             proxyFunc = function () {
                 return eval(_evalExpr) == true;
             };
@@ -3653,16 +3652,16 @@ function CondMonitor(name) {
             _times++;
             //
             // console.log(_name + ">> 正在执行第 " + _times + "次条件检查...");
-            if (proxyFunc() == true) {
+            if(proxyFunc() == true) {
                 // console.log(_name + ">> 条件已满足");
                 _execFunc();
                 //
                 return;
             }
-            if (_timeout > 0) {
+            if(_timeout > 0) {
                 var curTime = new Date().getTime();
-                if (curTime - _startTime >= _timeout) {
-                    if (_timeoutHandler != null) {
+                if(curTime - _startTime >= _timeout) {
+                    if(_timeoutHandler != null) {
                         _timeoutHandler();
                     } else {
                         console.warn(_name + ">> 超时已取消执行");
@@ -3687,18 +3686,244 @@ CondMonitor.newOne = function (name) {
 
 // 解决部分刷新问题
 function asTimeout(func, timeout) {
-    if (typeof timeout !== "number") {
+    if(typeof timeout !== "number") {
         timeout = 0;
     }
     //
     setTimeout(func, timeout);
 }
 
+// 文件下载---------------------------------------------------------
+var __fileDownloaderCtrlPrefix = "-file-downloader-ctrl-";
+//
+function downloadFile(linkCtrlOrUrl, params) {
+    if(linkCtrlOrUrl == null) {
+        return false;
+    }
+    var targetIframeDivId = __fileDownloaderCtrlPrefix + "div";
+    var targetIframeDiv = document.getElementById(targetIframeDivId);
+    if(targetIframeDiv == null) {
+        targetIframeDiv = document.createElement("div");
+        targetIframeDiv.style.display = "none";
+        targetIframeDiv.id = targetIframeDivId;
+        targetIframeDiv.style.position = "absolute";
+        targetIframeDiv.style.left = "-9999";
+        targetIframeDiv.style.top = "-9999";
+        targetIframeDiv.style.width = "1px";
+        targetIframeDiv.style.height = "1px";
+        targetIframeDiv = document.body.appendChild(targetIframeDiv);
+    }
+    targetIframeDiv.style.display = "none";
+    //
+    var targetIframeName = __fileDownloaderCtrlPrefix + "iframe";
+    var targetIframe = document.getElementById(targetIframeName);
+    if(targetIframe == null) {
+        var html = "<iframe id='" + targetIframeName + "' name='" + targetIframeName + "' src='about:blank' style='display:none;position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;'></iframe>";
+        targetIframeDiv.innerHTML = html;
+        targetIframe = document.getElementById(targetIframeName);
+    } else {
+        targetIframe.src = "about:blank";
+    }
+    //
+    var baseUrl = null;
+    var linkCtrl = linkCtrlOrUrl;
+    //
+    if(typeof linkCtrlOrUrl == "string") {
+        linkCtrl = document.getElementById(linkCtrlOrUrl);
+    }
+    if(linkCtrl == null) {
+        baseUrl = linkCtrlOrUrl;
+    } else {
+        baseUrl = linkCtrl.href;
+        linkCtrl.target = targetIframeName;
+    }
+    params = params || {};
+    // 强制下载文本标记
+    if(typeof params["downloadText"] == "undefined") {
+        params["downloadText"] = true;
+    }
+    if(params["failMsgCallback"] == null) {
+        params["failMsgCallback"] = "showFailDownloadMsg";
+    }
+    var fullUrl = concatUrlParams(baseUrl, params);
+    targetIframe.src = fullUrl;
+    //
+    return false;
+}
+
+function downloadLink(link) {
+    return downloadFile(link, {
+        failMsgCallback: "showFailDownloadMsg"
+    });
+}
+
+var ValidateRules = {
+    required: function (value) {
+        // 是否为空白字符串
+        return value != null && trim(value + "") != '';
+    },
+    eqLength: function (value, eqLen) {
+        // 文本长度是否相等
+        eqLen = ParseInt(eqLen);
+        return (value != null) ? (value.length == eqLen) : false;
+    },
+    minLength: function (value, minLen) {
+        // 是否满足最小长度
+        minLen = ParseInt(minLen);
+        return (value != null) ? (value.length >= minLen) : false;
+    },
+    maxLength: function (value, maxLen) {
+        // 是否满足最小长度
+        maxLen = ParseInt(maxLen);
+        return (value != null) ? (value.length <= maxLen) : false;
+    },
+    rangeLength: function (value, minLen, maxLen) {
+        // 长度是否在给定的范围内（如：[6,16]）
+        var minLen = ParseInt(minLen);
+        var maxLen = ParseInt(maxLen);
+        return (value != null) ? (value.length >= minLen && value.length <= maxLen) : false;
+    },
+    minValue: function (value, minVal) {
+        // 是否满足最小值
+        value = ParseFloat(value);
+        minVal = ParseFloat(minVal);
+        return isNum(value) ? value >= minVal : false;
+    },
+    maxValue: function (value, maxVal) {
+        // 是否满足最大值
+        value = ParseFloat(value);
+        maxVal = ParseFloat(maxVal);
+        return isNum(value) ? value <= maxVal : false;
+    },
+    rangeValue: function (value, minVal, maxVal) {
+        // 数值是否在给定的范围内（如：[-20, 100]）
+        value = ParseFloat(value);
+        minVal = ParseFloat(minVal);
+        maxVal = ParseFloat(maxVal);
+        return isNum(value) ? (value >= minVal && value <= maxVal) : false;
+    },
+    isDate: function (value) {
+        // 是否为日期时间格式
+        return Date.isValidDate(value);
+    },
+    isTime: function (value) {
+        // 是否为时间格式
+        if(!isString(value)) {
+            return false;
+        }
+        var nowDateStr = new Date().format("yyyy-MM-dd");
+        var timeStr = nowDateStr + " " + value;
+        return Date.isValidDate(timeStr);
+    },
+    minDate: function (value, minDate) {
+        // 日期是否满足最小日期
+        var isDate = Date.isValidDate(value);
+        if(!isDate) {
+            return false;
+        } else {
+            var date = Date.parseAsDate(value);
+            minDate = Date.parseAsDate(minDate);
+            return date >= minDate;
+        }
+    },
+    maxDate: function (value, maxDate) {
+        // 日期是否满足最大日期
+        var isDate = Date.isValidDate(value);
+        if(!isDate) {
+            return false;
+        } else {
+            var date = Date.parseAsDate(value);
+            maxDate = Date.parseAsDate(maxDate);
+            return date <= maxDate;
+        }
+    },
+    rangeDate: function (value, minDate, maxDate) {
+        // 日期是否满足给定日期范围
+        var isDate = Date.isValidDate(value);
+        if(!isDate) {
+            return false;
+        } else {
+            var date = Date.parseAsDate(value);
+            minDate = Date.parseAsDate(minDate);
+            maxDate = Date.parseAsDate(maxDate);
+            return date >= minDate && date <= maxDate;
+        }
+    },
+    rangeTime: function (value, minTime, maxTime) {
+        // 时间是否满足给定日期范围
+        var nowDateStr = new Date().format("yyyy-MM-dd");
+        var date = Date.parseAsDate(nowDateStr + " " + value);
+        var minDate = Date.parseAsDate(nowDateStr + " " + minTime);
+        var maxDate = Date.parseAsDate(nowDateStr + " " + maxTime);
+        return date >= minDate && date <= maxDate;
+    },
+    inList: function (value, items) {
+        // 是否为列表项之一
+        return (value != null) ? value.isIn(items) : false;
+    },
+    isMobile: function (value, sysAdminName) {
+        sysAdminName == null || 'sysadmin';
+        // 是否为手机号码
+        return isMobile(value) || sysAdminName == value;
+    },
+    isTel: function (value) {
+        // 是否为座机号码
+        return isTelNo(value);
+    },
+    isPhone: function (value) {
+        // 是否为手机或座机号码
+        return isPhoneNo(value);
+    },
+    isMoney: function (value, allowSign) {
+        // 是否为金额字符串
+        allowSign = (allowSign == null) ? false : (allowSign == true);
+        return isMoneyStr(value, allowSign);
+    },
+    isInt: function (value) {
+        // 是否为整数
+        return isIntStr(value);
+    },
+    isNatual: function (value) {
+        // 是否为自然数
+        return isNatualStr(value);
+    },
+    isDigits: function (value) {
+        // 是否为数字字符串
+        return isDigitsStr(value);
+    },
+    isDigitsOrHyphen: function (value) {
+        // 是否为数字和-组成的字符串
+        return isDigitsOrHyphenStr(value);
+    },
+    isEmail: function (value) {
+        // 是否为邮箱
+        return isValidEmail(value);
+    },
+    isHexColor: function (value) {
+        // 是否为16进制颜色值
+        return isHexColor(value);
+    },
+    isNum: function (value) {
+        // 是否为数值字符串
+        var numVal = ParseFloat(value);
+        return numVal == value && isNum(numVal);
+    },
+    isPswd: function (value, strict) {
+        strict = strict == "true";
+        // 验证密码
+        return checkPassword(value, strict) == null;
+    },
+    isIdNo: function (code) {
+        //身份证号码
+        return isIdentity(code);
+    }
+};
+
 // 浏览器信息
 var Browser = {};
 (function () {
 
-    if (isInBrowser) {
+    if(isInBrowser) {
         Browser.appName = navigator.appName;
         Browser.name = Browser.appName;
         var userAgent = navigator.userAgent;
@@ -3721,22 +3946,22 @@ var Browser = {};
         Browser.majorVersion = parseInt(navigator.appVersion, 10);
         var nameOffset, verOffset, ix;
         // In Opera, the true version is after "Opera" or after "Version"
-        if ((verOffset = userAgent.indexOf("Opera")) != -1) {
+        if((verOffset = userAgent.indexOf("Opera")) != -1) {
             Browser.opera = true;
             Browser.name = "Opera";
             Browser.fullVersion = userAgent.substring(verOffset + 6);
-            if ((verOffset = userAgent.indexOf("Version")) != -1) {
+            if((verOffset = userAgent.indexOf("Version")) != -1) {
                 Browser.fullVersion = userAgent.substring(verOffset + 8);
             }
         }
         // In MSIE < 11, the true version is after "MSIE" in userAgent
-        else if ((verOffset = userAgent.indexOf("MSIE")) != -1) {
+        else if((verOffset = userAgent.indexOf("MSIE")) != -1) {
             Browser.msie = true;
             Browser.name = "Microsoft Internet Explorer";
             Browser.fullVersion = userAgent.substring(verOffset + 5);
         }
         // In TRIDENT (IE11) => 11, the true version is after "rv:" in userAgent
-        else if (userAgent.indexOf("Trident") != -1) {
+        else if(userAgent.indexOf("Trident") != -1) {
             Browser.msie = true;
             Browser.name = "Microsoft Internet Explorer";
             var start = userAgent.indexOf("rv:") + 3;
@@ -3744,42 +3969,42 @@ var Browser = {};
             Browser.fullVersion = userAgent.substring(start, end);
         }
         // In Chrome, the true version is after "Chrome"
-        else if ((verOffset = userAgent.indexOf("Chrome")) != -1) {
+        else if((verOffset = userAgent.indexOf("Chrome")) != -1) {
             Browser.webkit = true;
             Browser.chrome = true;
             Browser.name = "Chrome";
             Browser.fullVersion = userAgent.substring(verOffset + 7);
         }
         // In Safari, the true version is after "Safari" or after "Version"
-        else if ((verOffset = userAgent.indexOf("Safari")) != -1) {
+        else if((verOffset = userAgent.indexOf("Safari")) != -1) {
             Browser.webkit = true;
             Browser.safari = true;
             Browser.name = "Safari";
             Browser.fullVersion = userAgent.substring(verOffset + 7);
-            if ((verOffset = userAgent.indexOf("Version")) != -1) {
+            if((verOffset = userAgent.indexOf("Version")) != -1) {
                 Browser.fullVersion = userAgent.substring(verOffset + 8);
             }
         }
         // In Safari, the true version is after "Safari" or after "Version"
-        else if ((verOffset = userAgent.indexOf("AppleWebKit")) != -1) {
+        else if((verOffset = userAgent.indexOf("AppleWebKit")) != -1) {
             Browser.webkit = true;
             Browser.name = "Safari";
             Browser.fullVersion = userAgent.substring(verOffset + 7);
-            if ((verOffset = userAgent.indexOf("Version")) != -1) {
+            if((verOffset = userAgent.indexOf("Version")) != -1) {
                 Browser.fullVersion = userAgent.substring(verOffset + 8);
             }
         }
         // In Firefox, the true version is after "Firefox"
-        else if ((verOffset = userAgent.indexOf("Firefox")) != -1) {
+        else if((verOffset = userAgent.indexOf("Firefox")) != -1) {
             Browser.mozilla = true;
             Browser.name = "Firefox";
             Browser.fullVersion = userAgent.substring(verOffset + 8);
         }
         // In most other browsers, "name/version" is at the end of userAgent
-        else if ((nameOffset = userAgent.lastIndexOf(' ') + 1) < (verOffset = userAgent.lastIndexOf('/'))) {
+        else if((nameOffset = userAgent.lastIndexOf(' ') + 1) < (verOffset = userAgent.lastIndexOf('/'))) {
             Browser.name = userAgent.substring(nameOffset, verOffset);
             Browser.fullVersion = userAgent.substring(verOffset + 1);
-            if (Browser.name.toLowerCase() == Browser.name.toUpperCase()) {
+            if(Browser.name.toLowerCase() == Browser.name.toUpperCase()) {
                 Browser.name = navigator.appName;
             }
         }
@@ -3791,22 +4016,22 @@ var Browser = {};
         Browser.windowsMobile = (/IEMobile/i).test(userAgent);
         Browser.mobile = Browser.android || Browser.blackberry || Browser.ios || Browser.windowsMobile || Browser.operaMobile;
         // trim the fullVersion string at semicolon/space if present
-        if ((ix = Browser.fullVersion.indexOf(";")) != -1) {
+        if((ix = Browser.fullVersion.indexOf(";")) != -1) {
             Browser.fullVersion = Browser.fullVersion.substring(0, ix);
         }
-        if ((ix = Browser.fullVersion.indexOf(" ")) != -1) {
+        if((ix = Browser.fullVersion.indexOf(" ")) != -1) {
             Browser.fullVersion = Browser.fullVersion.substring(0, ix);
         }
         Browser.majorVersion = parseInt('' + Browser.fullVersion, 10);
-        if (isNaN(Browser.majorVersion)) {
+        if(isNaN(Browser.majorVersion)) {
             Browser.fullVersion = '' + parseFloat(navigator.appVersion);
             Browser.majorVersion = parseInt(navigator.appVersion, 10);
         }
         Browser.version = Browser.majorVersion;
         //
-        if (userAgent.indexOf("QQ/") != -1) {
+        if(userAgent.indexOf("QQ/") != -1) {
             Browser.envName = "QQ";
-        } else if (userAgent.indexOf("MicroMessenger/") != -1) {
+        } else if(userAgent.indexOf("MicroMessenger/") != -1) {
             Browser.envName = "WX";
         }
     }
@@ -3831,12 +4056,71 @@ module.exports = {
     isFunction: isFunction,
     isDate: isDate,
 
+    isPlainObject: isPlainObject,
+    isEmptyObject: isEmptyObject,
+
+    isIntStr: isIntStr,
+    isNatualStr: isNatualStr,
+    isMoneyStr: isMoneyStr,
+    isValidEmail: isValidEmail,
+    isMobile: isMobile,
+    isTelNo: isTelNo,
+    isPhoneNo: isPhoneNo,
+    isHexColor: isHexColor,
+    isIdentity: isIdentity,
+    checkPassword: checkPassword,
+    getPasswordStrength: getPasswordStrength,
+
+    ValidateRules: ValidateRules,
+
+    replace: replace,
+    merge: merge,
+    moveArrayElementsAt: moveArrayElementsAt,
+    compareArrays: compareArrays,
+    makeDiffHoursStr: makeDiffHoursStr,
+    sortByKey: sortByKey,
+    asTimeout: asTimeout,
+    repeatChecker: repeatChecker,
+
+    KeyMap: KeyMap,
+    LimitedQueue: LimitedQueue,
+    TaskDelayer: TaskDelayer,
+    CondMonitor: CondMonitor,
+    makeCrossCombsFor: makeCrossCombsFor,
+
+    getPageInfo: getPageInfo,
+    setPageTitle: setPageTitle,
+    setPageUrl: setPageUrl,
+    openWindowForHtml: openWindowForHtml,
+    escapeHtmlStr: escapeHtmlStr,
+    calcTrackerDim: calcTrackerDim,
+
+    loadJs: loadJs,
+    loadCss: loadCss,
+
+    extractShortFileName: extractShortFileName,
+    extractFileNameExt: extractFileNameExt,
+
+    isImageFile: isImageFile,
+    isImageType: isImageType,
+
+    addFileNamePart: addFileNamePart,
+    getMailHomeUrl: getMailHomeUrl,
+
     genUniqueStr: genUniqueStr,
     makeUniqueRequest: makeUniqueRequest,
     makeUrl: makeUrl,
     parseUrl: parseUrl,
     extractUrlParams: extractUrlParams,
+    jsonToUrlParams: jsonToUrlParams,
 
-    //
+    getServerBase: getServerBase,
+    getServerBasedUrl: getServerBasedUrl,
+    getWebSocket: getWebSocket,
+
+    base64StrToDataURL: base64StrToDataURL,
+    playAudio: playAudio,
+    speakText: speakText,
+
     Browser: Browser
 };

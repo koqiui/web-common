@@ -129,7 +129,7 @@ function AjaxCoreFn() {
         return this;
     };
     this.fail = function (callback) {
-        if (utils.isString(callback)) {
+        if(utils.isString(callback)) {
             _failMessage = callback;
         } else {
             _failHandler = callback;
@@ -143,7 +143,7 @@ function AjaxCoreFn() {
         return this;
     };
     this.onStatus = function (status, callback) {
-        if (utils.isString(callback)) {
+        if(utils.isString(callback)) {
             _statusMessage[status] = callback;
         } else {
             _statusHandler[status] = callback;
@@ -169,12 +169,12 @@ function AjaxCoreFn() {
     //
     function sendRequest() {
         var url = _url;
-        if (_baseUrl && !url.startsWith("http")) {
+        if(_baseUrl && !url.startsWith("http")) {
             url = _baseUrl + url;
         }
         url = utils.makeUrl(url, _params, true);
         var ajax = null;
-        if (_type == "GET") {
+        if(_type == "GET") {
             var ajaxConf = {
                 cache: _cache,
                 async: _async,
@@ -183,17 +183,17 @@ function AjaxCoreFn() {
                 dataType: _resultType,
                 data: _data
             };
-            if (typeof _timeout == "number" && _timeout > 0) {
+            if(typeof _timeout == "number" && _timeout > 0) {
                 ajaxConf.timeout = _timeout;
             }
-            if (typeof _beforeSendCallback == "function") {
+            if(typeof _beforeSendCallback == "function") {
                 ajaxConf.beforeSend = function (jqXHR) {
-                    if (typeof __ajaxBeforeSendCallback == "function") {
+                    if(typeof __ajaxBeforeSendCallback == "function") {
                         __ajaxBeforeSendCallback(jqXHR);
                     }
                     _beforeSendCallback(jqXHR);
                 };
-            } else if (typeof __ajaxBeforeSendCallback == "function") {
+            } else if(typeof __ajaxBeforeSendCallback == "function") {
                 ajaxConf.beforeSend = function (jqXHR) {
                     __ajaxBeforeSendCallback(jqXHR);
                 };
@@ -201,7 +201,7 @@ function AjaxCoreFn() {
             ajax = jajax(ajaxConf);
         } else {
             var data = _data;
-            if (_contentType.endsWith("/json")) {
+            if(_contentType.endsWith("/json")) {
                 data = JSON.encode(data);
             }
             var ajaxConf = {
@@ -213,17 +213,17 @@ function AjaxCoreFn() {
                 data: data,
                 contentType: _contentType
             };
-            if (typeof _timeout == "number" && _timeout > 0) {
+            if(typeof _timeout == "number" && _timeout > 0) {
                 ajaxConf.timeout = _timeout;
             }
-            if (typeof _beforeSendCallback == "function") {
+            if(typeof _beforeSendCallback == "function") {
                 ajaxConf.beforeSend = function (jqXHR) {
-                    if (typeof __ajaxBeforeSendCallback == "function") {
+                    if(typeof __ajaxBeforeSendCallback == "function") {
                         __ajaxBeforeSendCallback(jqXHR);
                     }
                     _beforeSendCallback(jqXHR);
                 };
-            } else if (typeof __ajaxBeforeSendCallback == "function") {
+            } else if(typeof __ajaxBeforeSendCallback == "function") {
                 ajaxConf.beforeSend = function (jqXHR) {
                     __ajaxBeforeSendCallback(jqXHR);
                 };
@@ -232,7 +232,7 @@ function AjaxCoreFn() {
         }
         //
         ajax.done(function (data, type, jqXHR) {
-            if (typeof _doneHandler == "function") {
+            if(typeof _doneHandler == "function") {
                 _doneHandler(data, jqXHR);
             }
         });
@@ -243,36 +243,36 @@ function AjaxCoreFn() {
             errInfo.message = statusText || jqXHR.statusText;
             try {
                 var responseX = jqXHR.responseJSON || JSON.decode(jqXHR.responseText);
-                if (responseX != null && responseX.message) {
+                if(responseX != null && responseX.message) {
                     errInfo.code = responseX.code;
                     errInfo.message = responseX.message;
                 }
-            } catch (ex) {
+            } catch(ex) {
                 //
             }
-            if (errInfo.message == "error") {
+            if(errInfo.message == "error") {
                 errInfo.message = "未知错误";
             }
             var status = jqXHR.status;
             var statusHandler = _statusHandler[status];
             var continueNext = true;
-            if (statusHandler != null) {
+            if(statusHandler != null) {
                 var statusMessage = _statusMessage[status];
-                if (statusMessage) {
+                if(statusMessage) {
                     errInfo.message = statusMessage;
                 }
                 var handleResult = statusHandler(errInfo, jqXHR, status);
                 continueNext = handleResult !== false;
             }
-            if (continueNext && _failHandler != null) {
-                if (_failMessage) {
+            if(continueNext && _failHandler != null) {
+                if(_failMessage) {
                     errInfo.message = _failMessage;
                 }
                 _failHandler(errInfo, jqXHR, status);
             }
         });
         //
-        if (_alwaysHandler != null) {
+        if(_alwaysHandler != null) {
             ajax.always(function (jqXHR, type, statusText) {
                 _alwaysHandler(jqXHR);
             });
