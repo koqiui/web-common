@@ -2,19 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d077fdf0-df2a-4925-8198-98cda50461f0" name="Default" comment="coding just in CommonJs style">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/ajax.test.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/index.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/routes.test.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test/utils.test.js" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/ajax.js" afterPath="$PROJECT_DIR$/dist/ajax.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/routes.js" afterPath="$PROJECT_DIR$/dist/routes.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/utils.js" afterPath="$PROJECT_DIR$/dist/utils.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/ajax.js" afterPath="$PROJECT_DIR$/test/ajax.spec.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/routes.js" afterPath="$PROJECT_DIR$/test/routes.spec.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/utils.js" afterPath="$PROJECT_DIR$/test/utils.spec.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -157,7 +146,6 @@
         <option value="$PROJECT_DIR$/test/utils.spec.js" />
         <option value="$PROJECT_DIR$/test/mocha/mocha.js" />
         <option value="$PROJECT_DIR$/test/browser/index.html" />
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/dist/ajax.js" />
         <option value="$PROJECT_DIR$/dist/routes.js" />
         <option value="$PROJECT_DIR$/test/ajax.spec.js" />
@@ -166,6 +154,7 @@
         <option value="$PROJECT_DIR$/dist/utils.js" />
         <option value="$PROJECT_DIR$/test/mocha/index.html" />
         <option value="$PROJECT_DIR$/test/mocha/index.tpl.html" />
+        <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
   </component>
@@ -368,7 +357,7 @@
       <workItem from="1491813235369" duration="15476000" />
       <workItem from="1491837314979" duration="10000" />
       <workItem from="1491897704637" duration="9654000" />
-      <workItem from="1491907963553" duration="5350000" />
+      <workItem from="1491907963553" duration="5582000" />
     </task>
     <task id="LOCAL-00001" summary="test -&gt; browser">
       <created>1491722342094</created>
@@ -430,7 +419,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55106000" />
+    <option name="totallyTimeSpent" value="55338000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1864" height="1096" extended-state="6" />
@@ -657,14 +646,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" column="19" lean-forward="false" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dist/utils.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="405">
@@ -695,6 +676,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="22" lean-forward="false" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
           <folding />
         </state>
       </provider>
