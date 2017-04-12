@@ -3,8 +3,11 @@
  */
 var moduleName = 'Utils';
 //----------------------------------------------
+var isInBrowser = (typeof window !== "undefined") && (typeof window.location !== "undefined") && (typeof window.navigator !== "undefined");
 
-var isInBrowser = (typeof window !== "undefined") && typeof (window.location !== "undefined");
+function getGlobal() {
+    return isInBrowser ? window : global;
+}
 
 function toStr(obj) {
     return "" + obj;
@@ -431,12 +434,12 @@ function format(template) {
 
 String.prototype.format = function () {
     var args = [this].concat(Array.prototype.slice.call(arguments, 0));
-    return format.apply(window, args);
+    return format.apply(getGlobal(), args);
 };
 
 String.prototype.isIn = function () {
     var args = [this].concat(Array.prototype.slice.call(arguments, 0));
-    return strEql.apply(window, args);
+    return strEql.apply(getGlobal(), args);
 };
 /**
  * @private
@@ -763,7 +766,7 @@ Array.prototype.contains = function (vItem /* :variant */, isFunc /* : function 
  * @return {Boolean} True if the function evaluates to true for each item in the array, false if even one returns false.
  */
 Array.prototype.every = function (fnTest, context) {
-    context = context || isInBrowser ? window : null;
+    context = context || getGlobal();
     var bResult = true;
     for(var i = 0, len = this.length; i < len && bResult; i++) {
         bResult = bResult && fnTest.call(context, this[i], i, this);
@@ -783,7 +786,7 @@ Array.prototype.every = function (fnTest, context) {
  * @return {Array} An array made up of all the items that returned true for the function.
  */
 Array.prototype.filter = function (fnTest, context) {
-    context = context || isInBrowser ? window : null;
+    context = context || getGlobal();
     var aResult = [];
     for(var i = 0, len = this.length; i < len; i++) {
         if(fnTest.call(context, this[i], i, this)) {
@@ -802,7 +805,7 @@ Array.prototype.filter = function (fnTest, context) {
  * @return {Array} An array made up of all the items that returned false for the function.
  */
 Array.prototype.reject = function (fnTest, context) {
-    context = context || isInBrowser ? window : null;
+    context = context || getGlobal();
     var aResult = [];
     for(var i = 0, len = this.length; i < len; i++) {
         if(!fnTest.call(context, this[i], i, this)) {
@@ -820,7 +823,7 @@ Array.prototype.reject = function (fnTest, context) {
  *            context The object that the function belongs to or null for a global function.
  */
 Array.prototype.forEach = function (fnExec, context) {
-    context = context || isInBrowser ? window : null;
+    context = context || getGlobal();
     for(var i = 0, len = this.length; i < len; i++) {
         fnExec.call(context, this[i], i, this);
     }
@@ -936,7 +939,7 @@ Array.prototype.lastIndexOf = function (vItem, iStart, isFunc) {
  * @return {Array} An array made up of all the items that returned true for the function.
  */
 Array.prototype.map = function (fnExec, context) {
-    context = context || isInBrowser ? window : null;
+    context = context || getGlobal();
     var aResult = [];
     for(var i = 0, len = this.length; i < len; i++) {
         aResult.push(fnExec.call(context, this[i], i, this));
@@ -997,10 +1000,10 @@ Array.prototype.removeAt = function (iIndex) {
 Array.prototype.some = function (fnTest, context, minCount) {
     if(typeof context == "number") {
         minCount = context || 1;
-        context = isInBrowser ? window : null;
+        context = getGlobal();
     } else {
         minCount = minCount || 1;
-        context = context || isInBrowser ? window : null;
+        context = context || getGlobal();
     }
     var found = 0;
     for(var i = 0, len = this.length; i < len; i++) {
@@ -1146,7 +1149,7 @@ Array.prototype.toMap = function (keyProp) {
  * @return {Object} The result of adding all of the array items together.
  */
 Array.prototype.sum = function (fnEval, context) {
-    context = context || isInBrowser ? window : null;
+    context = context || getGlobal();
     var initVal = null;
     if(typeof fnEval != "function") {
         fnEval = function (vItem) {
@@ -1265,7 +1268,7 @@ function sortArray() {
 if(typeof Array.prototype.sort != "function") {
     Array.prototype.sort = function () {
         var args = [this].concat(Array.prototype.slice.call(arguments, 0));
-        return sortArray.apply(isInBrowser ? window : null, args);
+        return sortArray.apply(getGlobal(), args);
     };
 }
 
@@ -1417,7 +1420,7 @@ function declare(namespace) {
         nsName = ns.join(".");
         if(eval('(typeof ' + nsName + ' == "undefined")')) {
             if(i === 0) {
-                eval("var " + nsName + " = window." + nsName + " = {};");
+                isInBrowser ? eval("var " + nsName + " = window." + nsName + " = {};") : eval("var " + nsName + " = global." + nsName + " = {};");
             } else {
                 eval(nsName + " = {};");
             }
@@ -1434,7 +1437,7 @@ function makeProxy(fn, context) {
         fn = tmp;
     }
     if(context == null) {
-        context = isInBrowser ? window : null;
+        context = getGlobal();
     }
     if(!isFunction(fn)) {
         return undefined;
@@ -2088,6 +2091,19 @@ function KeyMap(name) {
         //
         return this;
     };
+    //key : value => value => key
+    this.invert = function (newName) {
+        var newData = {};
+        //
+        for(var xKey in __data) {
+            var xValue = __data[xKey];
+            newData[xValue] = xKey;
+        }
+        //
+        var newKeyMap = new KeyMap(newName);
+        newKeyMap.from(newData);
+        return newKeyMap;
+    };
     //
     this.toObject = function () {
         return merge({}, __data);
@@ -2618,21 +2634,11 @@ console = console || {
         },
         assert: function () {
         },
-        clear: function () {
-        },
-        count: function () {
-        },
-        goup: function () {
-        },
-        goupEnd: function () {
-        },
         dir: function () {
         },
         time: function () {
         },
         timeEnd: function () {
-        },
-        table: function () {
         }
     };
 
@@ -3063,7 +3069,7 @@ function concatUrlParams(baseUrl, params, toEncode) {
 }
 
 function makeUrl() {
-    return concatUrlParams.apply(window, arguments);
+    return concatUrlParams.apply(getGlobal(), arguments);
 }
 
 // json参数转成url参数
@@ -3920,10 +3926,11 @@ var ValidateRules = {
 };
 
 // 浏览器信息
-var Browser = {};
+var Browser;
 (function () {
-
     if(isInBrowser) {
+        Browser = {};
+        //
         Browser.appName = navigator.appName;
         Browser.name = Browser.appName;
         var userAgent = navigator.userAgent;
@@ -4075,6 +4082,7 @@ module.exports = {
 
     replace: replace,
     merge: merge,
+    copyAsArray: copyAsArray,
     moveArrayElementsAt: moveArrayElementsAt,
     compareArrays: compareArrays,
     makeDiffHoursStr: makeDiffHoursStr,
@@ -4122,5 +4130,7 @@ module.exports = {
     playAudio: playAudio,
     speakText: speakText,
 
+    isInBrowser: isInBrowser,
+    getGlobal: getGlobal,
     Browser: Browser
 };

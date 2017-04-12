@@ -86,3 +86,25 @@ describe('String.[method] builder', function () {
         });
     }
 );
+
+var KeyMap = Utils.KeyMap;
+
+describe('KeyMap', function () {
+        it('revert', function () {
+            var km = new KeyMap().from({
+                TRACE: 0,
+                DEBUG: 1,
+                INFO: 2,
+                WARN: 3,
+                ERROR: 4
+            });
+
+            console.log(km.toJSON());
+
+            var km2 = km.invert();
+
+            console.log(km2.toJSON());
+
+        });
+    }
+);

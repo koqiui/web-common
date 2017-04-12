@@ -57,7 +57,7 @@ gulp.task('default', function (done) {
             //
 
             shell.cd(__dirname);
-            open("http://localhost/test/mocha/index.html");
+            //open("http://localhost/test/mocha/index.html");
 
             //
             setTimeout(function () {
