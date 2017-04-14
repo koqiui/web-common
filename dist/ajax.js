@@ -10,6 +10,9 @@ var jajax = require('jquery').ajax;
 //
 var __ajaxBaseUrl = "";
 var __ajaxBeforeSendCallback = null;
+var __ajaxWarnCallbck = function (errMsg) {
+    console.error(errMsg);
+};
 //
 function AjaxCoreFn() {
     var _baseUrl = __ajaxBaseUrl;
@@ -288,34 +291,34 @@ function AjaxCoreFn() {
         this.fail(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "处理失败";
             //
-            console.error(errMsg);
+            __ajaxWarnCallbck(errMsg);
         });
 
         this.on401(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "未登录/未能认证";
             //
-            console.error(errMsg);
+            __ajaxWarnCallbck(errMsg);
         });
         this.on402(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "未授权或权限不足";
             //
-            console.error(errMsg);
+            __ajaxWarnCallbck(errMsg);
         });
         this.on404(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "未找到请求的资源";
             //
-            console.error(errMsg);
+            __ajaxWarnCallbck(errMsg);
         });
 
         this.on500(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "服务器繁忙";
             //
-            console.error(errMsg);
+            __ajaxWarnCallbck(errMsg);
         });
         this.on502(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "服务器维护中...";
             //
-            console.error(errMsg);
+            __ajaxWarnCallbck(errMsg);
         });
     }
     //
@@ -332,6 +335,11 @@ module.exports = {
     //
     baseUrl: function (baseUrl) {
         __ajaxBaseUrl = baseUrl || "";
+    },
+    warnCallback: function (warnCallback) {
+        if(typeof warnCallback == 'function') {
+            __ajaxWarnCallbck = warnCallback;
+        }
     },
     beforeSend: function (callback) {
         __ajaxBeforeSendCallback = callback || null;
