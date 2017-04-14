@@ -4066,6 +4066,9 @@ module.exports = {
     isPlainObject: isPlainObject,
     isEmptyObject: isEmptyObject,
 
+    isNoE: isNoE,
+    isNoB: isNoB,
+
     isIntStr: isIntStr,
     isNatualStr: isNatualStr,
     isMoneyStr: isMoneyStr,
