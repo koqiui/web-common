@@ -40,6 +40,8 @@ function AjaxCoreFn() {
     // var logger = console && console.log ? console.log : null;
     this.baseUrl = function (baseUrl) {
         _baseUrl = baseUrl || "";
+        //
+        return this;
     };
     //
     this.get = function (url) {
