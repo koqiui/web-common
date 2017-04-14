@@ -10,7 +10,7 @@ var jajax = require('jquery').ajax;
 //
 var __ajaxBaseUrl = "";
 var __ajaxBeforeSendCallback = null;
-var __ajaxWarnCallbck = function (errMsg) {
+var __ajaxErrorCallbck = function (errMsg) {
     console.error(errMsg);
 };
 //
@@ -291,34 +291,34 @@ function AjaxCoreFn() {
         this.fail(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "处理失败";
             //
-            __ajaxWarnCallbck(errMsg);
+            __ajaxErrorCallbck(errMsg);
         });
 
         this.on401(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "未登录/未能认证";
             //
-            __ajaxWarnCallbck(errMsg);
+            __ajaxErrorCallbck(errMsg);
         });
         this.on402(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "未授权或权限不足";
             //
-            __ajaxWarnCallbck(errMsg);
+            __ajaxErrorCallbck(errMsg);
         });
         this.on404(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "未找到请求的资源";
             //
-            __ajaxWarnCallbck(errMsg);
+            __ajaxErrorCallbck(errMsg);
         });
 
         this.on500(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "服务器繁忙";
             //
-            __ajaxWarnCallbck(errMsg);
+            __ajaxErrorCallbck(errMsg);
         });
         this.on502(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "服务器维护中...";
             //
-            __ajaxWarnCallbck(errMsg);
+            __ajaxErrorCallbck(errMsg);
         });
     }
     //
@@ -336,9 +336,9 @@ module.exports = {
     baseUrl: function (baseUrl) {
         __ajaxBaseUrl = baseUrl || "";
     },
-    warnCallback: function (warnCallback) {
-        if(typeof warnCallback == 'function') {
-            __ajaxWarnCallbck = warnCallback;
+    errorCallback: function (errorCallback) {
+        if(typeof errorCallback == 'function') {
+            __ajaxErrorCallbck = errorCallback;
         }
     },
     beforeSend: function (callback) {
