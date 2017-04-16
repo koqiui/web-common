@@ -3925,6 +3925,26 @@ var ValidateRules = {
     }
 };
 
+//过滤树形节点（用节点回调给定的函数）
+function forEachTreeNode(treeNodes, callback, childrenKey) {
+    if(treeNodes == null) {
+        return;
+    }
+    //
+    childrenKey = childrenKey || 'children';
+    if(isArray(treeNodes)) {
+        treeNodes.forEach(function (treeNode, i) {
+            forEachTreeNode(treeNode, callback, childrenKey);
+        });
+    }
+    else {
+        var treeNode = treeNodes;
+        callback(treeNode);
+        var children = treeNode[childrenKey];
+        forEachTreeNode(children, callback, childrenKey);
+    }
+}
+
 // 浏览器信息
 var Browser;
 (function () {
@@ -4098,6 +4118,7 @@ module.exports = {
     TaskDelayer: TaskDelayer,
     CondMonitor: CondMonitor,
     makeCrossCombsFor: makeCrossCombsFor,
+    forEachTreeNode: forEachTreeNode,
 
     getPageInfo: getPageInfo,
     setPageTitle: setPageTitle,
