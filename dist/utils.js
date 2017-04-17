@@ -4156,5 +4156,6 @@ module.exports = {
 
     isInBrowser: isInBrowser,
     getGlobal: getGlobal,
+    makeProxy: makeProxy,
     Browser: Browser
 };

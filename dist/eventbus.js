@@ -3,6 +3,8 @@
  */
 var moduleName = 'EventBus';
 //----------------------------------------------
+var utils = require('./utils');
+//
 var dumyHandler = function () {
     console.trace('此事件处理函数已不存在');
 };
@@ -15,8 +17,9 @@ function EventBusCoreFn(name) {
         return _name;
     };
     //
-    this.bind = function (event, handler, trace) {
+    this.bind = function (event, handler, thisArg, trace) {
         trace = trace || '';
+        thisArg = thisArg || utils.getGlobal();
         handler = handler || null;
         event = event || '';
         if(event === '' || handler === null) {
@@ -31,8 +34,13 @@ function EventBusCoreFn(name) {
             _handlers[event] = curHandlers = [];
         }
         //
-        if(curHandlers.indexOf(handler) === -1) {
-            curHandlers.push(handler);
+        if(curHandlers.indexOf(handler, 0, function (proxy, fn) {
+                return proxy.original === fn;
+            }) === -1) {
+            var proxy = utils.makeProxy(handler, thisArg);
+            proxy.original = handler;
+            //
+            curHandlers.push(proxy);
             //
             trace && console.trace(trace);
             console.trace('给定的 ' + event + ' 事件处理函数已绑定');
@@ -67,7 +75,9 @@ function EventBusCoreFn(name) {
             console.trace('给定的 ' + event + ' 事件处理函数已*全部*解绑');
         }
         else {
-            var index = curHandlers.indexOf(handler);
+            var index = curHandlers.indexOf(handler, 0, function (proxy, fn) {
+                return proxy.original === fn;
+            });
             if(index !== -1) {
                 curHandlers.splice(index, 1);
                 //
@@ -131,8 +141,8 @@ module.exports = {
         return retBus;
     },
     //
-    bind: function (event, handler, trace) {
-        return __defaultBus.bind(event, handler, trace);
+    bind: function (event, handler, thisArg, trace) {
+        return __defaultBus.bind(event, handler, thisArg, trace);
     },
     unbind: function (event, handler, trace) {
         return __defaultBus.unbind(event, handler, trace);
