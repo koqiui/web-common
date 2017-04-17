@@ -152,10 +152,10 @@ describe('forEachTreeNode', function () {
                 }]
             }];
             console.log(treeData);
-            utils.forEachTreeNode(treeData, function (nodeData) {
+            Utils.forEachTreeNode(treeData, function (nodeData) {
                 var nodeId = nodeData['id'] || null;
                 if(nodeId == null) {
-                    nodeId = utils.genUniqueStr();
+                    nodeId = Utils.genUniqueStr();
                 }
                 //
                 var departFlag = nodeData['departFlag'] || false;

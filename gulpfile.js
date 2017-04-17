@@ -56,12 +56,12 @@ gulp.task('default', function (done) {
             fs.writeFileSync(path.join(indexDir, 'index.html'), indexHtml);
             //
 
-            shell.cd(__dirname);
+            //shell.cd(__dirname);
             //open("http://localhost/test/mocha/index.html");
 
             //
             setTimeout(function () {
-                shell.exec('http-server -p80');
+                //shell.exec('http-server -p80');
             }, 0);
         });
         //

@@ -11,5 +11,6 @@ module.exports = {
 
     Utils: require('./utils'),
     Ajax: require('./ajax'),
-    Routes: require('./routes')
+    Routes: require('./routes'),
+    EventBus: require('./eventbus')
 };
