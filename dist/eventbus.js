@@ -3,8 +3,6 @@
  */
 var moduleName = 'EventBus';
 //----------------------------------------------
-var utils = require('./utils');
-//
 var dumyHandler = function () {
     console.trace('此事件处理函数已不存在');
 };
@@ -19,7 +17,7 @@ function EventBusCoreFn(name) {
     //
     this.bind = function (event, handler, thisArg, trace) {
         trace = trace || '';
-        thisArg = thisArg || utils.getGlobal();
+        thisArg = thisArg || window || global;
         handler = handler || null;
         event = event || '';
         if(event === '' || handler === null) {
@@ -34,13 +32,10 @@ function EventBusCoreFn(name) {
             _handlers[event] = curHandlers = [];
         }
         //
-        if(curHandlers.indexOf(handler, 0, function (proxy, fn) {
-                return proxy.original === fn;
-            }) === -1) {
-            var proxy = utils.makeProxy(handler, thisArg);
-            proxy.original = handler;
+        if(curHandlers.indexOf(handler) === -1) {
+            handler['__this_context__'] = thisArg;
             //
-            curHandlers.push(proxy);
+            curHandlers.push(handler);
             //
             trace && console.trace(trace);
             console.trace('给定的 ' + event + ' 事件处理函数已绑定');
@@ -69,16 +64,20 @@ function EventBusCoreFn(name) {
         }
         //
         if(handler === null) {
+            for(var i = curHandlers.length - 1; i >= 0; i--) {
+                handler = curHandlers[i];
+                delete handler['__this_context__'];
+            }
             curHandlers.length = 0;
             //
             trace && console.trace(trace);
             console.trace('给定的 ' + event + ' 事件处理函数已*全部*解绑');
         }
         else {
-            var index = curHandlers.indexOf(handler, 0, function (proxy, fn) {
-                return proxy.original === fn;
-            });
+            var index = curHandlers.indexOf(handler);
             if(index !== -1) {
+                delete handler['__this_context__'];
+                //
                 curHandlers.splice(index, 1);
                 //
                 trace && console.trace(trace);
@@ -109,8 +108,10 @@ function EventBusCoreFn(name) {
         //
         for(var i = 0, len = curHandlers.length; i < len; i++) {
             var handler = curHandlers[i] || dumyHandler;
+            var newArgs = [event, payload, extra, this.name()];
             try {
-                handler(event, payload, extra, this.name());
+                var thisArg = handler['__this_context__'];
+                handler.apply(thisArg, newArgs);
             }
             catch(ex) {
                 console.error(ex);
@@ -121,7 +122,7 @@ function EventBusCoreFn(name) {
     };
 }
 
-//handler(event, payload, extra);
+//handler(event, payload, extra, busName);
 var __defaultName = 'default';
 var __cachedBuses = {};
 //
