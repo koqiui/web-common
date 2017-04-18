@@ -3940,7 +3940,15 @@ function forEachTreeNode(treeNodes, callback, childrenKey) {
     else {
         var treeNode = treeNodes;
         callback(treeNode);
-        var children = treeNode[childrenKey];
+        //
+        var children = null;
+        if(isFunction(childrenKey)) {
+            var childrenFn = childrenKey;
+            children = childrenFn(treeNode);
+        }
+        else {
+            children = treeNode[childrenKey];
+        }
         forEachTreeNode(children, callback, childrenKey);
     }
 }
