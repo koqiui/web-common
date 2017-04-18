@@ -212,6 +212,14 @@ function right(str, length) {
     }
 }
 
+String.prototype.left = function (length) {
+    return left(this, length);
+};
+
+String.prototype.right = function (length) {
+    return right(this, length);
+};
+
 function __strPad(srcStr, len, isRight, padStr) {
     srcStr = "" + srcStr;
     var needLen = len - srcStr.length;
@@ -244,12 +252,12 @@ function padRight(_srcStr, len, padStr) {
     return __strPad(_srcStr, len, true, padStr);
 }
 
-String.prototype.left = function (length) {
-    return left(this, length);
+String.prototype.padLeft = function (len, padStr) {
+    return padLeft(this, len, padStr);
 };
 
-String.prototype.right = function (length) {
-    return right(this, length);
+String.prototype.padRight = function (len, padStr) {
+    return padRight(this, len, padStr);
 };
 
 function duplicate(refStr, count) {
@@ -624,7 +632,11 @@ Number.prototype.round = function (frgs) {
 /**
  * clear all of the array elements
  */
-Array.prototype.clear = function () {
+Array.prototype.clear = function (clearFunc, thisArg) {
+    if(isFunction(clearFunc)) {
+        this.forEach(clearFunc, thisArg);
+    }
+    //
     this.length = 0;
 };
 
@@ -834,24 +846,29 @@ Array.prototype.forEach = function (fnExec, context) {
  * @param {Object}
  *            vItem The item to locate in the array.
  * @param {Integer}
- *            [iStart] The item to start looking from (optional).
+ *            [fromIndex] The item to start looking from (optional).
  * @param {Function}
  *            [isFunc] Function used to just the index of vItem.
  * @return {Integer} The index of the item in the array if found or -1 if not found.
  */
-Array.prototype.indexOf = function (vItem, iStart, isFunc) {
-    if(iStart == null) {
-        iStart = 0;
+Array.prototype.indexOf = function (vItem, fromIndex, isFunc) {
+    var defaultIndex = 0;
+    if(typeof fromIndex == "function") {
+        isFunc = fromIndex;
+        fromIndex = defaultIndex;
+    }
+    else if(fromIndex == null || fromIndex < 0) {
+        fromIndex = defaultIndex;
     }
     var i;
     if(typeof isFunc == "function") {
-        for(i = iStart, len = this.length; i < len; i++) {
+        for(i = fromIndex, len = this.length; i < len; i++) {
             if(isFunc(this[i], vItem, i)) {
                 return i;
             }
         }
     } else {
-        for(i = iStart, len = this.length; i < len; i++) {
+        for(i = fromIndex, len = this.length; i < len; i++) {
             if(this[i] == vItem) {
                 return i;
             }
@@ -898,30 +915,39 @@ Array.prototype.insertAt = function (vItem, iIndex) {
 Array.prototype.insertBefore = function (vItem, vBeforeItem) {
     return this.insertAt(vItem, this.indexOf(vBeforeItem));
 };
+Array.prototype.insertAfter = function (vItem, vAfterItem) {
+    return this.insertAt(vItem, this.indexOf(vAfterItem) + 1);
+};
 /**
  * Returns the last index of the first occurrance in the array.
  *
  * @param {Object}
  *            vItem The item to locate in the array.
  * @param {Integer}
- *            [iStart] The index of the item to start at.
+ *            [fromIndex] The index of the item to start at.
  * @param {Function}
  *            [isFunc] Function used to just the index of vItem.
  * @return {Integer} The last index of the item in the array if found or -1 if not found.
  */
-Array.prototype.lastIndexOf = function (vItem, iStart, isFunc) {
-    if(iStart == null || iStart >= this.length) {
-        iStart = this.length - 1;
+Array.prototype.lastIndexOf = function (vItem, fromIndex, isFunc) {
+    var defaultIndex = this.length - 1;
+    if(typeof fromIndex == "function") {
+        isFunc = fromIndex;
+        fromIndex = defaultIndex;
     }
+    else if(fromIndex == null || fromIndex >= this.length) {
+        fromIndex = defaultIndex;
+    }
+    //
     var i;
     if(typeof(isFunc) == "function") {
-        for(i = iStart; i >= 0; i--) {
+        for(i = fromIndex; i >= 0; i--) {
             if(isFunc(this[i], vItem, i)) {
                 return i;
             }
         }
     } else {
-        for(i = iStart; i >= 0; i--) {
+        for(i = fromIndex; i >= 0; i--) {
             if(this[i] == vItem) {
                 return i;
             }
@@ -949,14 +975,20 @@ Array.prototype.map = function (fnExec, context) {
 /**
  * 对数组中所有对象提取给定的属性并组成一个数组
  *
- * @param {String}
- *            propName 要提取的属性名称
+ * @param {String | function}
+ *            propName 要提取的属性名称/或者属性提取函数
  * @return {Array}
  */
 Array.prototype.pluck = function (propName) {
-    var fnExec = function (vItem) {
-        return vItem == null ? undefined : vItem[propName];
-    };
+    var fnExec = null;
+    if(typeof propName == 'function') {
+        fnExec = propName;
+    }
+    else {
+        fnExec = function (vItem) {
+            return vItem == null ? undefined : vItem[propName];
+        };
+    }
     return this.map(fnExec);
 };
 /**
@@ -969,7 +1001,7 @@ Array.prototype.pluck = function (propName) {
  * @return {Object} The removed item.
  */
 Array.prototype.remove = function (vItem, isFunc) {
-    return this.removeAt(this.indexOf(vItem, null, isFunc));
+    return this.removeAt(this.indexOf(vItem, 0, isFunc));
 };
 /**
  * Removes the array item in the given position.
@@ -1032,15 +1064,15 @@ Array.prototype.any = function (fnTest, context) {
  * Creates an array composed of the indicated items in the current array.
  *
  * @param {Integer}
- *            iStart The first item to copy.
+ *            fromIndex The first item to copy.
  * @param {Integer}
- *            [iStop] The index after the last item to copy.
+ *            [endIndex] The index after the last item to copy.
  * @return {Array} An array containing all items in the original array between the given indices.
  */
-Array.prototype._slice = function (iStart, iStop) {
-    iStop = iStop || this.length;
+Array.prototype._slice = function (fromIndex, endIndex) {
+    endIndex = endIndex || this.length;
     var aResult = [];
-    for(var i = iStart; i < iStop; i++) {
+    for(var i = fromIndex; i < endIndex; i++) {
         aResult.push(this[i]);
     }
     return aResult;
@@ -1843,7 +1875,7 @@ function __stringifyJson(obj) {
 }
 
 //
-var __isJSONDefined = typeof(JSON) !== "undefined" && (isFunction(JSON.parse) || isFunction(JSON.stringify));
+var __isJSONDefined = typeof(JSON) !== "undefined" && isFunction(JSON.parse) && isFunction(JSON.stringify);
 // alert("JSON already defined ? "+__isJSONDefined);
 
 function isJSONDefined() {

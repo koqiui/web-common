@@ -325,7 +325,7 @@ function AjaxCoreFn() {
     }
     //
     return this;
-};
+}
 
 //
 module.exports = {

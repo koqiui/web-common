@@ -109,6 +109,35 @@ describe('KeyMap', function () {
     }
 );
 
+describe('Array.insert...', function () {
+        it('insertBefore', function () {
+            console.log('---------- insertBefore -----------');
+            var arr = ['xxx', 'yyy', 'zzz'];
+            console.log(arr);
+            arr.insertBefore('000', 'xxx');
+            console.log(arr);
+            //
+            arr = ['xxx', 'yyy', 'zzz'];
+            arr.insertBefore('000', 'zzz');
+            console.log(arr);
+
+        });
+
+        it('insertAfter', function () {
+            console.log('---------- insertAfter -----------');
+            var arr = ['xxx', 'yyy', 'zzz'];
+            console.log(arr);
+            arr.insertAfter('000', 'xxx');
+            console.log(arr);
+            //
+            arr = ['xxx', 'yyy', 'zzz'];
+            arr.insertAfter('000', 'zzz');
+            console.log(arr);
+
+        });
+    }
+);
+
 describe('forEachTreeNode', function () {
         it('forEachTreeNode', function () {
             var treeData = [{

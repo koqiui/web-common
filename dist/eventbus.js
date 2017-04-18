@@ -3,11 +3,11 @@
  */
 var moduleName = 'EventBus';
 //----------------------------------------------
-var dumyHandler = function () {
-    console.trace('此事件处理函数已不存在');
-};
-
 function EventBusCoreFn(name) {
+    var dumyHandler = function () {
+        console.trace('此事件处理函数已不存在');
+    };
+    //
     var _name = name || '';
     var _handlers = {};
     //
