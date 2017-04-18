@@ -8,6 +8,7 @@ var axios = require('axios');
 var jajax = require('jquery').ajax;
 
 //
+var __ajaxSetted = false;
 var __ajaxBaseUrl = "";
 var __ajaxBeforeSendCallback = null;
 var __ajaxErrorCallbck = function (errMsg) {
@@ -288,6 +289,7 @@ function AjaxCoreFn() {
     this.go = function () {
         sendRequest();
     };
+    //
     {
         // 默认处理函数
         this.fail(function (errInfo, jqXHR, status) {
@@ -335,8 +337,13 @@ module.exports = {
     jajax: jajax,
 
     //
+    setted: function () {
+        return __ajaxSetted;
+    },
     baseUrl: function (baseUrl) {
         __ajaxBaseUrl = baseUrl || "";
+        //
+        __ajaxSetted = true;
     },
     errorCallback: function (errorCallback) {
         if(typeof errorCallback == 'function') {
