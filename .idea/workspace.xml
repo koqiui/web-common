@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d077fdf0-df2a-4925-8198-98cda50461f0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/ajax.js" afterPath="$PROJECT_DIR$/dist/ajax.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -19,18 +18,7 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="ajax.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/dist/ajax.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="161">
-              <caret line="344" column="10" lean-forward="false" selection-start-line="344" selection-start-column="10" selection-end-line="344" selection-end-column="10" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -181,8 +169,8 @@
         <option value="$PROJECT_DIR$/dist/utils.js" />
         <option value="$PROJECT_DIR$/dist/eventbus.js" />
         <option value="$PROJECT_DIR$/test/utils.spec.js" />
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/dist/ajax.js" />
+        <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
   </component>
@@ -399,7 +387,7 @@
       <workItem from="1492424273463" duration="1487000" />
       <workItem from="1492427299936" duration="1832000" />
       <workItem from="1492489121459" duration="332000" />
-      <workItem from="1492505980742" duration="8966000" />
+      <workItem from="1492505980742" duration="9000000" />
     </task>
     <task id="LOCAL-00001" summary="test -&gt; browser">
       <created>1491722342094</created>
@@ -562,11 +550,18 @@
       <option name="project" value="LOCAL" />
       <updated>1492520966056</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="coding just in CommonJs style">
+      <created>1492523181074</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1492523181074</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="93767000" />
+    <option name="totallyTimeSpent" value="93801000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1864" height="1096" extended-state="6" />
