@@ -15,5 +15,5 @@ module.exports = {
     EventBus: require('./eventbus'),
 
     Jqext: require('./jqext'),
-    H5file: require('h5file')
+    H5file: require('./h5file')
 };
