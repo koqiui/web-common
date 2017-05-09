@@ -12,5 +12,8 @@ module.exports = {
     Utils: require('./utils'),
     Ajax: require('./ajax'),
     Routes: require('./routes'),
-    EventBus: require('./eventbus')
+    EventBus: require('./eventbus'),
+
+    Jqext: require('./jqext'),
+    H5file: require('h5file')
 };

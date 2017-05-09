@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="d077fdf0-df2a-4925-8198-98cda50461f0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/index.js" afterPath="$PROJECT_DIR$/dist/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/utils.js" afterPath="$PROJECT_DIR$/dist/utils.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -19,6 +22,26 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="eventbus.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dist/eventbus.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="21">
+              <caret line="13" column="29" lean-forward="true" selection-start-line="13" selection-start-column="29" selection-end-line="13" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dist/index.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="17" column="29" lean-forward="true" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
@@ -40,12 +63,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Ajax.</find>
-      <find>Ajax.beforeSend</find>
-      <find>_beforeSendCallback</find>
-      <find>)).</find>
-      <find>Routes</find>
-      <find>__ajaxBeforeSend</find>
       <find>jajax</find>
       <find>isPhoneNumber</find>
       <find>isPwd</find>
@@ -70,6 +87,12 @@
       <find>utils</find>
       <find>dumyHandler</find>
       <find>indexOf</find>
+      <find>jquery</find>
+      <find>$</find>
+      <find>&quot;</find>
+      <find>H5FileUploader</find>
+      <find>$jq</find>
+      <find>isImageType</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -83,6 +106,12 @@
       <replace>__warnCallbck</replace>
       <replace>__ajaxWarnCallbck</replace>
       <replace>Utils</replace>
+      <replace>jquery</replace>
+      <replace>$jq</replace>
+      <replace>'</replace>
+      <replace>Util</replace>
+      <replace>$</replace>
+      <replace>Uploader</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -174,13 +203,15 @@
         <option value="$PROJECT_DIR$/test/browser/utils.test.js" />
         <option value="$PROJECT_DIR$/test/jslog.spec.js" />
         <option value="$PROJECT_DIR$/dist/jslog.js" />
-        <option value="$PROJECT_DIR$/dist/index.js" />
         <option value="$PROJECT_DIR$/gulpfile.js" />
         <option value="$PROJECT_DIR$/test/eventbus.spec.js" />
-        <option value="$PROJECT_DIR$/dist/utils.js" />
         <option value="$PROJECT_DIR$/dist/eventbus.js" />
         <option value="$PROJECT_DIR$/test/utils.spec.js" />
         <option value="$PROJECT_DIR$/dist/ajax.js" />
+        <option value="$PROJECT_DIR$/dist/utils.js" />
+        <option value="$PROJECT_DIR$/dist/jqext.js" />
+        <option value="$PROJECT_DIR$/dist/index.js" />
+        <option value="$PROJECT_DIR$/dist/h5file.js" />
         <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
@@ -226,7 +257,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -242,6 +272,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -256,14 +287,15 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\NodeWorks\web-common\test" />
-      <recent name="E:\NodeWk\web-common\test" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\NodeWk\web-common\test\mocha" />
       <recent name="E:\NodeWk\web-common\dist" />
       <recent name="E:\NodeWk\web-common\" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\NodeWorks\web-common\dist" />
+      <recent name="E:\NodeWorks\web-common\test" />
+      <recent name="E:\NodeWk\web-common\test" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -398,7 +430,10 @@
       <workItem from="1492424273463" duration="1487000" />
       <workItem from="1492427299936" duration="1832000" />
       <workItem from="1492489121459" duration="332000" />
-      <workItem from="1492505980742" duration="9272000" />
+      <workItem from="1492505980742" duration="9791000" />
+      <workItem from="1494228529288" duration="515000" />
+      <workItem from="1494229158625" duration="681000" />
+      <workItem from="1494304757946" duration="4656000" />
     </task>
     <task id="LOCAL-00001" summary="test -&gt; browser">
       <created>1491722342094</created>
@@ -575,23 +610,30 @@
       <option name="project" value="LOCAL" />
       <updated>1492523242438</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="coding just in CommonJs style">
+      <created>1492523485680</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1492523485680</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="94073000" />
+    <option name="totallyTimeSpent" value="100444000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1864" height="1096" extended-state="6" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14285715" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14285715" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.44771573" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.38071066" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39979756" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -621,12 +663,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/node_modules/babel-runtime/node_modules/core-js/library/modules/es6.object.is.js" />
-    <entry file="file://$PROJECT_DIR$/node_modules/babel-runtime/node_modules/core-js/library/modules/_export.js" />
-    <entry file="file://$PROJECT_DIR$/node_modules/lodash/isObject.js" />
-    <entry file="file://$PROJECT_DIR$/node_modules/lodash/isDate.js" />
-    <entry file="file://$PROJECT_DIR$/node_modules/lodash/isEmpty.js" />
-    <entry file="file://$PROJECT_DIR$/node_modules/lodash/drop.js" />
     <entry file="file://$PROJECT_DIR$/node_modules/lodash/divide.js" />
     <entry file="file://$PROJECT_DIR$/node_modules/lodash/each.js" />
     <entry file="file://$PROJECT_DIR$/node_modules/lodash/forEach.js" />
@@ -730,13 +766,6 @@
     <entry file="file://$PROJECT_DIR$/test/browser/utils.test.js" />
     <entry file="file://$PROJECT_DIR$/test/jslog.spec.js" />
     <entry file="file://$PROJECT_DIR$/dist/jslog.js" />
-    <entry file="file://$PROJECT_DIR$/dist/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="14" column="35" lean-forward="false" selection-start-line="14" selection-start-column="35" selection-end-line="14" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test/ajax.spec.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2163">
@@ -770,7 +799,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
           <caret line="7" column="18" lean-forward="false" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -778,7 +806,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
           <caret line="160" column="21" lean-forward="false" selection-start-line="160" selection-start-column="21" selection-end-line="160" selection-end-column="21" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -786,15 +813,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="245">
           <caret line="156" column="3" lean-forward="false" selection-start-line="156" selection-start-column="3" selection-end-line="156" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/eventbus.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1239">
-          <caret line="13" column="29" lean-forward="true" selection-start-line="13" selection-start-column="29" selection-end-line="13" selection-end-column="29" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -802,24 +820,91 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="186">
           <caret line="69" column="32" lean-forward="false" selection-start-line="69" selection-start-column="32" selection-end-line="69" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/jquery/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/jquery/src/ajax/xhr.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2800">
+          <caret line="17" column="15" lean-forward="true" selection-start-line="17" selection-start-column="15" selection-end-line="17" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/jquery/dist/core.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="71">
+          <caret line="454" column="25" lean-forward="true" selection-start-line="454" selection-start-column="25" selection-end-line="454" selection-end-column="25" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/jquery/dist/jquery.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="188" column="56" lean-forward="false" selection-start-line="188" selection-start-column="50" selection-end-line="188" selection-end-column="56" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dist/utils.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
-          <caret line="917" column="0" lean-forward="false" selection-start-line="917" selection-start-column="0" selection-end-line="917" selection-end-column="0" />
+        <state relative-caret-position="534">
+          <caret line="4177" column="4" lean-forward="false" selection-start-line="4177" selection-start-column="4" selection-end-line="4177" selection-end-column="4" />
           <folding>
-            <marker date="1492518993042" expanded="true" signature="104519:104596" ph="..." />
+            <marker date="1494308144922" expanded="true" signature="104519:104596" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dist/ajax.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="344" column="10" lean-forward="false" selection-start-line="344" selection-start-column="10" selection-end-line="344" selection-end-column="10" />
+        <state relative-caret-position="386">
+          <caret line="334" column="6" lean-forward="true" selection-start-line="334" selection-start-column="6" selection-end-line="334" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/jqext.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="327">
+          <caret line="49" column="2" lean-forward="false" selection-start-line="49" selection-start-column="2" selection-end-line="49" selection-end-column="2" />
+          <folding>
+            <element signature="e#0#43#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/h5file.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="434" column="15" lean-forward="false" selection-start-line="434" selection-start-column="15" selection-end-line="434" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/eventbus.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21">
+          <caret line="13" column="29" lean-forward="true" selection-start-line="13" selection-start-column="29" selection-end-line="13" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="17" column="29" lean-forward="true" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
           <folding />
         </state>
       </provider>

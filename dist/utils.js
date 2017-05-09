@@ -4128,6 +4128,7 @@ module.exports = {
 
     isNoE: isNullOrEmpty,
     isNoB: isNullOrBlank,
+    isNum: isNum,
 
     isIntStr: isIntStr,
     isNatualStr: isNatualStr,
