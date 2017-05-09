@@ -4121,6 +4121,7 @@ module.exports = {
     isNumber: isNumber,
     isBoolean: isBoolean,
     isFunction: isFunction,
+    isArray: isArray,
     isDate: isDate,
 
     isPlainObject: isPlainObject,
