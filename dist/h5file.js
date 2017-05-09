@@ -238,7 +238,7 @@ function Uploader(options) {
     };
     //
     this.accept = function (accept) {
-        if(isArray(accept)) {
+        if(utils.isArray(accept)) {
             _accept = accept;
         } else {
             _accept = Array.prototype.slice.call(arguments, 0).join(', ');
