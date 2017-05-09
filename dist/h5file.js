@@ -10,7 +10,7 @@ var jqext = require('./jqext');
 //
 var $ = jqext.$;
 var $id = jqext.$id;
-
+var KeyMap = utils.KeyMap;
 //
 var Util = {
     //读取选择的图片文件，转为ImageDataUrl
@@ -185,7 +185,7 @@ function Uploader(options) {
         //创建file input 控件
         _fileCtrl = document.createElement('input');
         _fileCtrl.type = 'file';
-        _fileCtrl.id = 'file-' + genUniqueStr();
+        _fileCtrl.id = 'file-' + utils.genUniqueStr();
         //
         document.body.appendChild(_fileCtrl);
         //
