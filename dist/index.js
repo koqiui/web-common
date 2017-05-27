@@ -13,6 +13,7 @@ module.exports = {
     Ajax: require('./ajax'),
     Routes: require('./routes'),
     EventBus: require('./eventbus'),
+    Store: require('./store'),
 
     Jqext: require('./jqext'),
     H5file: require('./h5file')

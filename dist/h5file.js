@@ -49,6 +49,21 @@ var Util = {
             }
         }
     },
+    //显示给定的imagefile到给定的imag对象
+    showImageFile: function (imageFile, imgDom) {
+        var jqImage = $id(imgDom);
+        if(jqImage.length !== 1) {
+            return;
+        }
+        var image = jqImage.get(0);
+        if(image.tagName !== 'IMG') {
+            return;
+        }
+        //
+        Util.readImageFileAsDataUrl(imageFile, function (dataUrl) {
+            image.src = dataUrl;
+        });
+    },
     //读取文件，返回FormData对象
     readFileItemsAsFromData: function (fileItems, name) {
         fileItems = fileItems || [];
