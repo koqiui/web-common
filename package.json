@@ -1,6 +1,6 @@
 {
     "name": "web-common",
-    "version": "1.0.31",
+    "version": "1.0.32",
     "description": "web common js",
     "main": "dist/index.js",
     "scripts": {
@@ -17,9 +17,9 @@
     },
     "homepage": "https://github.com/koqiui/web-common#readme",
     "dependencies": {
-        "axios": "^0.16.0",
-        "jquery": "^3.2.1",
-        "lodash": "^4.17.4"
+        "axios": "0.16.0",
+        "jquery": "2.2.3",
+        "lodash": "4.17.4"
     },
     "devDependencies": {
         "art-template": "^3.1.3",
