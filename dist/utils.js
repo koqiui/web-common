@@ -641,20 +641,37 @@ Array.prototype.clear = function (clearFunc, thisArg) {
 };
 
 /**
- * Appends any number of items onto the end of the array.
+ * flatten array elements that are self arrays
+ * @returns {Array} new Array
  */
-Array.prototype.append = function () {
-    for(var i = 0, c = arguments.length, len = this.length; i < c; i++) {
-        var tmpItem = arguments[i];
-        if(isArray(tmpItem)) {
-            var tmpItems = tmpItem;
-            for(var j = 0, k = tmpItems.length; j < k; j++) {
-                this[len++] = tmpItems[j];
+Array.prototype.flatten = function () {
+    var retArray = [];
+    var tmpIndex = 0;
+    for(var i = 0, ilen = this.length; i < ilen; i++) {
+        var el = this[i];
+        if(isArray(el)) {
+            //处理为数组的元素
+            var els = el;
+            //console.log(els);
+            for(var j = 0, jlen = els.length; j < jlen; j++) {
+                retArray[tmpIndex++] = els[j];
             }
         } else {
-            this[len++] = tmpItem;
+            retArray[tmpIndex++] = el;
         }
     }
+    //
+    return retArray;
+};
+
+/**
+ * Appends any number of items onto the end of the array.
+ */
+Array.prototype.append = function (/*el1, el2, ... */) {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args = args.flatten();
+    var argsx = [this.length, 0].concat(args);
+    Array.prototype.splice.apply(this, argsx);
 };
 
 /**
@@ -667,18 +684,11 @@ Array.prototype.add = function () {
 /**
  * Prepend any number of items onto the start of the array.
  */
-Array.prototype.prepend = function () {
-    for(var i = 0, c = arguments.length; i < c; i++) {
-        var tmpItem = arguments[i];
-        if(isArray(tmpItem)) {
-            var tmpItems = tmpItem;
-            for(var j = 0, k = tmpItems.length; j < k; j++) {
-                this.splice(0, 0, tmpItems[j]);
-            }
-        } else {
-            this.splice(0, 0, tmpItem);
-        }
-    }
+Array.prototype.prepend = function (/*el1, el2, ... */) {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args = args.flatten();
+    var argsx = [0, 0].concat(args);
+    Array.prototype.splice.apply(this, argsx);
 };
 
 /**
