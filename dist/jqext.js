@@ -299,75 +299,6 @@ var HiddenForm = {
     }
 };
 
-// 文件下载---------------------------------------------------------
-var __fileDownloaderCtrlPrefix = "-file-downloader-ctrl-";
-//
-function downloadFile(linkCtrlOrUrl, params) {
-    if(linkCtrlOrUrl == null) {
-        return false;
-    }
-    var targetIframeDivId = __fileDownloaderCtrlPrefix + "div";
-    var targetIframeDiv = document.getElementById(targetIframeDivId);
-    if(targetIframeDiv == null) {
-        targetIframeDiv = document.createElement("div");
-        targetIframeDiv.style.display = "none";
-        targetIframeDiv.id = targetIframeDivId;
-        targetIframeDiv.style.position = "absolute";
-        targetIframeDiv.style.left = "-9999";
-        targetIframeDiv.style.top = "-9999";
-        targetIframeDiv.style.width = "1px";
-        targetIframeDiv.style.height = "1px";
-        targetIframeDiv = document.body.appendChild(targetIframeDiv);
-    }
-    targetIframeDiv.style.display = "none";
-    //
-    var targetIframeName = __fileDownloaderCtrlPrefix + "iframe";
-    var targetIframe = document.getElementById(targetIframeName);
-    if(targetIframe == null) {
-        var html = "<iframe id='" + targetIframeName + "' name='" + targetIframeName + "' src='about:blank' style='display:none;position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;'></iframe>";
-        targetIframeDiv.innerHTML = html;
-        targetIframe = document.getElementById(targetIframeName);
-    } else {
-        targetIframe.src = "about:blank";
-    }
-    //
-    var baseUrl = null;
-    var linkCtrl = linkCtrlOrUrl;
-    //
-    if(typeof linkCtrlOrUrl == "string") {
-        linkCtrl = document.getElementById(linkCtrlOrUrl);
-    }
-    if(linkCtrl == null) {
-        baseUrl = linkCtrlOrUrl;
-    } else {
-        baseUrl = linkCtrl.href;
-        linkCtrl.target = targetIframeName;
-    }
-    params = params || {};
-    // 强制下载文本标记
-    if(typeof params["downloadText"] == "undefined") {
-        params["downloadText"] = true;
-    }
-    if(params["failMsgCallback"] == null) {
-        params["failMsgCallback"] = "showFailDownloadMsg";
-    }
-    var fullUrl = utils.makeUrl(baseUrl, params);
-    targetIframe.src = fullUrl;
-    //
-    return false;
-}
-
-// 下载资源专用===========================================>>>
-function showFailDownloadMsg(failMsgInfo) {
-    alert("" + failMsgInfo.message);
-}
-
-function downloadLink(link) {
-    return downloadFile(link, {
-        failMsgCallback: "showFailDownloadMsg"
-    });
-}
-
 //
 module.exports = {
     moduleName: moduleName,
@@ -379,8 +310,5 @@ module.exports = {
     isEventFromWithin: isEventFromWithin,
     borrowOrReturnDomNode: borrowOrReturnDomNode,
     //
-    HiddenForm: HiddenForm,
-    //
-    downloadFile: downloadFile,
-    downloadLink: downloadLink
+    HiddenForm: HiddenForm
 };

@@ -3799,12 +3799,18 @@ function downloadFile(linkCtrlOrUrl, params) {
     return false;
 }
 
+// 下载资源专用===========================================>>>
+function showFailDownloadMsg(failMsgInfo) {
+    alert("" + failMsgInfo.message);
+}
+
 function downloadLink(link) {
     return downloadFile(link, {
         failMsgCallback: "showFailDownloadMsg"
     });
 }
 
+//---------------------------------------------------------
 var ValidateRules = {
     required: function (value) {
         // 是否为空白字符串
@@ -4209,5 +4215,7 @@ module.exports = {
     isInBrowser: isInBrowser,
     getGlobal: getGlobal,
     makeProxy: makeProxy,
+    downloadFile: downloadFile,
+    downloadLink: downloadLink,
     Browser: Browser
 };
