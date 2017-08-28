@@ -105,6 +105,22 @@ function borrowOrReturnDomNode(targetNode, toBorrow) {
     return targetNode;
 }
 
+// 显示图片原图查看box
+function showImageViewBox(imgSrc) {
+    if (!$.colorbox) {
+        utils.setPageUrl(imgSrc, '_blank');
+        return;
+    }
+    var imgHtml = '<img src="{0}"  />'.format(imgSrc);
+    var maxWidth = $(window).width() - 40;
+    var maxHeight = $(window).height() - 40;
+    $.colorbox({
+        html : imgHtml,
+        maxWidth : maxWidth,
+        maxHeight : maxHeight
+    });
+}
+
 // 隐藏的表单
 function HiddenFormCoreFn() {
     var _formDom = null;
@@ -309,6 +325,7 @@ module.exports = {
     //
     isEventFromWithin: isEventFromWithin,
     borrowOrReturnDomNode: borrowOrReturnDomNode,
+    showImageViewBox : showImageViewBox,
     //
     HiddenForm: HiddenForm
 };
