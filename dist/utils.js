@@ -1445,6 +1445,58 @@ function copyAsArray(srcArray) {
     return retArray;
 }
 
+/**
+ *
+ * @param src
+ * @param dest
+ * @param propFilter function propFilter(nameOrIndex, value, parentNameOrIndex, parent)
+ * @param nameOrIndex
+ * @param parentNameOrIndex
+ * @param parent
+ * @returns {*}
+ */
+function copyByFilter(src, dest, propFilter, nameOrIndex, parentNameOrIndex, parent) {
+    if(typeof dest == 'function') {
+        parent = parentNameOrIndex || null;
+        parentNameOrIndex = nameOrIndex || null;
+        nameOrIndex = propFilter || null;
+        propFilter = dest;
+        dest = null;
+    }
+    if(src == null) {
+        return dest || null;
+    }
+    //
+    var arrFlag = isArray(src);
+    if(dest == null) {
+        dest = arrFlag ? [] : {};
+    }
+    //
+    if(arrFlag) {
+        for(var i = 0, arrLen = src.length; i < arrLen; i++) {
+            var tmpSrcEl = src[i];
+            var tmpSrcVal = tmpSrcEl;
+            if(tmpSrcEl != null) {
+                tmpSrcVal = copyByFilter(tmpSrcEl, null, propFilter, i, nameOrIndex, src);
+            }
+            if(typeof tmpSrcVal !== 'undefined') {
+                dest.push(tmpSrcVal);
+            }
+        }
+    } else if(isPlainObject(src)) {
+        for(var key in src) {
+            var tmpSrcVal = src[key];
+            tmpSrcVal = propFilter(key, tmpSrcVal, nameOrIndex, src);
+            if(typeof tmpSrcVal !== 'undefined') {
+                dest[key] = tmpSrcVal;
+            }
+        }
+    } else {
+        dest = (nameOrIndex != null) ? propFilter(nameOrIndex, src, parentNameOrIndex, parent) : src;
+    }
+    return dest;
+}
+
 // 声明名字空间
 function declare(namespace) {
     if(typeof namespace != "string") {
@@ -4164,6 +4216,7 @@ module.exports = {
     replace: replace,
     merge: merge,
     copyAsArray: copyAsArray,
+    copyByFilter: copyByFilter,
     moveArrayElementsAt: moveArrayElementsAt,
     compareArrays: compareArrays,
     makeDiffHoursStr: makeDiffHoursStr,
