@@ -23,17 +23,17 @@ module.exports = {
             var path = routeMap.path;
             var comp = routeMap.component;
             if(comp == null) {
-                window.console.error("找不到路由 " + path + " 对应的组件（确认是否导入了指定组件）！");
+                console.error("找不到路由 " + path + " 对应的组件（确认是否导入了指定组件）！");
                 continue;
             }
             else if(__checkDuplicates) {
                 var existed = __routeMapAll[path];
                 if(existed != null) {
                     if(comp == existed) {
-                        window.console.debug("路由重复：" + path + " => " + (comp.name || "<未命名>"));
+                        console.debug("路由重复：" + path + " => " + (comp.name || "<未命名>"));
                     }
                     else {
-                        window.console.error("路由覆盖：" + path + " => " + (comp.name || "<未命名>") + " 要覆盖 " + (existed.name || "<未命名>"));
+                        console.error("路由覆盖：" + path + " => " + (comp.name || "<未命名>") + " 要覆盖 " + (existed.name || "<未命名>"));
                     }
                     //
                     continue;
