@@ -10,12 +10,15 @@ var jajax = require('jquery').ajax;
 //
 var __ajaxSetted = false;
 var __ajaxBaseUrl = "";
+var __ajaxTimeout = 0;
 var __ajaxBeforeSendCallback = null;
 var __ajaxErrorCallbck = function (errMsg) {
     console.error(errMsg);
 };
 //
 function AjaxCoreFn() {
+    var THIS = this;
+    //
     var _baseUrl = __ajaxBaseUrl;
     var _cache = false;
     var _async = true;
@@ -28,7 +31,7 @@ function AjaxCoreFn() {
     //
     var _params = {};
     var _data = {};
-    var _timeout = 0;
+    var _timeout = __ajaxTimeout;
     //
     var _beforeSendCallback = null;
     var _doneHandler = null;
@@ -38,6 +41,9 @@ function AjaxCoreFn() {
     var _statusMessage = {};
     //
     var _alwaysHandler = null;
+    //
+    var _triggerStates = {};
+
     // var logger = console && console.log ? console.log : null;
     this.baseUrl = function (baseUrl) {
         _baseUrl = baseUrl || "";
@@ -239,6 +245,9 @@ function AjaxCoreFn() {
         //
         ajax.done(function (data, type, jqXHR) {
             if(typeof _doneHandler == "function") {
+                if(_triggerStates["done"] == true) {
+                    return;
+                }
                 _doneHandler(data, jqXHR);
             }
         });
@@ -271,6 +280,9 @@ function AjaxCoreFn() {
                 continueNext = handleResult !== false;
             }
             if(continueNext && _failHandler != null) {
+                if(_triggerStates["fail"] == true) {
+                    return;
+                }
                 if(_failMessage) {
                     errInfo.message = _failMessage;
                 }
@@ -280,10 +292,33 @@ function AjaxCoreFn() {
         //
         if(_alwaysHandler != null) {
             ajax.always(function (jqXHR, type, statusText) {
+                if(_triggerStates["always"] == true) {
+                    return;
+                }
                 _alwaysHandler(jqXHR);
             });
         }
     }
+
+    //event:done, fail, always
+    this.trigger = function (event, result, jqXHR) {
+        if(event == "done") {
+            if(typeof _doneHandler == "function") {
+                _triggerStates["done"] = true;
+                _doneHandler(result, jqXHR);
+            }
+        } else if(event == "fail") {
+            if(typeof _failHandler == "function") {
+                _triggerStates["fail"] = true;
+                _failHandler(result, jqXHR);
+            }
+        } else if(event == "always") {
+            if(typeof _alwaysHandler == "function") {
+                _triggerStates["always"] = true;
+                _alwaysHandler(jqXHR);
+            }
+        }
+    };
 
     //
     this.go = function () {
@@ -345,11 +380,15 @@ module.exports = {
         //
         __ajaxSetted = true;
     },
+    timeout: function (timeout) {
+        __ajaxTimeout = timeout;
+    },
     errorCallback: function (errorCallback) {
         if(typeof errorCallback == 'function') {
             __ajaxErrorCallbck = errorCallback;
         }
     },
+    //
     beforeSend: function (callback) {
         __ajaxBeforeSendCallback = callback || null;
     },

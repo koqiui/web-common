@@ -866,8 +866,7 @@ Array.prototype.indexOf = function (vItem, fromIndex, isFunc) {
     if(typeof fromIndex == "function") {
         isFunc = fromIndex;
         fromIndex = defaultIndex;
-    }
-    else if(fromIndex == null || fromIndex < 0) {
+    } else if(fromIndex == null || fromIndex < 0) {
         fromIndex = defaultIndex;
     }
     var i;
@@ -944,8 +943,7 @@ Array.prototype.lastIndexOf = function (vItem, fromIndex, isFunc) {
     if(typeof fromIndex == "function") {
         isFunc = fromIndex;
         fromIndex = defaultIndex;
-    }
-    else if(fromIndex == null || fromIndex >= this.length) {
+    } else if(fromIndex == null || fromIndex >= this.length) {
         fromIndex = defaultIndex;
     }
     //
@@ -993,8 +991,7 @@ Array.prototype.pluck = function (propName) {
     var fnExec = null;
     if(typeof propName == 'function') {
         fnExec = propName;
-    }
-    else {
+    } else {
         fnExec = function (vItem) {
             return vItem == null ? undefined : vItem[propName];
         };
@@ -2838,7 +2835,7 @@ function speakText(text, useProxy, failToDefaultAudio) {
         }
     } else {
         // 创建一个 SpeechSynthesisUtterance的实例
-        var newUtterance = new SpeechSynthesisUtterance();
+        var newUtterance = new window.SpeechSynthesisUtterance();
         // 设置文本
         newUtterance.text = text;
         // 添加到队列
@@ -3095,6 +3092,32 @@ function extractUrlParams(url, toDecode) {
     return parseUrl(url, toDecode).params;
 }
 
+// 获取当前页面的相对于应用根路径的appRelUrl（以及 #后面的 hashUrl）
+// getAppRelUrlInfo('http://long.wap-mall.ushangupu.cn/x/y/z?name=111#!/vmarket?title=%E5%B0%8F%E5%BA%97', '/x', '!')
+// => appRelUrl : /y/z?name=111
+// => hashUrl : /vmarket?title=小店
+function getAppRelUrlInfo(fullUrl, appBaseUrl, hashExtPrefix) {
+    hashExtPrefix = hashExtPrefix || "";
+    appBaseUrl = appBaseUrl || "";
+    fullUrl = fullUrl || window.location.href;
+    //
+    var urlInfo = parseUrl(fullUrl);
+    var appRelUrl = urlInfo.url;
+    if(appBaseUrl && appRelUrl.startsWith(appBaseUrl)) {
+        appRelUrl = appRelUrl.substring(appBaseUrl.length);
+    }
+    //
+    var hashUrl = urlInfo.hash || null;
+    if(hashUrl && hashExtPrefix && hashUrl.startsWith(hashExtPrefix)) {
+        hashUrl = hashUrl.substring(hashExtPrefix.length);
+    }
+    //
+    return {
+        appRelUrl: appRelUrl,
+        hashUrl: hashUrl
+    };
+}
+
 /**
  * 把参数map对象追加到baseUrl后，形成新的url
  */
@@ -3342,6 +3365,20 @@ function escapeHtmlStr(srcStr) {
     htmlStr = replace(htmlStr, ">", "&gt;");
     htmlStr = replace(htmlStr, "\n", "<br>");
     return htmlStr;
+}
+
+function escapeXmlValueStr(strValue) {
+    if(strValue == null) {
+        return null;
+    }
+    //
+    strValue = replace(strValue, "&", "&amp;");
+    strValue = replace(strValue, "'", "&apos;");
+    strValue = replace(strValue, "\"", "&quot;");
+    strValue = replace(strValue, "<", "&lt;");
+    strValue = replace(strValue, ">", "&gt;");
+    //
+    return strValue;
 }
 
 // 加载js文件（具有防止重复加载功能）
@@ -4036,8 +4073,7 @@ function forEachTreeNode(treeNodes, callback, childrenKey) {
         treeNodes.forEach(function (treeNode, i) {
             forEachTreeNode(treeNode, callback, childrenKey);
         });
-    }
-    else {
+    } else {
         var treeNode = treeNodes;
         callback(treeNode);
         //
@@ -4045,8 +4081,7 @@ function forEachTreeNode(treeNodes, callback, childrenKey) {
         if(isFunction(childrenKey)) {
             var childrenFn = childrenKey;
             children = childrenFn(treeNode);
-        }
-        else {
+        } else {
             children = treeNode[childrenKey];
         }
         forEachTreeNode(children, callback, childrenKey);
@@ -4180,6 +4215,38 @@ function isWeiXinEnv() {
     return Browser.envName === "WX";
 }
 
+// -------- 版本解析与比较 ---------
+var __version_pattern = /([0-9]+)\.([0-9]+)(\.([0-9]+))?(.*)/;
+
+function parseVersion(version) {
+    var result = __version_pattern.exec(version);
+    //
+    return result == null ? null : {
+        major: parseInt(result[1], 10),
+        minor: parseInt(result[2], 10),
+        patch: parseInt(result[4], 10)
+    };
+}
+
+function compareVersion(v1, v2) {
+    if(typeof v1 == 'string') {
+        v1 = parseVersion(v1);
+    }
+    if(typeof v2 == 'string') {
+        v2 = parseVersion(v2);
+    }
+    if(v1.major != v2.major) {
+        return v1.major - v2.major;
+    }
+    if(v1.minor != v2.minor) {
+        return v1.minor - v2.minor;
+    }
+    if(v1.patch != v2.patch) {
+        return v1.patch - v2.patch;
+    }
+    return 0;
+}
+
 module.exports = {
     moduleName: moduleName,
     //
@@ -4210,6 +4277,8 @@ module.exports = {
     isIdentity: isIdentity,
     checkPassword: checkPassword,
     getPasswordStrength: getPasswordStrength,
+    ParseInt: ParseInt,
+    ParseFloat: ParseFloat,
 
     ValidateRules: ValidateRules,
 
@@ -4234,6 +4303,9 @@ module.exports = {
     getPageInfo: getPageInfo,
     setPageTitle: setPageTitle,
     setPageUrl: setPageUrl,
+    escapeHtmlStr: escapeHtmlStr,
+    escapeXmlValueStr: escapeXmlValueStr,
+
     openWindowForHtml: openWindowForHtml,
     escapeHtmlStr: escapeHtmlStr,
     calcTrackerDim: calcTrackerDim,
@@ -4257,6 +4329,7 @@ module.exports = {
     extractUrlParams: extractUrlParams,
     jsonToUrlParams: jsonToUrlParams,
 
+    getAppRelUrlInfo: getAppRelUrlInfo,
     getServerBase: getServerBase,
     getServerBasedUrl: getServerBasedUrl,
     getWebSocket: getWebSocket,
@@ -4270,5 +4343,7 @@ module.exports = {
     makeProxy: makeProxy,
     downloadFile: downloadFile,
     downloadLink: downloadLink,
-    Browser: Browser
+    Browser: Browser,
+    parseVersion: parseVersion,
+    compareVersion: compareVersion
 };

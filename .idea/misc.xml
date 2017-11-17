@@ -4,6 +4,10 @@
     <option name="defaultSettings" value="true" />
     <option name="id" value="1491398365619" />
     <option name="name" value="default" />
+    <option name="pathToConfigFileJS" value="E:/Workspaces/eclipse-jee-neon-swbao/swb-root/x-ref-files/Eclipse code-format [JavaScript] - 240.xml" />
+    <option name="pathToConfigFileJava" value="E:/Workspaces/eclipse-jee-neon-swbao/swb-root/x-ref-files/Eclipse code-format [Java] - 240.xml" />
+    <option name="selectedJavaProfile" value="Eclipse [Java] - 240" />
+    <option name="selectedJavaScriptProfile" value="Eclipse [JavaScript] - 240" />
   </component>
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES5" />
@@ -34,10 +38,6 @@
         </selected-state>
       </profile-state>
     </entry>
-  </component>
-  <component name="VagrantProjectSettings">
-    <option name="instanceFolder" value="" />
-    <option name="provider" value="" />
   </component>
   <component name="masterDetails">
     <states>
