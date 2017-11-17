@@ -4289,6 +4289,7 @@ module.exports = {
     moveArrayElementsAt: moveArrayElementsAt,
     compareArrays: compareArrays,
     makeDiffHoursStr: makeDiffHoursStr,
+    sortArray: sortArray,
     sortByKey: sortByKey,
     asTimeout: asTimeout,
     repeatChecker: repeatChecker,
