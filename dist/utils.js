@@ -1429,6 +1429,88 @@ Array.prototype.findDuplicated = function (eqlFunc) {
     return retArray;
 }
 
+//模拟从表中获取分页数据（可指定单列的排序条件）
+function toPaginatedData(dataRows, pagination, sortItem) {
+    dataRows = dataRows || [];
+    pagination = pagination || {
+            pageSize: 10,
+            pageNumber: 1
+        };
+    sortItem = sortItem || null;
+    //
+    if(sortItem != null) {
+        //排序
+        var sortPair = sortItem.split(":");
+        var sortProp = sortPair[0].trim();
+        var sortOrder = sortPair[1].trim().toUpperCase();
+        if(sortOrder.startsWith("DESC")) {
+            sortOrder = "DESC";
+        } else {
+            sortOrder = "ASC"
+        }
+        //
+        var sortFn = function (dataRow1, dataRow2) {
+            var val1 = dataRow1[sortProp] || null;
+            var val2 = dataRow2[sortProp] || null;
+            var retSign = sortOrder == "DESC" ? -1 : 1;
+            if(val1 == null) {
+                if(val2 == null) {
+                    return 0;
+                } else {
+                    return -1 * retSign;
+                }
+            } else {
+                if(val2 == null) {
+                    return 1 * retSign;
+                } else if(val1 == val2) {
+                    return 0;
+                } else {
+                    return val1 > val2 ? 1 * retSign : -1 * retSign;
+                }
+            }
+        };
+        //
+        dataRows = sortArray(dataRows, sortFn);
+        //console.log(dataRows);
+    }
+    //
+    var pageSize = pagination.pageSize;
+    if(pageSize < 1) {
+        pageSize = 1;
+    }
+    var pageNumber = pagination.pageNumber || 1;
+    var totalCount = dataRows.length;
+    var pageCount = Math.ceil(totalCount * 1.0 / pageSize);
+    //
+    //console.log("总页数：" + pageCount);
+    //
+    if(pageNumber > pageCount) {
+        pageNumber = pageCount;
+    }
+    if(pageNumber < 1) {
+        pageNumber = 1;
+    }
+    //
+    // console.log("页码：" + pageNumber);
+    //
+    var pageRows = [];
+    if(totalCount > 1) {
+        var startIndex = (pageNumber - 1) * pageSize;
+        var endIndex = Math.min(startIndex + pageSize, totalCount);
+        pageRows = dataRows.slice(startIndex, endIndex);
+    }
+    //console.log(pageRows);
+    //
+    return {
+        pagination: {
+            totalCount: totalCount,
+            pageSize: pageSize,
+            pageNumber: pageNumber
+        },
+        rows: pageRows
+    };
+}
+
 /**
  * 复制元素值或引用（从而返回一个新数组）
  */
@@ -4284,6 +4366,7 @@ module.exports = {
 
     replace: replace,
     merge: merge,
+    toPaginatedData: toPaginatedData,
     copyAsArray: copyAsArray,
     copyByFilter: copyByFilter,
     moveArrayElementsAt: moveArrayElementsAt,
