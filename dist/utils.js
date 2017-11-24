@@ -4390,6 +4390,7 @@ module.exports = {
     escapeHtmlStr: escapeHtmlStr,
     escapeXmlValueStr: escapeXmlValueStr,
 
+    openWindow: openWindow,
     openWindowForHtml: openWindowForHtml,
     escapeHtmlStr: escapeHtmlStr,
     calcTrackerDim: calcTrackerDim,
