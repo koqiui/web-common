@@ -91,12 +91,12 @@ module.exports = {
                 //注册路由时注册组件
                 __registFunction(comp);
                 if(__showDebug) {
-                    console.trace('路由 ' + path + ' ' + (desc == null ? '' : '(' + desc + ')') + ' <' + name + '> 已加入 并且 已【注册组件】');
+                    console.debug('路由 ' + path + ' ' + (desc == null ? '' : '(' + desc + ')') + ' <' + name + '> 已加入 并且 已【注册组件】');
                 }
             }
             else {
                 if(__showDebug) {
-                    console.trace('路由 ' + path + ' ' + (desc == null ? '' : '(' + desc + ')') + ' <' + name + '> 已加入');
+                    console.debug('路由 ' + path + ' ' + (desc == null ? '' : '(' + desc + ')') + ' <' + name + '> 已加入');
                 }
             }
         }
