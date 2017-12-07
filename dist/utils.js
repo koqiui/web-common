@@ -30,8 +30,19 @@ function isNumber(obj) {
     return obj != null && (typeof obj === "number" || obj instanceof Number);
 }
 
-function isNum(obj) {
-    return isNumber(obj) && isFinite(obj);
+function isNum(obj, frgs) {
+    var passed = isNumber(obj) && isFinite(obj);
+    if(passed && typeof frgs == 'number') {
+        var tmpVal = obj.toFixed(frgs);
+        if(tmpVal != obj) {
+            passed = false;
+        }
+    }
+    return passed;
+}
+
+function isInt(obj) {
+    return isNum(obj, 0);
 }
 
 function isBoolean(obj) {
@@ -589,17 +600,21 @@ function ParseInt(x) {
         }
     }
     var val = parseInt(x, 10);
-    return isNaN(val) ? null : val;
+    return (isNaN(val) || !isFinite(val)) ? null : val;
 }
-
-function ParseFloat(x) {
+//scale保留小数点位数
+function ParseFloat(x, frgs) {
     if(isString(x)) {
         if(x.isBlank()) {
             return null;
         }
     }
     var val = parseFloat(x);
-    return isNaN(val) ? null : val;
+    val = (isNaN(val) || !isFinite(val)) ? null : val;
+    if(val != null && typeof frgs == 'number') {
+        val = val.toFixed(frgs);
+    }
+    return val;
 }
 
 Number.prototype.round = function (frgs) {
@@ -1439,11 +1454,21 @@ function toPaginatedData(dataRows, pagination, sortItem) {
     sortItem = sortItem || null;
     //
     if(sortItem != null) {
+        var sortProp, sortOrder;
         //排序
-        var sortPair = sortItem.split(":");
-        var sortProp = sortPair[0].trim();
-        var sortOrder = sortPair[1].trim().toUpperCase();
-        if(sortOrder.startsWith("DESC")) {
+        if(typeof sortItem == 'string') {
+            var sortPair = sortItem.split(":");
+            sortProp = sortPair[0].trim();
+            sortOrder = sortPair.length > 1 ? sortPair[1] : null;
+        }
+        else {
+            sortProp = sortItem['field'].trim();
+            sortOrder = sortItem['order'];
+        }
+        if(sortOrder != null) {
+            sortOrder = sortOrder.trim().toUpperCase();
+        }
+        if(sortOrder != null && sortOrder.startsWith("DESC")) {
             sortOrder = "DESC";
         } else {
             sortOrder = "ASC"
@@ -2050,6 +2075,10 @@ if(isFunction(JSON.stringify)) {
 
 //
 function merge(original, overwrite, includeFunc) {
+    if(arguments.length == 1) {
+        overwrite = original;
+        original = isArray(overwrite) ? [] : {};
+    }
     original = original || {};
     includeFunc = includeFunc !== false;
     var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -2314,7 +2343,7 @@ KeyMap.from = function (json) {
     return keyMap;
 };
 
-//
+// ！！！注意：浏览器表现不一致（所以不可靠）
 function sortByKey(json, compFunc) {
     var retJson = null;
     //
@@ -2444,10 +2473,16 @@ function syncDataBy(jsonData, keyValSetter) {
 }
 
 /**
- * 比较两个数组，得到 theArray 相对于 refArray 的变化结果：</br> more : 多出的元素列表</br> less : 减少的元素列表</br> same : 一样的的元素列表（根据eqlFunc判断）</br> diff : 不同的元素列表（根据eqlFunc判断）</br>
- * ========================================================== 参数中的eqlFunc主要用于判断两个元素是否一样（如判断两条记录是否一样：无变化）</br> 参数中的isFunc主要用于判断两个数组中的对等元素（如判断两条记录的id值是否相等）</br>
+ * 比较两个数组，得到 theArray 相对于 refArray 的变化结果：</br>
+ * more : 多出的元素列表</br>
+ * less : 减少的元素列表</br>
+ * same : 一样的的元素列表（根据eqlFunc判断）</br>
+ * diff : 不同的元素列表（根据eqlFunc判断）</br>
+ * ==========================================================
+ * 参数中的isFunc主要用于判断两个数组中的对等元素（如判断两条记录的id值是否相等）</br>
+ * 参数中的eqlFunc主要用于判断两个元素是否一样（如判断两条记录是否一样：无变化）</br>
  */
-function compareArrays(theArray, refArray, eqlFunc, isFunc) {
+function compareArrays(theArray, refArray, isFunc, eqlFunc) {
     var result = {
         more: [],
         less: [],
@@ -2467,10 +2502,13 @@ function compareArrays(theArray, refArray, eqlFunc, isFunc) {
     } else if(theCount === 0) {
         result.less = refArray;
     } else {
-        if(typeof(eqlFunc) != "function") {
-            eqlFunc = function (A, B) {
+        if(typeof(isFunc) != "function") {
+            isFunc = function (A, B) {
                 return A == B;
             };
+        }
+        if(typeof(eqlFunc) != "function") {
+            eqlFunc = isFunc;
         }
         //
         theArray = theArray.clone();
@@ -2573,7 +2611,7 @@ function compareRecordsById(newRecords, oldRecords, idColNameOrIdEqlFunc, recEql
         };
     }
     //
-    var _result = compareArrays(newRecords, oldRecords, recEqlFunc, idEqlFunc);
+    var _result = compareArrays(newRecords, oldRecords, idEqlFunc, recEqlFunc);
     //
     delete _result["same"];
     var result = {
@@ -2620,6 +2658,21 @@ function getClassNameOf(obj) {
 }
 
 /**
+ * 是否为数值字符串
+ * @param numStr
+ * @param frgs
+ * @returns {boolean|*}
+ */
+function isNumStr(numStr, frgs) {
+    if(numStr == null) {
+        return false;
+    }
+    numStr = "" + numStr;
+    var numVal = ParseFloat(numStr);
+    return (numStr == '' + numVal) && isNum(numVal, frgs);
+}
+
+/**
  * 是否金额数字
  *
  * @param numStr
@@ -2645,18 +2698,19 @@ function isIntStr(numStr) {
     return numRegexp.test(numStr);
 }
 
-// 是否自然数
-function isNatualStr(numStr) {
+// 是否自然数（strict = true，必须大于零）
+function isNatualStr(numStr, strict) {
     if(numStr == null) {
         return false;
     }
+    strict = strict === true;
     numStr = "" + numStr;
-    var numRegexp = /^([0-9]|[1-9][0-9]*)$/;
+    var numRegexp = strict ? /^[1-9][0-9]*$/ : /^([0-9]|[1-9][0-9]*)$/;
     return numRegexp.test(numStr);
 }
 
 //
-function isValidEmail(checkStr) {
+function isEmail(checkStr) {
     var regExp = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
     return regExp.test(checkStr);
 }
@@ -2670,15 +2724,15 @@ function isDigitsOrHyphenStr(checkStr) {
     var regExp = /^(\d|-)+$/;
     return regExp.test(checkStr);
 }
-
-function isMobile(checkStr) {
+//是否手机号码
+function isMobileNo(checkStr) {
     if(checkStr == null || checkStr.length != 11) {
         return false;
     }
     var regExp = /^1[3|4|5|7|8]\d{9}$/;
     return regExp.test(checkStr);
 }
-
+//是否固定电话号码
 function isTelNo(checkStr) {
     if(checkStr == null || checkStr.length < 7) {
         return false;
@@ -2686,9 +2740,9 @@ function isTelNo(checkStr) {
     var regExp = /(^([0][1-9][0-9]-?)?[0-9]{8}$)|(^([0][1-9]{3}-?)?[0-9]{7}$)/;
     return regExp.test(checkStr);
 }
-
+//是否固话或手机号码
 function isPhoneNo(checkStr) {
-    return isMobile(checkStr) || isTelNo(checkStr);
+    return isMobileNo(checkStr) || isTelNo(checkStr);
 }
 
 function isHexColor(checkStr) {
@@ -3286,11 +3340,11 @@ function genUniqueStr() {
 }
 
 // 给url附加唯一的参数（防止对话框缓存）
-function makeUniqueRequest(url) {
+function makeUniqueUrl(url) {
     return concatUrlParams(url, __uniqueRequestName + "=" + genUniqueStr());
 }
 
-// 生成函数调用脚本（函数名称，参数数组）
+// 生成函数调用脚本（函数名称，参数数组，注意：参数只能是数值对象，不能是函数）
 // demox("x", {"x" : 5, "y" : 6})
 function makeFuncCallScript(funcName, args) {
     var sb = String.builder();
@@ -3742,7 +3796,7 @@ var __mailboxHomeUrls = {
 };
 // 获取邮箱的登录url
 function getMailHomeUrl(email) {
-    if(!isValidEmail(email)) {
+    if(!isEmail(email)) {
         return null;
     }
     var mailBox = email.substring(email.indexOf("@"));
@@ -3985,7 +4039,7 @@ function downloadLink(link) {
 var ValidateRules = {
     required: function (value) {
         // 是否为空白字符串
-        return value != null && trim(value + "") != '';
+        return value != null && trim(value + '') != '';
     },
     eqLength: function (value, eqLen) {
         // 文本长度是否相等
@@ -4086,33 +4140,33 @@ var ValidateRules = {
         // 是否为列表项之一
         return (value != null) ? value.isIn(items) : false;
     },
-    isMobile: function (value, sysAdminName) {
+    isMobileNo: function (value, sysAdminName) {
         sysAdminName == null || 'sysadmin';
         // 是否为手机号码
-        return isMobile(value) || sysAdminName == value;
+        return isMobileNo(value) || sysAdminName == value;
     },
-    isTel: function (value) {
+    isTelNo: function (value) {
         // 是否为座机号码
         return isTelNo(value);
     },
-    isPhone: function (value) {
+    isPhoneNo: function (value) {
         // 是否为手机或座机号码
         return isPhoneNo(value);
     },
-    isMoney: function (value, allowSign) {
+    isMoneyStr: function (value, allowSign) {
         // 是否为金额字符串
         allowSign = (allowSign == null) ? false : (allowSign == true);
         return isMoneyStr(value, allowSign);
     },
-    isInt: function (value) {
+    isIntStr: function (value) {
         // 是否为整数
         return isIntStr(value);
     },
-    isNatual: function (value) {
+    isNatualStr: function (value, strict) {
         // 是否为自然数
-        return isNatualStr(value);
+        return isNatualStr(value, strict);
     },
-    isDigits: function (value) {
+    isDigitsStr: function (value) {
         // 是否为数字字符串
         return isDigitsStr(value);
     },
@@ -4122,16 +4176,15 @@ var ValidateRules = {
     },
     isEmail: function (value) {
         // 是否为邮箱
-        return isValidEmail(value);
+        return isEmail(value);
     },
     isHexColor: function (value) {
         // 是否为16进制颜色值
         return isHexColor(value);
     },
-    isNum: function (value) {
+    isNumStr: function (value, frgs) {
         // 是否为数值字符串
-        var numVal = ParseFloat(value);
-        return numVal == value && isNum(numVal);
+        return isNumStr(value, frgs);
     },
     isPswd: function (value, strict) {
         strict = strict == "true";
@@ -4347,14 +4400,16 @@ module.exports = {
     isNoE: isNullOrEmpty,
     isNoB: isNullOrBlank,
     isNum: isNum,
+    isInt: isInt,
 
+    isNumStr: isNumStr,
     isIntStr: isIntStr,
     isNatualStr: isNatualStr,
     isMoneyStr: isMoneyStr,
-    isValidEmail: isValidEmail,
-    isMobile: isMobile,
-    isTelNo: isTelNo,
-    isPhoneNo: isPhoneNo,
+    isEmail: isEmail,
+    isTelNo: isTelNo, // 固定电话号码
+    isMobileNo: isMobileNo, //手机号码
+    isPhoneNo: isPhoneNo, // 电话（固定电话 或 手机）号码
     isHexColor: isHexColor,
     isIdentity: isIdentity,
     checkPassword: checkPassword,
@@ -4373,7 +4428,6 @@ module.exports = {
     compareArrays: compareArrays,
     makeDiffHoursStr: makeDiffHoursStr,
     sortArray: sortArray,
-    sortByKey: sortByKey,
     asTimeout: asTimeout,
     repeatChecker: repeatChecker,
 
@@ -4390,8 +4444,10 @@ module.exports = {
     escapeHtmlStr: escapeHtmlStr,
     escapeXmlValueStr: escapeXmlValueStr,
 
+    parseDimen: parseDimen,
     openWindow: openWindow,
     openWindowForHtml: openWindowForHtml,
+    closePageWindow: closePageWindow,
     escapeHtmlStr: escapeHtmlStr,
     calcTrackerDim: calcTrackerDim,
 
@@ -4408,7 +4464,7 @@ module.exports = {
     getMailHomeUrl: getMailHomeUrl,
 
     genUniqueStr: genUniqueStr,
-    makeUniqueRequest: makeUniqueRequest,
+    makeUniqueUrl: makeUniqueUrl,
     makeUrl: makeUrl,
     parseUrl: parseUrl,
     extractUrlParams: extractUrlParams,
