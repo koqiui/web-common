@@ -5,7 +5,7 @@ var moduleName = 'EventBus';
 //----------------------------------------------
 function EventBusCoreFn(name) {
     var dumyHandler = function () {
-        console.trace('此事件处理函数已不存在');
+        console.log('此事件处理函数已不存在');
     };
     //
     var _name = name || '';
@@ -21,7 +21,7 @@ function EventBusCoreFn(name) {
         handler = handler || null;
         event = event || '';
         if(event === '' || handler === null) {
-            trace && console.trace(trace);
+            trace && console.log(trace);
             console.warn('绑定的事件名称/处理函数不可为空！');
             //
             return this;
@@ -37,8 +37,8 @@ function EventBusCoreFn(name) {
             //
             curHandlers.push(handler);
             //
-            trace && console.trace(trace);
-            console.trace('给定的 ' + event + ' 事件处理函数已绑定');
+            trace && console.log(trace);
+            console.log('给定的 ' + event + ' 事件处理函数已绑定');
         }
         else {
             console.warn('给定的 ' + event + ' 事件处理函数已绑定过');
@@ -52,7 +52,7 @@ function EventBusCoreFn(name) {
         handler = handler || null;
         event = event || '';
         if(event === '') {
-            trace && console.trace(trace);
+            trace && console.log(trace);
             console.warn('解绑的事件名称不可为空！');
             //
             return this;
@@ -70,8 +70,8 @@ function EventBusCoreFn(name) {
             }
             curHandlers.length = 0;
             //
-            trace && console.trace(trace);
-            console.trace('给定的 ' + event + ' 事件处理函数已*全部*解绑');
+            trace && console.log(trace);
+            console.log('给定的 ' + event + ' 事件处理函数已*全部*解绑');
         }
         else {
             var index = curHandlers.indexOf(handler);
@@ -80,8 +80,8 @@ function EventBusCoreFn(name) {
                 //
                 curHandlers.splice(index, 1);
                 //
-                trace && console.trace(trace);
-                console.trace('给定的 ' + event + ' 事件处理函数已解绑');
+                trace && console.log(trace);
+                console.log('给定的 ' + event + ' 事件处理函数已解绑');
             }
         }
         //
@@ -95,7 +95,7 @@ function EventBusCoreFn(name) {
         event = event || '';
         //
         if(event === '') {
-            trace && console.trace(trace);
+            trace && console.log(trace);
             console.warn('触发的的事件名称不可为空！');
             //
             return this;
@@ -114,7 +114,7 @@ function EventBusCoreFn(name) {
                 handler.apply(thisArg, newArgs);
             }
             catch(ex) {
-                console.error(ex);
+                console.warn(ex);
             }
         }
         //
