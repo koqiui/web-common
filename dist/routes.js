@@ -33,7 +33,7 @@ module.exports = {
             var routeMap = routeMaps[i];
             //
             if(routeMap == null) {
-                console.warn('缺少参数 或 所要注册的路由组件 尚未加载');
+                console.warn('缺少参数 或 所要注册的路由组件 尚未加载（往往是因为存在双向依赖导致的）');
             }
             else {
                 var name, desc, path, comp;
