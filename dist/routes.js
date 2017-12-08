@@ -64,7 +64,7 @@ module.exports = {
                     path = routeMap.path;
                     comp = routeMap.component;
                     if(comp == null) {
-                        console.error('找不到路由 ' + path + ' 对应的组件，确认是否导入了指定组件' + (desc == null ? '' : '(' + desc + ')') + '！');
+                        console.warn('找不到路由 ' + path + ' 对应的组件，或 所要注册的路由组件 尚未加载' + (desc == null ? '' : '(' + desc + ')') + '！');
                         continue;
                     }
                     name = comp.name;
