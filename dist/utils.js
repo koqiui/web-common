@@ -2699,7 +2699,7 @@ function isIntStr(numStr) {
 }
 
 // 是否自然数（strict = true，必须大于零）
-function isNatualStr(numStr, strict) {
+function isNaturalStr(numStr, strict) {
     if(numStr == null) {
         return false;
     }
@@ -4162,9 +4162,9 @@ var ValidateRules = {
         // 是否为整数
         return isIntStr(value);
     },
-    isNatualStr: function (value, strict) {
+    isNaturalStr: function (value, strict) {
         // 是否为自然数
-        return isNatualStr(value, strict);
+        return isNaturalStr(value, strict);
     },
     isDigitsStr: function (value) {
         // 是否为数字字符串
@@ -4404,7 +4404,7 @@ module.exports = {
 
     isNumStr: isNumStr,
     isIntStr: isIntStr,
-    isNatualStr: isNatualStr,
+    isNaturalStr: isNaturalStr,
     isMoneyStr: isMoneyStr,
     isEmail: isEmail,
     isTelNo: isTelNo, // 固定电话号码
