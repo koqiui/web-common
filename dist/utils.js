@@ -1192,6 +1192,61 @@ Array.prototype.toMap = function (keyProp) {
     }
     return retMap;
 };
+
+/**
+ * 按分组值 分隔数组
+ *
+ * @param valFunc 分组值函数 或 属性名称
+ * @param sortByVal 是否按分组值 或 属性值 排序
+ * @returns {Array}
+ */
+Array.prototype.split = function (valFunc, sortByVal) {
+    sortByVal = sortByVal === true;
+    //
+    if(typeof valFunc == 'string') {
+        var propName = valFunc;
+        valFunc = function (elem, i) {
+            return elem == null ? null : elem[propName];
+        };
+    }
+    //
+    var retList = [];
+    var valMap = {};
+    var valKeys = [];
+    var nulls = [];
+    for(var i = 0; i < this.length; i++) {
+        var elem = this[i];
+        var value = valFunc(elem, i);
+        if(value == null) {
+            nulls.push(elem);
+        }
+        else {
+            var valKey = value + '';
+            if(valMap[valKey] == null) {
+                valKeys.push(value);
+                valMap[valKey] = [];
+            }
+            valMap[valKey].push(elem);
+        }
+    }
+    if(nulls.length > 0) {
+        console.log(nulls);
+        retList.push(nulls);
+    }
+    //
+    if(sortByVal == true) {
+        valKeys = valKeys.sort();
+    }
+    for(var i = 0; i < valKeys.length; i++) {
+        var valKey = valKeys[i] + '';
+        var values = valMap[valKey];
+        console.log(values);
+        retList.push(values);
+    }
+    //
+    return retList;
+};
+
 // JavaScript zArray Library end----------------------------------------------
 /**
  * Adds all the items in the array and returns the result.
@@ -1295,22 +1350,22 @@ function sortArray() {
     }
     var len = xArray.length;
     for(var i = 0; i < len - 1; i++) {
-        var tmp = xArray[i];
-        var indx = i;
-        var tmp2;
+        var mxnValue = xArray[i];
+        var mxnIndex = i;
+        var tmpValue = null;
         for(var j = i + 1; j < len; j++) {
-            tmp2 = xArray[j];
-            var result = compFunc(tmp2, tmp);
+            tmpValue = xArray[j];
+            var result = compFunc(tmpValue, mxnValue);
             result = bDesc ? result > 0 : result < 0;
             if(result) {
-                tmp = tmp2;
-                indx = j;
+                mxnValue = tmpValue;
+                mxnIndex = j;
             }
         }
-        if(indx > i) {
-            tmp2 = xArray[i];
-            xArray[i] = tmp;
-            xArray[indx] = tmp2;
+        if(mxnIndex > i) {
+            tmpValue = xArray[i];
+            xArray[i] = mxnValue;
+            xArray[mxnIndex] = tmpValue;
         }
     }
     return xArray;
@@ -2127,9 +2182,7 @@ function KeyMap(name) {
      * clear all key/value pairs
      */
     this.clear = function () {
-        for(var xKey in __data) {
-            delete __data[xKey];
-        }
+        __data = {};
         //
         return this;
     };
@@ -2144,7 +2197,7 @@ function KeyMap(name) {
         if(json == null) {
             json = {};
         }
-        __data = json;
+        __data = merge({}, json);
         //
         return this;
     };
@@ -2343,33 +2396,6 @@ KeyMap.from = function (json) {
     return keyMap;
 };
 
-// ！！！注意：浏览器表现不一致（所以不可靠）
-function sortByKey(json, compFunc) {
-    var retJson = null;
-    //
-    json = json || null;
-    //
-    if(json != null) {
-        if(typeof compFunc !== "function") {
-            compFunc = function (elA, elB) {
-                return elA == elB ? 0 : (elA < elB ? -1 : 1);
-            };
-        }
-        //
-        retJson = {};
-        var tmpMap = KeyMap.from(json);
-        //
-        var tmpKeys = tmpMap.keys();
-        tmpKeys = tmpKeys.sort(compFunc);
-        for(var i = 0; i < tmpKeys.length; i++) {
-            var tmpKey = tmpKeys[i];
-            var tmpValue = tmpMap.get(tmpKey);
-            retJson[tmpKey] = tmpValue;
-        }
-    }
-    //
-    return retJson;
-}
 // [], key, [value1,value2,...]
 function makeCrossCombsWith(srcCombs, key, values) {
     if(srcCombs == null) {
