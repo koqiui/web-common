@@ -12,6 +12,43 @@ var __checkDuplicates = true;
 //{ path => component}
 var __routeMapAll = {};
 var __routeRegistStates = {};
+//
+function makeSubRoutes(subComps) {
+    subComps = subComps || [];
+    var children = [];
+    for(var i = 0; i < subComps.length; i++) {
+        var comp = subComps[i];
+        children[i] = {
+            path: comp.path,
+            component: comp,
+            desc: comp.desc
+        };
+    }
+    //
+    if(children.length > 0) {
+        //插入默认路由
+        var first = children[0];
+        children.unshift({
+            path: "/",
+            component: first.component,
+            desc: first.desc
+        });
+    }
+    //
+    return children;
+}
+
+function registChildren(children) {
+    if(typeof __registFunction == 'function') {
+        children = children || [];
+        for(var i = 0; i < children.length; i++) {
+            var child = children[i];
+            //注册子路由组件
+            __registFunction(child.component);
+        }
+    }
+}
+//
 module.exports = {
     moduleName: moduleName,
     //
@@ -57,6 +94,12 @@ module.exports = {
                     if(desc != null) {
                         routeMap.desc = desc;
                     }
+                    //
+                    var subRoutes = comp['subRoutes'] || null;
+                    if(subRoutes != null && subRoutes.length > 0) {
+                        routeMap.children = makeSubRoutes(subRoutes);
+                        registChildren(routeMap.children);
+                    }
                 }
                 else {
                     //传入的是配置对象
@@ -71,6 +114,10 @@ module.exports = {
                     if(path == null) {
                         console.error('组件' + (desc == null ? '' : '(' + desc + ')') + '缺少 path 信息，不能注册为路由组件 ： <' + name + '>');
                         continue;
+                    }
+                    //
+                    if(routeMap.children != null) {
+                        registChildren(routeMap.children);
                     }
                 }
                 if(__checkDuplicates) {
@@ -87,10 +134,6 @@ module.exports = {
                     }
                 }
                 //
-                __routeMapAll[path] = comp;
-                //
-                __routeMaps.push(routeMap);
-                //
                 if(typeof __registFunction == 'function') {
                     //注册路由时注册组件
                     __registFunction(comp);
@@ -103,6 +146,10 @@ module.exports = {
                         console.log('路由 ' + path + ' ' + (desc == null ? '' : '(' + desc + ')') + ' <' + name + '> 已加入');
                     }
                 }
+                //
+                __routeMapAll[path] = comp;
+                //
+                __routeMaps.push(routeMap);
             }
         }
     },

@@ -4,11 +4,22 @@
 var moduleName = 'Utils';
 //----------------------------------------------
 var isInBrowser = (typeof window !== "undefined") && (typeof window.location !== "undefined") && (typeof window.navigator !== "undefined");
-
-function getGlobal() {
-    return isInBrowser ? window : global;
+//
+var __global = null;
+if(isInBrowser) {
+    __global = window;
+}
+else if(typeof Global != 'undefined') {
+    __global = Global;
+}
+else if(typeof global != 'undefined') {
+    __global = global;
+}
+else {
+    __global = null;
 }
 
+//
 function toStr(obj) {
     return "" + obj;
 }
@@ -453,12 +464,12 @@ function format(template) {
 
 String.prototype.format = function () {
     var args = [this].concat(Array.prototype.slice.call(arguments, 0));
-    return format.apply(getGlobal(), args);
+    return format.apply(__global, args);
 };
 
 String.prototype.isIn = function () {
     var args = [this].concat(Array.prototype.slice.call(arguments, 0));
-    return strEql.apply(getGlobal(), args);
+    return strEql.apply(__global, args);
 };
 /**
  * @private
@@ -534,7 +545,7 @@ function StringBuilder() {
     };
     this.appendln = function () {
         this.append.apply(this, arguments);
-        this.append("\n");
+        this.append("\r\n");
         //
         return this;
     };
@@ -803,7 +814,7 @@ Array.prototype.contains = function (vItem /* :variant */, isFunc /* : function 
  * @return {Boolean} True if the function evaluates to true for each item in the array, false if even one returns false.
  */
 Array.prototype.every = function (fnTest, context) {
-    context = context || getGlobal();
+    context = context || __global;
     var bResult = true;
     for(var i = 0, len = this.length; i < len && bResult; i++) {
         bResult = bResult && fnTest.call(context, this[i], i, this);
@@ -823,7 +834,7 @@ Array.prototype.every = function (fnTest, context) {
  * @return {Array} An array made up of all the items that returned true for the function.
  */
 Array.prototype.filter = function (fnTest, context) {
-    context = context || getGlobal();
+    context = context || __global;
     var aResult = [];
     for(var i = 0, len = this.length; i < len; i++) {
         if(fnTest.call(context, this[i], i, this)) {
@@ -842,7 +853,7 @@ Array.prototype.filter = function (fnTest, context) {
  * @return {Array} An array made up of all the items that returned false for the function.
  */
 Array.prototype.reject = function (fnTest, context) {
-    context = context || getGlobal();
+    context = context || __global;
     var aResult = [];
     for(var i = 0, len = this.length; i < len; i++) {
         if(!fnTest.call(context, this[i], i, this)) {
@@ -860,7 +871,7 @@ Array.prototype.reject = function (fnTest, context) {
  *            context The object that the function belongs to or null for a global function.
  */
 Array.prototype.forEach = function (fnExec, context) {
-    context = context || getGlobal();
+    context = context || __global;
     for(var i = 0, len = this.length; i < len; i++) {
         fnExec.call(context, this[i], i, this);
     }
@@ -988,7 +999,7 @@ Array.prototype.lastIndexOf = function (vItem, fromIndex, isFunc) {
  * @return {Array} An array made up of all the items that returned true for the function.
  */
 Array.prototype.map = function (fnExec, context) {
-    context = context || getGlobal();
+    context = context || __global;
     var aResult = [];
     for(var i = 0, len = this.length; i < len; i++) {
         aResult.push(fnExec.call(context, this[i], i, this));
@@ -1054,10 +1065,10 @@ Array.prototype.removeAt = function (iIndex) {
 Array.prototype.some = function (fnTest, context, minCount) {
     if(typeof context == "number") {
         minCount = context || 1;
-        context = getGlobal();
+        context = __global;
     } else {
         minCount = minCount || 1;
-        context = context || getGlobal();
+        context = context || __global;
     }
     var found = 0;
     for(var i = 0, len = this.length; i < len; i++) {
@@ -1230,7 +1241,7 @@ Array.prototype.split = function (valFunc, sortByVal) {
         }
     }
     if(nulls.length > 0) {
-        console.log(nulls);
+        //console.log(nulls);
         retList.push(nulls);
     }
     //
@@ -1240,7 +1251,7 @@ Array.prototype.split = function (valFunc, sortByVal) {
     for(var i = 0; i < valKeys.length; i++) {
         var valKey = valKeys[i] + '';
         var values = valMap[valKey];
-        console.log(values);
+        //console.log(values);
         retList.push(values);
     }
     //
@@ -1258,7 +1269,7 @@ Array.prototype.split = function (valFunc, sortByVal) {
  * @return {Object} The result of adding all of the array items together.
  */
 Array.prototype.sum = function (fnEval, context) {
-    context = context || getGlobal();
+    context = context || __global;
     var initVal = null;
     if(typeof fnEval != "function") {
         fnEval = function (vItem) {
@@ -1377,7 +1388,7 @@ function sortArray() {
 if(typeof Array.prototype.sort != "function") {
     Array.prototype.sort = function () {
         var args = [this].concat(Array.prototype.slice.call(arguments, 0));
-        return sortArray.apply(getGlobal(), args);
+        return sortArray.apply(__global, args);
     };
 }
 
@@ -1690,7 +1701,7 @@ function makeProxy(fn, context) {
         fn = tmp;
     }
     if(context == null) {
-        context = getGlobal();
+        context = __global;
     }
     if(!isFunction(fn)) {
         return undefined;
@@ -2031,7 +2042,7 @@ function calcDiffHours(dtFrom, dtTo, dayValve) {
 // makeDiffHoursStr('2016-10-31 16:32', '2016-11-02 14:31') => 1天21小时
 function makeDiffHoursStr(dtFrom, dtTo, dayValve) {
     var diff = calcDiffHours(dtFrom, dtTo, dayValve);
-    console.log(diff.days + " days , " + diff.hours + " hours");
+    // console.log(diff.days + " days , " + diff.hours + " hours");
     var diffHoursStr;
     if(diff.days != 0 && diff.hours != 0) {
         diffHoursStr = (diff.days > 0) ? diff.days + "天" : diff.hours + "小时";
@@ -2820,10 +2831,10 @@ var __cityCodeForIdentity = {
 
 function isIdentity(code) {
     if(!code || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(code)) {
-        console.log("身份证号格式错误");
+        // console.log("身份证号格式错误");
         return false;
     } else if(!__cityCodeForIdentity[code.substr(0, 2)]) {
-        console.log("省份编码错误");
+        //console.log("省份编码错误");
         return false;
     } else {
         // 18位身份证需要验证最后一位校验位
@@ -2844,7 +2855,7 @@ function isIdentity(code) {
             }
             var last = parity[sum % 11];
             if(parity[sum % 11] != code[17]) {
-                console.log("校验位错误");
+                // console.log("校验位错误");
                 return false;
             }
         }
@@ -2871,7 +2882,9 @@ function checkPassword(chkStr, strict) {
 }
 
 // ------------------------- 浏览器页面专用 -------------------------
-console = console || {
+var __console = null;
+if(typeof console == 'undefined') {
+    __console = {
         // 防止浏览器不支持时报错
         log: function () {
         },
@@ -2894,6 +2907,12 @@ console = console || {
         timeEnd: function () {
         }
     };
+}
+else {
+    __console = console;
+}
+
+var console = __console;
 
 //
 function getDomById(id) {
@@ -3348,7 +3367,7 @@ function concatUrlParams(baseUrl, params, toEncode) {
 }
 
 function makeUrl() {
-    return concatUrlParams.apply(getGlobal(), arguments);
+    return concatUrlParams.apply(__global, arguments);
 }
 
 // json参数转成url参数
@@ -4506,7 +4525,7 @@ module.exports = {
     speakText: speakText,
 
     isInBrowser: isInBrowser,
-    getGlobal: getGlobal,
+    global: __global,
     makeProxy: makeProxy,
     downloadFile: downloadFile,
     downloadLink: downloadLink,
