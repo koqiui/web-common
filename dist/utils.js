@@ -471,6 +471,47 @@ String.prototype.isIn = function () {
     var args = [this].concat(Array.prototype.slice.call(arguments, 0));
     return strEql.apply(__global, args);
 };
+
+//判断字符串是否带引号
+function isQuotted(str) {
+    return str != null && (str.startsWith('"') && str.endsWith('"') || str.startsWith("'") && str.endsWith("'"));
+}
+
+String.prototype.isQuotted = function () {
+    return isQuotted(this);
+};
+
+//给字符串加引号
+function enquote(str, quot) {
+    quot = quot || '"';
+    if(str != null && !isQuotted(str)) {
+        if(quot == "'") {
+            str = replace(str, "'", "\\'");
+        }
+        else {
+            str = replace(str, '"', '\\"');
+        }
+        str = quot + str + quot;
+    }
+    return str;
+}
+
+String.prototype.enquote = function (quot) {
+    return enquote(this, quot);
+};
+
+//给字符串去引号
+function dequote(str) {
+    if(str != null && isQuotted(str)) {
+        str = str.substring(1, str.length - 1);
+    }
+    return str;
+}
+
+String.prototype.dequote = function () {
+    return dequote(this);
+};
+
 /**
  * @private
  */
