@@ -20,7 +20,30 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf>
+      <file leaf-file-name="utils.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dist/utils.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="363">
+              <caret line="654" column="10" lean-forward="false" selection-start-line="654" selection-start-column="10" selection-end-line="654" selection-end-column="10" />
+              <folding>
+                <marker date="1514401412393" expanded="true" signature="116165:116242" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="42">
+              <caret line="2" column="22" lean-forward="false" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -31,7 +54,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>isTel</find>
       <find>isMoney</find>
       <find>isInt</find>
       <find>isNatual</find>
@@ -61,6 +83,7 @@
       <find>getGlobal()</find>
       <find>console</find>
       <find>isphone</find>
+      <find>builder</find>
     </findStrings>
     <replaceStrings>
       <replace>jajax</replace>
@@ -246,6 +269,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -274,8 +299,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -478,14 +501,8 @@
       <workItem from="1513748434076" duration="9506000" />
       <workItem from="1513765121887" duration="119000" />
       <workItem from="1513782352421" duration="269000" />
-      <workItem from="1514398607987" duration="88000" />
-    </task>
-    <task id="LOCAL-00009" summary="coding just in CommonJs style">
-      <created>1491913557311</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1491913557311</updated>
+      <workItem from="1514398607987" duration="132000" />
+      <workItem from="1514401377445" duration="74000" />
     </task>
     <task id="LOCAL-00010" summary="coding just in CommonJs style">
       <created>1492171800925</created>
@@ -823,11 +840,18 @@
       <option name="project" value="LOCAL" />
       <updated>1513782459394</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="coding just in CommonJs style">
+      <created>1514398721958</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1514398721959</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="155650000" />
+    <option name="totallyTimeSpent" value="155768000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1874" height="1096" extended-state="6" />
@@ -1125,7 +1149,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
           <caret line="60" column="6" lean-forward="true" selection-start-line="60" selection-start-column="6" selection-end-line="60" selection-end-column="6" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/utils.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="363">
+          <caret line="654" column="10" lean-forward="false" selection-start-line="654" selection-start-column="10" selection-end-line="654" selection-end-column="10" />
+          <folding>
+            <marker date="1514401412393" expanded="true" signature="116165:116242" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1134,16 +1167,6 @@
         <state relative-caret-position="42">
           <caret line="2" column="22" lean-forward="false" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/utils.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="4654" column="33" lean-forward="false" selection-start-line="4654" selection-start-column="33" selection-end-line="4654" selection-end-column="33" />
-          <folding>
-            <marker date="1514398653426" expanded="true" signature="116201:116278" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>

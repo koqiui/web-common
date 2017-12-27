@@ -645,16 +645,16 @@ function StringBuilder() {
             //
             return this;
         }
-    },
-        this.deleteln = function (lnIndex) {
-            var lines = this.value.split(this.lineSeparator);
-            if(lnIndex >= 0 && lnIndex < lines.length) {
-                lines.removeAt(lnIndex);
-                this.value = lines.join(this.lineSeparator);
-            }
-            //
-            return this;
-        };
+    };
+    this.deleteln = function (lnIndex) {
+        var lines = this.value.split(this.lineSeparator);
+        if(lnIndex >= 0 && lnIndex < lines.length) {
+            lines.removeAt(lnIndex);
+            this.value = lines.join(this.lineSeparator);
+        }
+        //
+        return this;
+    };
     this.replaceln = function (lnIndex) {
         var strs = Array.prototype.slice.call(arguments, 1);
         //
