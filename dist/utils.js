@@ -574,25 +574,94 @@ function __escapeJsonStr(src, useSingleQutoe) {
     }
 }
 
+//
 function StringBuilder() {
+    //行结束符
+    this.lineSeparator = StringBuilder.lineSeparator;
+    //
     this.value = "";
     //
+    function concatStrs() {
+        return Array.prototype.slice.call(arguments, 0).join("");
+    }
+
+    //
     this.append = function () {
-        for(var i = 0, c = arguments.length; i < c; i++) {
-            this.value = this.value + arguments[i];
-        }
+        this.value = this.value + concatStrs.apply(__global, arguments);
+        //
+        return this;
+    };
+    this.prepend = function () {
+        this.value = concatStrs.apply(__global, arguments) + this.value;
         //
         return this;
     };
     this.appendln = function () {
         this.append.apply(this, arguments);
-        this.append("\r\n");
+        this.append(this.lineSeparator);
         //
         return this;
     };
-    this.prepend = function () {
-        for(var i = 0, c = arguments.length; i < c; i++) {
-            this.value = arguments[i] + this.value;
+    this.indexOfln = function (judgeFn, fromBack) {
+        fromBack = fromBack === true;
+        if(typeof judgeFn != "function") {
+            var compStr = judgeFn || "";
+            judgeFn = function (line, idx) {
+                return line == compStr;
+            }
+        }
+        //
+        var lines = this.value.split(this.lineSeparator);
+        if(fromBack) {
+            for(var i = lines.length - 1; i >= 0; i--) {
+                if(judgeFn(lines[i], i)) {
+                    return i;
+                }
+            }
+        }
+        else {
+            for(var i = 0, c = lines.length; i < c; i++) {
+                if(judgeFn(lines[i])) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    };
+    this.insertln = function (lnIndex) {
+        var strs = Array.prototype.slice.call(arguments, 1);
+        if(lnIndex < 0) {
+            return this.appendln(strs.join(""));
+        }
+        //
+        var lines = this.value.split(this.lineSeparator);
+        var lineCount = lines.length;
+        if(lnIndex >= lineCount) {
+            return this.insertln(-1, strs.join(""));
+        }
+        else {
+            lines.insertAt(strs.join(""), lnIndex);
+            this.value = lines.join(this.lineSeparator);
+            //
+            return this;
+        }
+    },
+        this.deleteln = function (lnIndex) {
+            var lines = this.value.split(this.lineSeparator);
+            if(lnIndex >= 0 && lnIndex < lines.length) {
+                lines.removeAt(lnIndex);
+                this.value = lines.join(this.lineSeparator);
+            }
+            //
+            return this;
+        };
+    this.replaceln = function (lnIndex) {
+        var strs = Array.prototype.slice.call(arguments, 1);
+        //
+        var lines = this.value.split(this.lineSeparator);
+        if(lnIndex >= 0 && lnIndex < lines.length) {
+            lines[lnIndex] = strs.join("");
+            this.value = lines.join(this.lineSeparator);
         }
         //
         return this;
@@ -602,6 +671,10 @@ function StringBuilder() {
         //
         return this;
     };
+    //
+    this.toString = function () {
+        return this.value;
+    }
 
     //初始参数
     if(arguments.length > 0) {
@@ -610,7 +683,8 @@ function StringBuilder() {
     //
     return this;
 }
-
+//
+StringBuilder.lineSeparator = '\r\n';
 // 公开方法
 String.builder = function () {
     var obj = new StringBuilder();
@@ -3784,6 +3858,42 @@ function loadCss(cssSrc, parent, id) {
     parent.appendChild(link);
 }
 
+//构建文件路径
+function buildFilePath(folder, path) {
+    path = path || "";
+    folder = replace(folder, "\\", "/");
+    path = replace(path, "\\", "/");
+    //
+    var fullPath = folder;
+    if(path) {
+        if(path.indexOf(":") != -1 || path.startsWith("/")) {
+            fullPath = path;
+        }
+        else {
+            if(path.startsWith("./")) {
+                fullPath = folder + path.substring(1);
+            }
+            else {
+                var folderParts = folder.split("/");
+                var index = path.indexOf("../");
+                while(index != -1) {
+                    folderParts.pop();
+                    path = path.substring(index + 3);
+                    index = path.indexOf("../");
+                }
+                //
+                fullPath = folderParts.join("/") + "/" + path;
+            }
+            //
+            if(fullPath.indexOf("//") != -1) {
+                fullPath = replace(fullPath, "//", "/");
+            }
+        }
+    }
+    //
+    return fullPath;
+}
+
 // 提取文件名部分
 // /opt/data/aaa-bbb.jpg >> aaa-bbb.jpg
 function extractShortFileName(filePath) {
@@ -4542,6 +4652,7 @@ module.exports = {
 
     extractShortFileName: extractShortFileName,
     extractFileNameExt: extractFileNameExt,
+    buildFilePath: buildFilePath,
 
     isImageFile: isImageFile,
     isImageType: isImageType,
