@@ -29,7 +29,7 @@ function makeSubRoutes(subComps) {
         //插入默认路由
         var first = children[0];
         children.unshift({
-            path: "/",
+            path: '',
             component: first.component,
             desc: first.desc
         });
@@ -38,16 +38,6 @@ function makeSubRoutes(subComps) {
     return children;
 }
 
-function registChildren(children) {
-    if(typeof __registFunction == 'function') {
-        children = children || [];
-        for(var i = 0; i < children.length; i++) {
-            var child = children[i];
-            //注册子路由组件
-            __registFunction(child.component);
-        }
-    }
-}
 //
 module.exports = {
     moduleName: moduleName,
@@ -98,7 +88,6 @@ module.exports = {
                     var subRoutes = comp['subRoutes'] || null;
                     if(subRoutes != null && subRoutes.length > 0) {
                         routeMap.children = makeSubRoutes(subRoutes);
-                        registChildren(routeMap.children);
                     }
                 }
                 else {
@@ -114,10 +103,6 @@ module.exports = {
                     if(path == null) {
                         console.error('组件' + (desc == null ? '' : '(' + desc + ')') + '缺少 path 信息，不能注册为路由组件 ： <' + name + '>');
                         continue;
-                    }
-                    //
-                    if(routeMap.children != null) {
-                        registChildren(routeMap.children);
                     }
                 }
                 if(__checkDuplicates) {
@@ -146,8 +131,44 @@ module.exports = {
                         console.log('路由 ' + path + ' ' + (desc == null ? '' : '(' + desc + ')') + ' <' + name + '> 已加入');
                     }
                 }
+
                 //
                 __routeMapAll[path] = comp;
+                //
+                if(routeMap.children) {
+                    //修正/注册子路由
+                    var parentPath = routeMap.path;
+                    var children = routeMap.children;
+                    for(var i = 0; i < children.length; i++) {
+                        var childMap = children[i];
+                        var childComp = childMap.component;
+                        if(childComp.path.charAt(0) == '/') {
+                            console.warn('子 路由组件（除有独立使用的场景，否则它）的 path 不应该 以 "/" 开头');
+                        }
+                        var childPath = childMap.path;
+                        if(childPath.charAt(0) == '/') {
+                            childPath = childPath.substring(1);
+                            childMap.path = childPath;
+                        }
+                        var fullPath = parentPath + (childPath ? "/" + childPath : "");
+                        //
+                        childComp.fullPath = fullPath;
+                        __routeMapAll[fullPath] = childComp;
+                        //
+                        var registed = false;
+                        if(typeof __registFunction == 'function') {
+                            __registFunction(childComp);
+                            //
+                            registed = true;
+                        }
+                        //
+                        if(__showDebug) {
+                            var desc = childComp.desc;
+                            var name = childComp.name;
+                            console.log('子 路由 ' + fullPath + ' ' + (desc == null ? '' : '(' + desc + ')') + ' <' + name + '> 已加入' + (registed ? ' 并且 已【注册组件】' : ''));
+                        }
+                    }
+                }
                 //
                 __routeMaps.push(routeMap);
             }
