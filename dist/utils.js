@@ -672,9 +672,17 @@ function StringBuilder() {
         return this;
     };
     //
+    this.charAt = function (index) {
+        return this.value.charAt(index);
+    };
+    //
+    this.length = function () {
+        return this.value.length;
+    };
+    //
     this.toString = function () {
         return this.value;
-    }
+    };
 
     //初始参数
     if(arguments.length > 0) {
@@ -690,6 +698,74 @@ String.builder = function () {
     var obj = new StringBuilder();
     obj.append.apply(obj, arguments);
     return obj;
+};
+//
+function StringTokenizer(srcStr, delim, returnDelims) {
+    returnDelims = returnDelims === true;
+    //
+    delim = delim || ",";
+    var delimChars = [];
+    for(var i = 0; i < delim.length; i++) {
+        delimChars[i] = delim.charAt(i);
+    }
+    //
+    var allTokens = [];
+    var srcStrLen = srcStr.length;
+    var tmpToken = [];
+    var tmpTokenStarted = true;
+    for(var i = 0; i < srcStrLen; i++) {
+        var tmpChar = srcStr.charAt(i);
+        if(delimChars.indexOf(tmpChar) != -1) {
+            //是分隔符
+            if(tmpTokenStarted) {
+                tmpTokenStarted = false;
+                //
+                allTokens.push(tmpToken.join(""));
+                tmpToken = [];
+            }
+            if(returnDelims) {
+                allTokens.push(tmpChar);
+            }
+        } else {
+            //正常字符
+            if(!tmpTokenStarted) {
+                tmpTokenStarted = true;
+            }
+            //
+            tmpToken.push(tmpChar);
+        }
+    }
+    //
+    if(tmpTokenStarted) {
+        allTokens.push(tmpToken.join(""));
+    }
+    //
+    var tokenCount = allTokens.length;
+    var tokenIndex = -1;
+    //
+    this.countTokens = function () {
+        return tokenCount;
+    };
+    //
+    this.hasMoreTokens = function () {
+        return tokenIndex + 1 < tokenCount;
+    };
+    //
+    this.nextToken = function () {
+        if(this.hasMoreTokens()) {
+            return allTokens[++tokenIndex];
+        }
+        //
+        return null;
+    };
+    //
+    this.reset = function () {
+        tokenIndex = -1;
+    };
+}
+// 公开方法
+String.tokenizer = function (srcStr, delim, returnDelims) {
+    return new StringTokenizer(srcStr, delim, returnDelims);
 };
 
 /**
@@ -1625,6 +1701,108 @@ Array.prototype.findDuplicated = function (eqlFunc) {
     return retArray;
 }
 
+//生成（符合 CSVFormat.RFC4180）标准 的csv记录行数据
+function makeCsvLine(fields, minCols, nullAsEmpty) {
+    fields = fields || [];
+    nullAsEmpty = nullAsEmpty === true;
+    //
+    if(typeof minCols == 'boolean') {
+        nullAsEmpty = minCols;
+    } else if(isInt(minCols) && fields.length < minCols) {
+        for(var i = fields.length; i < minCols; i++) {
+            fields[i] = null;
+        }
+    }
+    //
+    var sb = String.builder();
+    var fieldCount = fields.length;
+    for(var i = 0; i < fieldCount; i++) {
+        if(i > 0) {
+            sb.append(',');
+        }
+        var field = fields[i];
+        if(field == null) {
+            sb.append(nullAsEmpty ? "" : "null");
+        } else {
+            var sb2 = String.builder();
+            var needQuoted = false;
+            var chCount = field.length;
+            for(var j = 0; j < chCount; j++) {
+                var ch = field.charAt(j);
+                sb2.append(ch);
+                if(ch == '\r' || ch == '\n') {
+                    needQuoted = true;
+                } else if(ch == ',') {
+                    needQuoted = true;
+                } else if(ch == '"') {
+                    needQuoted = true;
+                    sb2.append('"');
+                }
+            }
+            if(needQuoted) {
+                sb.append('"').append(sb2).append('"');
+            } else {
+                sb.append(sb2);
+            }
+        }
+    }
+    return sb.value;
+}
+//解析（符合 CSVFormat.RFC4180）标准 的csv记录行数据
+function parseCsvLine(lineStr) {
+    var results = [];
+    var tokenizer = String.tokenizer(lineStr, ",", true);
+    if(tokenizer.countTokens() > 0) {
+        var sb = String.builder();
+        var quoteCount = 0;
+        var lastIsSepChar = false;
+        while(tokenizer.hasMoreTokens()) {
+            var tocken = tokenizer.nextToken();
+            // System.out.println(tocken);
+            var tockenLen = tocken.length;
+            if(tockenLen == 1 && tocken.charAt(0) == ',' && quoteCount % 2 == 0) {
+                var fieldLen = sb.length();
+                var field = null;
+                if(fieldLen > 1 && sb.charAt(0) == '\"' && sb.charAt(fieldLen - 1) == '\"') {
+                    field = sb.toString().substring(1, fieldLen - 1);
+                } else {
+                    field = sb.toString();
+                }
+                if(field.indexOf('\"') > -1) {
+                    field = replace(field, "\"\"", "\"");
+                }
+                results.add(field);
+                sb = String.builder();
+                lastIsSepChar = true;
+            } else {
+                for(var i = 0; i < tockenLen; i++) {
+                    var ch = tocken.charAt(i);
+                    if(ch == '\"') {
+                        quoteCount++;
+                    }
+                }
+                sb.append(tocken);
+                lastIsSepChar = false;
+            }
+        }
+        if(lastIsSepChar) {
+            results.add("");
+        } else {
+            var fieldLen = sb.length();
+            var field = null;
+            if(fieldLen > 1 && sb.charAt(0) == '\"' && sb.charAt(fieldLen - 1) == '\"') {
+                field = sb.toString.substring(1, fieldLen - 1);
+            } else {
+                field = sb.toString();
+            }
+            if(field.indexOf('\"') > -1) {
+                field = replace(field, "\"\"", "\"");
+            }
+            results.add(field);
+        }
+    }
+    return results;
+}
 //模拟从表中获取分页数据（可指定单列的排序条件）
 function toPaginatedData(dataRows, pagination, sortItem) {
     dataRows = dataRows || [];
@@ -4582,6 +4760,7 @@ module.exports = {
     moduleName: moduleName,
     //
     StringBuilder: StringBuilder,
+    StringTokenizer: StringTokenizer,
     //
     isString: isString,
     isNumber: isNumber,
@@ -4617,6 +4796,8 @@ module.exports = {
 
     replace: replace,
     merge: merge,
+    makeCsvLine: makeCsvLine,
+    parseCsvLine: parseCsvLine,
     toPaginatedData: toPaginatedData,
     copyAsArray: copyAsArray,
     copyByFilter: copyByFilter,
