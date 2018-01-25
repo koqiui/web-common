@@ -1399,11 +1399,17 @@ Array.prototype.toMap = function (keyProp) {
  * 按分组值 分隔数组
  *
  * @param valFunc 分组值函数 或 属性名称
- * @param sortByVal 是否按分组值 或 属性值 排序
+ * @param sortMode 分组值 或 属性值 排序模式(0:不排序，1 : 升序， -1 : 降序)
  * @returns {Array}
  */
-Array.prototype.split = function (valFunc, sortByVal) {
-    sortByVal = sortByVal === true;
+Array.prototype.split = function (valFunc, sortMode) {
+    sortMode = sortMode || 0;
+    if(sortMode === false) {
+        sortMode = 0;
+    }
+    else if(sortMode === true) {
+        sortMode = 1;
+    }
     //
     if(typeof valFunc == 'string') {
         var propName = valFunc;
@@ -1436,8 +1442,10 @@ Array.prototype.split = function (valFunc, sortByVal) {
         retList.push(nulls);
     }
     //
-    if(sortByVal == true) {
-        valKeys = valKeys.sort();
+    if(sortMode !== 0) {
+        valKeys = valKeys.sort(function (v1, v2) {
+            return v1 == v2 ? 0 : (v1 > v2 ? 1 : -1) * sortMode;
+        });
     }
     for(var i = 0; i < valKeys.length; i++) {
         var valKey = valKeys[i] + '';
