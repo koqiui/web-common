@@ -512,6 +512,31 @@ String.prototype.dequote = function () {
     return dequote(this);
 };
 
+//三种常见（系统的）换行符
+var __line__separators = {
+    win: "\r\n", //CRLF : Windows
+    lnx: "\n", //LF : UNIX
+    mac: "\r" //CR : Macintosh
+};
+
+// 猜测字符串中的换行符
+function guessLineSeperator(str) {
+    if(str == null) {
+        return null;
+    }
+    //注意：一行以上才能确定换行符是什么
+    if(/\r\n/m.test(str)) {//CRLF : Windows
+        return __line__separators.win;
+    }
+    else if(/\n/m.test(str)) {//LF : UNIX
+        return __line__separators.lnx;
+    } else if(/\r/m.test(str)) {//CR : Macintosh
+        return __line__separators.mac;
+    }
+    //否则：只有一行则无法确定换行符
+    return null;
+}
+
 /**
  * @private
  */
@@ -519,9 +544,9 @@ var __escapeStrReg = {
     backslash: /\\/ig,
     quote: /'/ig,
     dblquote: /"/ig,
-    newline: /\n/ig,
-    carriage: /\r/ig,
-    carriage2: /\r\n/ig,
+    breakln_win: /\r\n/ig,
+    breakln_lnx: /\n/ig,
+    breakln_mac: /\r/ig,
     formfeed: /\f/ig,
     hrtab: /\t/ig,
     foreslash: /\//ig
@@ -555,15 +580,15 @@ function __escapeJsonStr(src, useSingleQutoe) {
             __escapeStrReg.dblquote.lastIndex = -1;
             src = src.replace(__escapeStrReg.dblquote, '\\"');
         }
-        // newline
-        __escapeStrReg.newline.lastIndex = -1;
-        src = src.replace(__escapeStrReg.newline, '\\n');
-        // carriage
-        __escapeStrReg.carriage.lastIndex = -1;
-        src = src.replace(__escapeStrReg.carriage, '\\r');
-        // carriage2
-        __escapeStrReg.carriage2.lastIndex = -1;
-        src = src.replace(__escapeStrReg.carriage2, '\\r\\n');
+        // breakln_win
+        __escapeStrReg.breakln_win.lastIndex = -1;
+        src = src.replace(__escapeStrReg.breakln_win, '\\r\\n');
+        // breakln_lnx
+        __escapeStrReg.breakln_lnx.lastIndex = -1;
+        src = src.replace(__escapeStrReg.breakln_lnx, '\\n');
+        // breakln_mac
+        __escapeStrReg.breakln_mac.lastIndex = -1;
+        src = src.replace(__escapeStrReg.breakln_mac, '\\r');
         // formfeed
         __escapeStrReg.formfeed.lastIndex = -1;
         src = src.replace(__escapeStrReg.formfeed, '\\f');
@@ -580,6 +605,7 @@ function StringBuilder() {
     this.lineSeparator = StringBuilder.lineSeparator;
     //
     this.value = "";
+
     //
     function concatStrs() {
         return Array.prototype.slice.call(arguments, 0).join("");
@@ -691,14 +717,16 @@ function StringBuilder() {
     //
     return this;
 }
+
 //
-StringBuilder.lineSeparator = '\r\n';
+StringBuilder.lineSeparator = __line__separators.win;
 // 公开方法
 String.builder = function () {
     var obj = new StringBuilder();
     obj.append.apply(obj, arguments);
     return obj;
 };
+
 //
 function StringTokenizer(srcStr, delim, returnDelims) {
     returnDelims = returnDelims === true;
@@ -763,6 +791,7 @@ function StringTokenizer(srcStr, delim, returnDelims) {
         tokenIndex = -1;
     };
 }
+
 // 公开方法
 String.tokenizer = function (srcStr, delim, returnDelims) {
     return new StringTokenizer(srcStr, delim, returnDelims);
@@ -804,6 +833,7 @@ function ParseInt(x) {
     var val = parseInt(x, 10);
     return (isNaN(val) || !isFinite(val)) ? null : val;
 }
+
 //scale保留小数点位数
 function ParseFloat(x, frgs) {
     if(isString(x)) {
@@ -1756,6 +1786,7 @@ function makeCsvLine(fields, minCols, nullAsEmpty) {
     }
     return sb.value;
 }
+
 //解析（符合 CSVFormat.RFC4180）标准 的csv记录行数据
 function parseCsvLine(lineStr) {
     var results = [];
@@ -1811,13 +1842,14 @@ function parseCsvLine(lineStr) {
     }
     return results;
 }
+
 //模拟从表中获取分页数据（可指定单列的排序条件）
 function toPaginatedData(dataRows, pagination, sortItem) {
     dataRows = dataRows || [];
     pagination = pagination || {
-            pageSize: 10,
-            pageNumber: 1
-        };
+        pageSize: 10,
+        pageNumber: 1
+    };
     sortItem = sortItem || null;
     //
     if(sortItem != null) {
@@ -2032,6 +2064,7 @@ function isLeapYear(chkYear) {
 var __monthDaysNorm = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 var __monthDaysLeap = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 var __weekDayChsNames = ["日", "一", "二", "三", "四", "五", "六"];
+
 // 按逻辑月份算
 function getYearMonthDays(year, month) {
     var leap = isLeapYear(year);
@@ -2409,6 +2442,7 @@ function __stringifyJson(obj) {
 
 //
 var __isJSONDefined = typeof(JSON) !== "undefined" && isFunction(JSON.parse) && isFunction(JSON.stringify);
+
 // alert("JSON already defined ? "+__isJSONDefined);
 
 function isJSONDefined() {
@@ -2735,6 +2769,7 @@ function makeCrossCombsWith(srcCombs, key, values) {
     }
     return retCombs;
 }
+
 // 生成 交叉组合项（比如商品规格组合）
 // key2ValuesMap :: key => [value1,value2,...]
 function makeCrossCombsFor(key2ValuesMap) {
@@ -2753,6 +2788,7 @@ function makeCrossCombsFor(key2ValuesMap) {
     //
     return retCombs;
 }
+
 // limitSize 最大元素数
 function LimitedQueue(limitSize) {
     var dataSize = limitSize;
@@ -3026,6 +3062,7 @@ function isMoneyStr(numStr, allowSign) {
     var moneyRegexp = allowSign ? /^(\+|-)?([0-9]|[1-9][0-9]*)(\.\d+)?$/ : /^([0-9]|[1-9][0-9]*)(\.\d+)?$/;
     return moneyRegexp.test(numStr);
 }
+
 // 是否整数
 function isIntStr(numStr) {
     if(numStr == null) {
@@ -3062,6 +3099,7 @@ function isDigitsOrHyphenStr(checkStr) {
     var regExp = /^(\d|-)+$/;
     return regExp.test(checkStr);
 }
+
 //是否手机号码
 function isMobileNo(checkStr) {
     if(checkStr == null || checkStr.length != 11) {
@@ -3070,6 +3108,7 @@ function isMobileNo(checkStr) {
     var regExp = /^1[3|4|5|6|7|8|9]\d{9}$/;
     return regExp.test(checkStr);
 }
+
 //是否固定电话号码
 function isTelNo(checkStr) {
     if(checkStr == null || checkStr.length < 7) {
@@ -3078,6 +3117,7 @@ function isTelNo(checkStr) {
     var regExp = /(^([0][1-9][0-9]-?)?[0-9]{8}$)|(^([0][1-9]{3}-?)?[0-9]{7}$)/;
     return regExp.test(checkStr);
 }
+
 //是否固话或手机号码
 function isPhoneNo(checkStr) {
     return isMobileNo(checkStr) || isTelNo(checkStr);
@@ -3678,6 +3718,7 @@ function jsonToUrlParams(jsonParams, toEncode) {
 
 // 生成唯一的请求字符串参数（不慎严密）
 var __uniqueRequestName = "__Unique_Request_Id";
+
 //
 function genUniqueStr() {
     var ts = new Date().getTime();
@@ -3723,6 +3764,7 @@ var __dlgArgParamName = "__dlgArgName";
 // ====================== 宿主页面所需代码
 // 对话框（页面）参数对象
 var __dlgPageArgs = {};
+
 // 获取对话框（页面）参数（供对话框页面回调的接口）
 function getDlgPageArg(argName) {
     return __dlgPageArgs[argName];
@@ -4176,6 +4218,7 @@ var __mailboxHomeUrls = {
     // 21cn邮箱
     "@21cn.com": "http://mail.21cn.com/w2/"
 };
+
 // 获取邮箱的登录url
 function getMailHomeUrl(email) {
     if(!isEmail(email)) {
@@ -4236,6 +4279,7 @@ function calcTrackerDim(initTrackInfo) {
         height: Math.round(xHeight)
     };
 }
+
 // 条件监视器（定时检查给定的条件，然后执行指定的函数）
 function CondMonitor(name) {
     var _name = name || "CondMonitor" + genUniqueStr();
@@ -4334,6 +4378,7 @@ function CondMonitor(name) {
         return this;
     };
 }
+
 //
 CondMonitor.newOne = function (name) {
     return new CondMonitor(name);
@@ -4350,6 +4395,7 @@ function asTimeout(func, timeout) {
 
 // 文件下载---------------------------------------------------------
 var __fileDownloaderCtrlPrefix = "-file-downloader-ctrl-";
+
 //
 function downloadFile(linkCtrlOrUrl, params) {
     if(linkCtrlOrUrl == null) {
@@ -4804,6 +4850,7 @@ module.exports = {
 
     replace: replace,
     merge: merge,
+    guessLineSeperator: guessLineSeperator,
     makeCsvLine: makeCsvLine,
     parseCsvLine: parseCsvLine,
     toPaginatedData: toPaginatedData,
