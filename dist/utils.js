@@ -3105,7 +3105,7 @@ function isMobileNo(checkStr) {
     if(checkStr == null || checkStr.length != 11) {
         return false;
     }
-    var regExp = /^1[3|4|5|6|7|8|9]\d{9}$/;
+    var regExp = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
     return regExp.test(checkStr);
 }
 
