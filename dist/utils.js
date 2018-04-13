@@ -3114,7 +3114,7 @@ function isTelNo(checkStr) {
     if(checkStr == null || checkStr.length < 7) {
         return false;
     }
-    var regExp = /(^([0][1-9][0-9]-?)?[0-9]{8}$)|(^([0][1-9]{3}-?)?[0-9]{7}$)/;
+    var regExp = /(^([0][1-9][0-9]-?)?[0-9]{8}$)|(^([0][1-9][0-9]{2}-?)?[0-9]{7}$)/;
     return regExp.test(checkStr);
 }
 
