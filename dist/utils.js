@@ -3170,7 +3170,12 @@ var __cityCodeForIdentity = {
     91: "国外 "
 };
 
-function isIdentity(code) {
+function isIdentity(code, checksum) {
+    if(code == null) {
+        return false;
+    }
+    code = code.toUpperCase();
+    checksum = checksum !== false;
     if(!code || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(code)) {
         // console.log("身份证号格式错误");
         return false;
@@ -3179,7 +3184,7 @@ function isIdentity(code) {
         return false;
     } else {
         // 18位身份证需要验证最后一位校验位
-        if(code.length == 18) {
+        if(code.length == 18 && checksum) {
             code = code.split('');
             // ∑(ai×Wi)(mod 11)
             // 加权因子
@@ -3195,8 +3200,8 @@ function isIdentity(code) {
                 sum += ai * wi;
             }
             var last = parity[sum % 11];
-            if(parity[sum % 11] != code[17]) {
-                // console.log("校验位错误");
+            if(last != code[17]) {
+                console.warn("校验位错误");
                 return false;
             }
         }
@@ -4619,9 +4624,9 @@ var ValidateRules = {
         // 验证密码
         return checkPassword(value, strict) == null;
     },
-    isIdNo: function (code) {
+    isIdNo: function (code, checksum) {
         //身份证号码
-        return isIdentity(code);
+        return isIdentity(code, checksum);
     }
 };
 
