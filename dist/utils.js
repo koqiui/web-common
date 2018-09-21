@@ -3101,12 +3101,19 @@ function isDigitsOrHyphenStr(checkStr) {
 }
 
 //是否手机号码
+//中国大陆：/^[1][3-9][0-9]{9}$/
+//中国台湾：/^[0][9][0-9]{8}$/
+//中国香港：/^[6,9][0-9]{7}$/
+//中国澳门：/^[6][6,8][0-9]{5}$/
 function isMobileNo(checkStr) {
     if(checkStr == null || checkStr.length != 11) {
         return false;
     }
-    var regExp = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
-    return regExp.test(checkStr);
+    var regExp_cn = /^[1][3-9][0-9]{9}$/;
+    var regExp_tw = /^[0][9][0-9]{8}$/;
+    var regExp_hk = /^[6,9][0-9]{7}$/;
+    var regExp_mc = /^[6][6,8][0-9]{5}$/
+    return regExp_cn.test(checkStr) || regExp_tw.test(checkStr) || regExp_hk.test(checkStr) || regExp_mc.test(checkStr);
 }
 
 //是否固定电话号码
