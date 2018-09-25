@@ -3106,7 +3106,7 @@ function isDigitsOrHyphenStr(checkStr) {
 //中国香港：/^[6,9][0-9]{7}$/
 //中国澳门：/^[6][6,8][0-9]{5}$/
 function isMobileNo(checkStr) {
-    if(checkStr == null || checkStr.length != 11) {
+    if(checkStr == null) {
         return false;
     }
     var regExp_cn = /^[1][3-9][0-9]{9}$/;
