@@ -4359,7 +4359,7 @@ function CondMonitor(name) {
             };
         }
         //
-        _timer = setTimeout(function () {
+        _timer = setTimeout(function f() {
             _times++;
             //
             // console.log(_name + ">> 正在执行第 " + _times + "次条件检查...");
@@ -4382,7 +4382,7 @@ function CondMonitor(name) {
                 }
             }
             //
-            _timer = setTimeout(arguments.callee, _interval);
+            _timer = setTimeout(f, _interval);
         }, _interval);
         //
         _startTime = new Date().getTime();

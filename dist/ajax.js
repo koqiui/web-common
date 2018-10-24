@@ -8,6 +8,7 @@ var axios = require('axios');
 var jajax = require('jquery').ajax;
 
 //
+var __ajaxDebug = false;
 var __ajaxSetted = false;
 var __ajaxBaseUrl = "";
 var __ajaxTimeout = 0;
@@ -15,6 +16,7 @@ var __ajaxBeforeSendCallback = null;
 var __ajaxErrorCallbck = function (errMsg) {
     console.error(errMsg);
 };
+
 //
 function AjaxCoreFn() {
     var THIS = this;
@@ -22,13 +24,14 @@ function AjaxCoreFn() {
     var _baseUrl = __ajaxBaseUrl;
     var _cache = false;
     var _async = true;
-    var _type = "GET";
+    var _method = "GET";
     var _url = "";
     // 发送的数据类型: contentType
     var _contentType = "application/json";
     // 返回的数据类型: dataType
     var _resultType = "json";
     //
+    var _header = {};
     var _params = {};
     var _data = {};
     var _timeout = __ajaxTimeout;
@@ -52,23 +55,29 @@ function AjaxCoreFn() {
     };
     //
     this.get = function (url) {
-        _type = "GET";
+        _method = "GET";
         //
         _url = url;
         //
         return this;
     };
     this.post = function (url) {
-        _type = "POST";
+        _method = "POST";
         //
         _url = url;
         //
         return this;
     };
     this.put = function (url) {
-        _type = "PUT";
+        _method = "PUT";
         //
         _url = url;
+        //
+        return this;
+    };
+    //支持多次设置（融合模式）
+    this.header = function (header) {
+        _header = utils.merge(_header, header);
         //
         return this;
     };
@@ -129,17 +138,20 @@ function AjaxCoreFn() {
         //
         return this;
     };
+    //callback(jqXHR, this)
     this.beforeSend = function (callback) {
         _beforeSendCallback = callback;
         //
         return this;
     };
     // 结果处理
+    //callback(data, jqXHR)
     this.done = function (callback) {
         _doneHandler = callback;
         //
         return this;
     };
+    //callback(errInfo, jqXHR, status)
     this.fail = function (callback) {
         if(utils.isString(callback)) {
             _failMessage = callback;
@@ -149,11 +161,13 @@ function AjaxCoreFn() {
         //
         return this;
     };
+    //callback(jqXHR)
     this.always = function (callback) {
         _alwaysHandler = callback;
         //
         return this;
     };
+    //callback(errInfo, jqXHR, status)
     this.onStatus = function (status, callback) {
         if(utils.isString(callback)) {
             _statusMessage[status] = callback;
@@ -169,8 +183,14 @@ function AjaxCoreFn() {
     this.on402 = function (callback) {
         return this.onStatus(402, callback);
     };
+    this.on403 = function (callback) {
+        return this.onStatus(403, callback);
+    };
     this.on404 = function (callback) {
         return this.onStatus(404, callback);
+    };
+    this.on405 = function (callback) {
+        return this.onStatus(405, callback);
     };
     this.on500 = function (callback) {
         return this.onStatus(500, callback);
@@ -178,127 +198,6 @@ function AjaxCoreFn() {
     this.on502 = function (callback) {
         return this.onStatus(502, callback);
     };
-    //
-    function sendRequest() {
-        var url = _url;
-        if(_baseUrl && !url.startsWith("http")) {
-            url = _baseUrl + url;
-        }
-        url = utils.makeUrl(url, _params, true);
-        var ajax = null;
-        if(_type == "GET") {
-            var ajaxConf = {
-                cache: _cache,
-                async: _async,
-                type: _type,
-                url: url,
-                dataType: _resultType,
-                data: _data
-            };
-            if(typeof _timeout == "number" && _timeout > 0) {
-                ajaxConf.timeout = _timeout;
-            }
-            if(typeof _beforeSendCallback == "function") {
-                ajaxConf.beforeSend = function (jqXHR) {
-                    if(typeof __ajaxBeforeSendCallback == "function") {
-                        __ajaxBeforeSendCallback(jqXHR);
-                    }
-                    _beforeSendCallback(jqXHR);
-                };
-            } else if(typeof __ajaxBeforeSendCallback == "function") {
-                ajaxConf.beforeSend = function (jqXHR) {
-                    __ajaxBeforeSendCallback(jqXHR);
-                };
-            }
-            ajax = jajax(ajaxConf);
-        } else {
-            var data = _data;
-            if(_contentType.endsWith("/json")) {
-                data = JSON.encode(data);
-            }
-            var ajaxConf = {
-                cache: _cache,
-                async: _async,
-                type: _type,
-                url: url,
-                dataType: _resultType,
-                data: data,
-                contentType: _contentType
-            };
-            if(typeof _timeout == "number" && _timeout > 0) {
-                ajaxConf.timeout = _timeout;
-            }
-            if(typeof _beforeSendCallback == "function") {
-                ajaxConf.beforeSend = function (jqXHR) {
-                    if(typeof __ajaxBeforeSendCallback == "function") {
-                        __ajaxBeforeSendCallback(jqXHR);
-                    }
-                    _beforeSendCallback(jqXHR);
-                };
-            } else if(typeof __ajaxBeforeSendCallback == "function") {
-                ajaxConf.beforeSend = function (jqXHR) {
-                    __ajaxBeforeSendCallback(jqXHR);
-                };
-            }
-            ajax = jajax(ajaxConf);
-        }
-        //
-        ajax.done(function (data, type, jqXHR) {
-            if(typeof _doneHandler == "function") {
-                if(_triggerStates["done"] == true) {
-                    return;
-                }
-                _doneHandler(data, jqXHR);
-            }
-        });
-        //
-        ajax.fail(function (jqXHR, type, statusText) {
-            var errInfo = {};
-            errInfo.type = "error";
-            errInfo.message = statusText || jqXHR.statusText;
-            try {
-                var responseX = jqXHR.responseJSON || JSON.decode(jqXHR.responseText);
-                if(responseX != null && responseX.message) {
-                    errInfo.code = responseX.code;
-                    errInfo.message = responseX.message;
-                }
-            } catch(ex) {
-                //
-            }
-            if(errInfo.message == "error") {
-                errInfo.message = "未知错误";
-            }
-            var status = jqXHR.status;
-            var statusHandler = _statusHandler[status];
-            var continueNext = true;
-            if(statusHandler != null) {
-                var statusMessage = _statusMessage[status];
-                if(statusMessage) {
-                    errInfo.message = statusMessage;
-                }
-                var handleResult = statusHandler(errInfo, jqXHR, status);
-                continueNext = handleResult !== false;
-            }
-            if(continueNext && _failHandler != null) {
-                if(_triggerStates["fail"] == true) {
-                    return;
-                }
-                if(_failMessage) {
-                    errInfo.message = _failMessage;
-                }
-                _failHandler(errInfo, jqXHR, status);
-            }
-        });
-        //
-        if(_alwaysHandler != null) {
-            ajax.always(function (jqXHR, type, statusText) {
-                if(_triggerStates["always"] == true) {
-                    return;
-                }
-                _alwaysHandler(jqXHR);
-            });
-        }
-    }
 
     //event:done, fail, always
     this.trigger = function (event, result, jqXHR) {
@@ -321,8 +220,127 @@ function AjaxCoreFn() {
     };
 
     //
+    function sendRequest() {
+        var url = _url;
+        if(_baseUrl && !url.startsWith("http")) {
+            url = _baseUrl + url;
+        }
+        url = utils.makeUrl(url, _params, true);
+        //
+        var ajaxConf = {
+            cache: _cache,
+            async: _async,
+            type: _method,
+            url: url,
+            dataType: _resultType
+        };
+        //
+        var data = _data;
+        if(_method != 'GET') {
+            ajaxConf.contentType = _contentType;
+            //
+            if(_contentType.endsWith("/json")) {
+                data = JSON.encode(data);
+            }
+        }
+        if(typeof _timeout == "number" && _timeout > 0) {
+            ajaxConf.timeout = _timeout;
+        }
+        ajaxConf.beforeSend = function (jqXHR) {
+            var continueIt = true;
+            if(typeof __ajaxBeforeSendCallback == 'function') {
+                continueIt = __ajaxBeforeSendCallback(jqXHR, THIS);
+            }
+            if(continueIt !== false && typeof _beforeSendCallback == 'function') {
+                continueIt = _beforeSendCallback(jqXHR, THIS);
+            }
+            //
+            if(continueIt === false) {
+                return false;
+            }
+        };
+        //
+        ajaxConf.headers = _header;
+        //
+        if(__ajaxDebug) {
+            console.log(ajaxConf);
+        }
+
+        var ajax = jajax(ajaxConf);
+        //jqXHR.done(function( data, textStatus, jqXHR ) {})
+        ajax.done(function (data, type, jqXHR) {
+            if(typeof _doneHandler == "function") {
+                if(_triggerStates["done"] == true) {
+                    return;
+                }
+                _doneHandler(data, jqXHR);
+            }
+        });
+        //jqXHR.fail(function( jqXHR, textStatus, errorThrown ) {})
+        ajax.fail(function (jqXHR, type, statusText) {
+            var errInfo = {};
+            errInfo.type = "error";
+            errInfo.message = statusText || jqXHR.statusText;
+            try {
+                var responseX = jqXHR.responseJSON || JSON.decode(jqXHR.responseText);
+                if(responseX != null && responseX.message) {
+                    errInfo.code = responseX.code;
+                    errInfo.message = responseX.message;
+                }
+            } catch(ex) {
+                //
+            }
+            if(errInfo.message == "error") {
+                errInfo.message = "未知错误";
+            }
+            var status = jqXHR.status;
+            if(typeof status == 'undefined') {
+                status = jqXHR.status = 408;
+                errInfo.code = -1;
+                errInfo.message = "请求超时";
+            }
+            var statusHandler = _statusHandler[status];
+            var continueNext = true;
+            if(statusHandler != null) {
+                var statusMessage = _statusMessage[status];
+                if(statusMessage) {
+                    errInfo.message = statusMessage;
+                }
+                var handleResult = statusHandler(errInfo, jqXHR, status);
+                continueNext = handleResult !== false;
+            }
+            if(continueNext) {
+                if(_triggerStates["fail"] == true) {
+                    return;
+                }
+                if(_failMessage) {
+                    errInfo.message = _failMessage;
+                }
+                if(_failHandler != null) {
+                    _failHandler(errInfo, jqXHR, status);
+                }
+                else {
+                    __ajaxErrorCallbck(errInfo.message);
+                }
+            }
+        });
+        //
+        if(_alwaysHandler != null) {
+            //jqXHR.always(function( data|jqXHR, textStatus, jqXHR|errorThrown ) { })
+            ajax.always(function (jqXHR, type, statusText) {
+                if(_triggerStates["always"] == true) {
+                    return;
+                }
+                _alwaysHandler(jqXHR);
+            });
+        }
+        //
+        return ajax;
+    }
+
+    //返回原生ajax
     this.go = function () {
-        sendRequest();
+        return sendRequest();
     };
     //
     {
@@ -334,21 +352,30 @@ function AjaxCoreFn() {
         });
 
         this.on401(function (errInfo, jqXHR, status) {
-            var errMsg = errInfo.message || "未登录/未能认证";
+            var errMsg = "未登录/未能认证";
             //
             __ajaxErrorCallbck(errMsg);
         });
         this.on402(function (errInfo, jqXHR, status) {
-            var errMsg = errInfo.message || "未授权或权限不足";
+            var errMsg = "未授权或权限不足";
+            //
+            __ajaxErrorCallbck(errMsg);
+        });
+        this.on403(function (errInfo, jqXHR, status) {
+            var errMsg = "请求的资源禁止访问";
             //
             __ajaxErrorCallbck(errMsg);
         });
         this.on404(function (errInfo, jqXHR, status) {
-            var errMsg = errInfo.message || "未找到请求的资源";
+            var errMsg = "未找到请求的资源";
             //
             __ajaxErrorCallbck(errMsg);
         });
-
+        this.on405(function (errInfo, jqXHR, status) {
+            var errMsg = "请求的方法不被支持";
+            //
+            __ajaxErrorCallbck(errMsg);
+        });
         this.on500(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "服务器繁忙";
             //
@@ -383,12 +410,13 @@ module.exports = {
     timeout: function (timeout) {
         __ajaxTimeout = timeout;
     },
-    errorCallback: function (errorCallback) {
-        if(typeof errorCallback == 'function') {
-            __ajaxErrorCallbck = errorCallback;
+    //callback(errMsg)
+    errorCallback: function (callback) {
+        if(typeof callback == 'function') {
+            __ajaxErrorCallbck = callback;
         }
     },
-    //
+    //callback(jqXHR, this)
     beforeSend: function (callback) {
         __ajaxBeforeSendCallback = callback || null;
     },
@@ -403,5 +431,8 @@ module.exports = {
     },
     put: function (url) {
         return new AjaxCoreFn().put(url);
+    },
+    debug: function (debugRequst) {
+        __ajaxDebug = debugRequst;
     }
 };

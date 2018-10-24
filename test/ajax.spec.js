@@ -21,7 +21,12 @@ describe('default ajax', function () {
         });
 
         it('get user', function (done) {
+            Ajax.debug(true);
+            //
             var ajax = Ajax.get('/users/1');
+            ajax.header({
+                'x-user' : 'koqiui'
+            });
             ajax.done(function (result) {
                 console.log(result);
                 done();
