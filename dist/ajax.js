@@ -242,6 +242,8 @@ function AjaxCoreFn() {
             if(_contentType.endsWith("/json")) {
                 data = JSON.encode(data);
             }
+            //
+            ajaxConf.data = data;
         }
         if(typeof _timeout == "number" && _timeout > 0) {
             ajaxConf.timeout = _timeout;
