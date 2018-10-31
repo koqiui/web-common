@@ -13,6 +13,7 @@ var __ajaxSetted = false;
 var __ajaxBaseUrl = "";
 var __ajaxTimeout = 0;
 var __ajaxBeforeSendCallback = null;
+var __ajaxAfterRecvCallback = null;
 var __ajaxErrorCallbck = function (errMsg) {
     console.error(errMsg);
 };
@@ -271,6 +272,10 @@ function AjaxCoreFn() {
         var ajax = jajax(ajaxConf);
         //jqXHR.done(function( data, textStatus, jqXHR ) {})
         ajax.done(function (data, type, jqXHR) {
+            if(typeof __ajaxAfterRecvCallback == 'function') {
+                __ajaxAfterRecvCallback(data, jqXHR);
+            }
+            //
             if(typeof _doneHandler == "function") {
                 if(_triggerStates["done"] == true) {
                     return;
@@ -421,6 +426,10 @@ module.exports = {
     //callback(jqXHR, this)
     beforeSend: function (callback) {
         __ajaxBeforeSendCallback = callback || null;
+    },
+    //callback(data, jqXHR)
+    afterRecv: function (callback) {
+        __ajaxAfterRecvCallback = callback || null;
     },
     newOne: function () {
         return new AjaxCoreFn();
