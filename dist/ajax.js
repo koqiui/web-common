@@ -47,6 +47,8 @@ function AjaxCoreFn() {
     var _alwaysHandler = null;
     //
     var _triggerStates = {};
+    //
+    var _jqXHR = null;
 
     // var logger = console && console.log ? console.log : null;
     this.baseUrl = function (baseUrl) {
@@ -78,7 +80,16 @@ function AjaxCoreFn() {
     };
     //支持多次设置（融合模式）
     this.header = function (header) {
-        _header = utils.merge(_header, header);
+        header = header || {};
+        //
+        if(_jqXHR == null) {
+            _header = utils.merge(_header, header);
+        } else { //已经发出请求（设置_header已无效）
+            for(var name in header) {
+                var value = header[name];
+                _jqXHR.setRequestHeader(name, value);
+            }
+        }
         //
         return this;
     };
@@ -202,6 +213,8 @@ function AjaxCoreFn() {
 
     //event:done, fail, always
     this.trigger = function (event, result, jqXHR) {
+        _jqXHR = null; // clear !!!
+        //
         if(event == "done") {
             if(typeof _doneHandler == "function") {
                 _triggerStates["done"] = true;
@@ -249,7 +262,12 @@ function AjaxCoreFn() {
         if(typeof _timeout == "number" && _timeout > 0) {
             ajaxConf.timeout = _timeout;
         }
+        //
+        ajaxConf.headers = _header;
+        //
         ajaxConf.beforeSend = function (jqXHR) {
+            _jqXHR = jqXHR; // cache !!!
+            //
             var continueIt = true;
             if(typeof __ajaxBeforeSendCallback == 'function') {
                 continueIt = __ajaxBeforeSendCallback(jqXHR, THIS);
@@ -263,12 +281,10 @@ function AjaxCoreFn() {
             }
         };
         //
-        ajaxConf.headers = _header;
-        //
         if(__ajaxDebug) {
             console.log(ajaxConf);
         }
-
+        //
         var ajax = jajax(ajaxConf);
         //jqXHR.done(function( data, textStatus, jqXHR ) {})
         ajax.done(function (data, type, jqXHR) {
@@ -325,22 +341,23 @@ function AjaxCoreFn() {
                 }
                 if(_failHandler != null) {
                     _failHandler(errInfo, jqXHR, status);
-                }
-                else {
+                } else {
                     __ajaxErrorCallbck(errInfo.message);
                 }
             }
         });
         //
-        if(_alwaysHandler != null) {
-            //jqXHR.always(function( data|jqXHR, textStatus, jqXHR|errorThrown ) { })
-            ajax.always(function (jqXHR, type, statusText) {
-                if(_triggerStates["always"] == true) {
-                    return;
-                }
+        //jqXHR.always(function( data|jqXHR, textStatus, jqXHR|errorThrown ) { })
+        ajax.always(function (jqXHR, type, statusText) {
+            _jqXHR = null; // clear !!!
+            //
+            if(_triggerStates["always"] == true) {
+                return;
+            }
+            if(_alwaysHandler != null) {
                 _alwaysHandler(jqXHR);
-            });
-        }
+            }
+        });
         //
         return ajax;
     }
