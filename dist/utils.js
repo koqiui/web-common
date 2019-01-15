@@ -119,6 +119,27 @@ function isEmptyObject(obj, ignorePropertyPrefix) {
     return true;
 }
 
+//
+var __true_values = ['true', '1', 't', 'yes', 'y', 'on'];
+var __false_values = ['false', '0', 'f', 'no', 'n', 'off'];
+
+function isTrue(x) {
+    if(x == null) {
+        return false;
+    }
+    x = (x + '').toLowerCase();
+    console.log(x.enquote());
+    return __true_values.indexOf(x) != -1;
+}
+
+function isFalse(x) {
+    if(x == null) {
+        return false;
+    }
+    x = (x + '').toLowerCase();
+    return __false_values.indexOf(x) != -1;
+}
+
 // ------------------------------------------
 var ___STRING_LTRIM_REG = /^(\s)+/i;
 var ___STRING_RTRIM_REG = /(\s)+$/i;
@@ -4837,11 +4858,13 @@ module.exports = {
 
     isPlainObject: isPlainObject,
     isEmptyObject: isEmptyObject,
-
     isNoE: isNullOrEmpty,
+
     isNoB: isNullOrBlank,
     isNum: isNum,
     isInt: isInt,
+    isTrue: isTrue,
+    isFalse: isFalse,
 
     isNumStr: isNumStr,
     isIntStr: isIntStr,
