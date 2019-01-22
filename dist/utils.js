@@ -3137,6 +3137,15 @@ function isMobileNo(checkStr) {
     return regExp_cn.test(checkStr) || regExp_tw.test(checkStr) || regExp_hk.test(checkStr) || regExp_mc.test(checkStr);
 }
 
+/** 是否国内手机号码 */
+function isInlandMobileNo(checkStr) {
+    if(checkStr == null) {
+        return false;
+    }
+    var regExp_cn = /^[1][3-9][0-9]{9}$/;
+    return regExp_cn.test(checkStr);
+}
+
 //是否固定电话号码
 function isTelNo(checkStr) {
     if(checkStr == null || checkStr.length < 7) {
@@ -4873,6 +4882,7 @@ module.exports = {
     isEmail: isEmail,
     isTelNo: isTelNo, // 固定电话号码
     isMobileNo: isMobileNo, //手机号码
+    isInlandMobileNo: isInlandMobileNo,//是否国内手机号码
     isPhoneNo: isPhoneNo, // 电话（固定电话 或 手机）号码
     isHexColor: isHexColor,
     isIdentity: isIdentity,
