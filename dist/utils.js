@@ -2094,6 +2094,53 @@ function getYearMonthDays(year, month) {
     return monthDays[mnth - 1];
 }
 
+/**
+ * 获取某个月各周的日期（列表及总周数 {weekCount, weekDatesList}）
+ * @param {Object} year
+ * @param {Object} month 逻辑月份
+ * @param {Object} forBiz 是否按业务周排列（否则为自然周，以星期为索引）
+ */
+function getYearMonthWeekDates(year, month, forBiz) {
+    forBiz = forBiz == true;
+    //生成所有目标日期
+    var maxDays = getYearMonthDays(year, month);
+    var day1st = new Date(year, month - 1, 1, 0, 0, 0, 0);
+    var allDates = [day1st];
+    for(var i = 1; i < maxDays; i++) {
+        allDates[i] = day1st.addDays(i);
+    }
+    //console.log(allDates);
+    //
+    var weekCount = 0;
+    var weekDatesList = [];
+    //
+    var weekDates = null; //临时
+    //
+    var startIndex = 0;
+    if(!forBiz) {
+        startIndex = day1st.getDay();
+        maxDays = maxDays + startIndex;
+        if(startIndex > 0) {
+            weekDatesList[weekCount++] = weekDates = [];
+        }
+    }
+    //
+    for(var i = startIndex, k = 0; i < maxDays; i++, k++) {
+        var dt = allDates[k];
+        var idx = i % 7;
+        if(idx == 0) {
+            weekDatesList[weekCount++] = weekDates = [];
+        }
+        weekDates[idx] = dt;
+    }
+    //
+    return {
+        weekCount: weekCount,
+        weekDatesList: weekDatesList
+    }
+}
+
+//
 Date.prototype.format = function (format) {
     /* yyyy-MM-dd HH:mm:ss.SSS */
     if(format == null) {
@@ -2242,15 +2289,17 @@ Date.prototype.diff = function (that, part) {
             return null;
     }
 };
-// 返回某天是一年中的第几周(weekOfYear)
-Date.prototype.getWeek = function () {
-    var year1stDate = new Date(this.getFullYear(), 0, 1);
-    var year1stDayOfWeek = year1stDate.getDay();
+// 返回某天是一年中的第几周(weekOfYear, 或者 inMonth=true时weeekOfMonth)
+Date.prototype.getWeek = function (inMonth) {
+    inMonth = inMonth === true;
+    //
+    var ref1stDate = inMonth ? new Date(this.getFullYear(), this.getMonth(), 1) : new Date(this.getFullYear(), 0, 1);
+    var ref1stDayOfWeek = ref1stDate.getDay();
     var base = new Date(this.getFullYear(), this.getMonth(), this.getDate());
-    var diffDays = base.diff(year1stDate, 'day');
+    var diffDays = base.diff(ref1stDate, 'day');
     var diffWeeks = Math.floor(diffDays / 7);
     var leftDays = diffDays - diffWeeks * 7;
-    return 1 + diffWeeks + Math.floor((year1stDayOfWeek + leftDays) / 7);
+    return 1 + diffWeeks + Math.floor((ref1stDayOfWeek + leftDays) / 7);
 };
 //
 Date.prototype.asJSON = function () {
@@ -2264,6 +2313,7 @@ Date.prototype.asJSON = function () {
     dt.milliSecond = this.getMilliseconds();
     dt.dayOfWeek = this.getDay();
     dt.weekOfYear = this.getWeek();
+    dt.weekOfMonth = this.getWeek(true);
     dt.quarter = Math.ceil((this.getMonth() + 1) / 3);
     return dt;
 };
@@ -2359,6 +2409,8 @@ Date.prototype.getPart = function (part) {
             return this.getDay();
         case 'weekofyear':
             return this.getWeek();
+        case 'weekofmonth':
+            return this.getWeek(true);
         case 'quarter':
             return Math.ceil((this.getMonth() + 1) / 3);
         default:
@@ -4907,6 +4959,10 @@ module.exports = {
     sortArray: sortArray,
     asTimeout: asTimeout,
     repeatChecker: repeatChecker,
+
+    isLeapYear: isLeapYear,
+    getYearMonthDays: getYearMonthDays,
+    getYearMonthWeekDates: getYearMonthWeekDates,
 
     KeyMap: KeyMap,
     LimitedQueue: LimitedQueue,
