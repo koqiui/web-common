@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="d077fdf0-df2a-4925-8198-98cda50461f0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/utils.js" afterPath="$PROJECT_DIR$/dist/utils.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/h5file.js" afterPath="$PROJECT_DIR$/dist/h5file.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -19,7 +19,41 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="h5file.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dist/h5file.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="231">
+              <caret line="11" column="20" lean-forward="true" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="jqext.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dist/jqext.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2249">
+              <caret line="531" column="24" lean-forward="true" selection-start-line="531" selection-start-column="24" selection-end-line="531" selection-end-column="24" />
+              <folding>
+                <marker date="1547522796988" expanded="true" signature="13329:13488" ph="..." />
+                <marker date="1547522796988" expanded="true" signature="18044:18063" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="504">
+              <caret line="24" column="33" lean-forward="true" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -30,7 +64,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>diff</find>
       <find>N</find>
       <find>Nat</find>
       <find>Natural</find>
@@ -60,10 +93,9 @@
       <find>jqext</find>
       <find>getYearMonthDays</find>
       <find>isLeapYear</find>
+      <find>FileDownloader</find>
     </findStrings>
     <replaceStrings>
-      <replace>jajax</replace>
-      <replace>).</replace>
       <replace>__ajaxBeforeSendCallback</replace>
       <replace>jQuery.ajax</replace>
       <replace>__warnCallbck</replace>
@@ -92,6 +124,8 @@
       <replace>console.log</replace>
       <replace>Natural</replace>
       <replace>__global</replace>
+      <replace>readFileItemsAsFormData</replace>
+      <replace>Downloader</replace>
     </replaceStrings>
     <dirStrings>
       <dir>E:\NodeWorks\web-common</dir>
@@ -198,8 +232,8 @@
         <option value="$PROJECT_DIR$/dist/routes.js" />
         <option value="$PROJECT_DIR$/test/ajax.spec.js" />
         <option value="$PROJECT_DIR$/dist/ajax.js" />
-        <option value="$PROJECT_DIR$/dist/h5file.js" />
         <option value="$PROJECT_DIR$/dist/utils.js" />
+        <option value="$PROJECT_DIR$/dist/h5file.js" />
         <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
@@ -244,7 +278,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -267,6 +300,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -497,6 +531,8 @@
       <workItem from="1562123764321" duration="748000" />
       <workItem from="1562124549594" duration="33000" />
       <workItem from="1562125424938" duration="197000" />
+      <workItem from="1571314714714" duration="166000" />
+      <workItem from="1571651303502" duration="1807000" />
     </task>
     <task id="LOCAL-00023" summary="coding just in CommonJs style">
       <created>1492520966056</created>
@@ -845,21 +881,21 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="183902000" />
+    <option name="totallyTimeSpent" value="185875000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1631" height="1063" extended-state="6" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22758621" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22758621" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27341226" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27419356" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33692142" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39979756" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.335845" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39979756" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1058,24 +1094,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dist/h5file.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="11" column="20" lean-forward="false" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dist/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
           <caret line="15" column="30" lean-forward="false" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dist/jqext.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11487">
-          <caret line="547" column="5" lean-forward="true" selection-start-line="547" selection-start-column="5" selection-end-line="547" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -1107,10 +1129,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/dist/h5file.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="11" column="20" lean-forward="true" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/jqext.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2249">
+          <caret line="531" column="24" lean-forward="true" selection-start-line="531" selection-start-column="24" selection-end-line="531" selection-end-column="24" />
+          <folding>
+            <marker date="1547522796988" expanded="true" signature="13329:13488" ph="..." />
+            <marker date="1547522796988" expanded="true" signature="18044:18063" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="5" column="16" lean-forward="false" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
+        <state relative-caret-position="504">
+          <caret line="24" column="33" lean-forward="true" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>

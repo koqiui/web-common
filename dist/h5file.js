@@ -65,7 +65,7 @@ var Util = {
         });
     },
     //读取文件，返回FormData对象
-    readFileItemsAsFromData: function (fileItems, name) {
+    readFileItemsAsFormData: function (fileItems, name) {
         fileItems = fileItems || [];
         name = name || 'file';
         //
@@ -384,7 +384,7 @@ function Uploader(options) {
         //
         params = params || _extParams;
         //
-        var formData = Util.readFileItemsAsFromData(_fileItems, _fieldName);
+        var formData = Util.readFileItemsAsFormData(_fileItems, _fieldName);
         //
         var paramsMap = KeyMap.from(params);
         for(var i = 0, paramNames = paramsMap.keys(); i < paramNames.length; i++) {
@@ -438,9 +438,395 @@ function Uploader(options) {
         xhr.send(formData);
     };
 }
+
 //
 Uploader.newOne = function () {
     return new Uploader();
+};
+
+//====================================================
+function Downloader(options) {
+    //自定义文件名Response头名称
+    var custom_filename_header = 'X-Custom-filename';
+    //
+    var THIS = this;
+    //
+    var _xhr = null;
+    //
+    var _method = "GET";
+    var _url = "";
+    // 发送的数据类型: contentType : json / form
+    var _contentType = 'json';
+    //
+    var _header = {};
+    var _params = {};
+    var _data = {};
+    //
+    var _timeout = null;
+    //
+    var _fileName = null;
+    //
+    var _doneHandler = null;
+    var _failHandler = null;
+    var _progressHandler = null;
+    //是否有错误发生
+    var _failed = false;
+    //
+    this.get = function (url) {
+        _method = "GET";
+        //
+        _url = url;
+        //
+        return this;
+    };
+    this.post = function (url) {
+        _method = "POST";
+        //
+        _url = url;
+        //
+        return this;
+    };
+    //
+    //支持多次设置（融合模式）
+    this.header = function (header) {
+        header = header || {};
+        //
+        _header = utils.merge(_header, header);
+        //
+        return this;
+    };
+    this.params = function (params) {
+        _params = params;
+        //
+        return this;
+    };
+    this.data = function (data) {
+        _data = data;
+        //
+        return this;
+    };
+    this.timeout = function (timeout) {
+        _timeout = timeout || null;
+        //
+        return this;
+    };
+    this.fileName = function (fileName) {
+        _fileName = fileName;
+        //
+        return null;
+    };
+    this.asJson = function () {
+        _contentType = 'json';
+        //
+        return this;
+    };
+    this.asForm = function () {
+        _contentType = 'form';
+        //
+        return this;
+    };
+    //data : {fileName, fileBody}
+    this.done = function (doneHandler) {
+        if(typeof doneHandler === 'function') {
+            _doneHandler = doneHandler;
+        }
+        //
+        return this;
+    };
+    //
+    this.fail = function (failHandler) {
+        if(typeof failHandler === 'function') {
+            _failHandler = failHandler;
+        }
+        //
+        return this;
+    };
+    //
+    // {type : (0,开始，1:进行中，2:结束，-1:中止), message, fileName, loaded, total}
+    this.progress = function (progressHandler) {
+        if(typeof progressHandler === 'function') {
+            _progressHandler = progressHandler;
+        } else {
+            _progressHandler = null;
+        }
+        //
+        return this;
+    };
+    //
+    this.go = function () {
+        if(_xhr != null) {
+            console.warn('已经发出了下载请求，本次请求已取消');
+            return;
+        }
+        //重置失败标记
+        _failed = false;
+        //
+        var xhr = new XMLHttpRequest();
+        try {
+            xhr.responseType = 'blob';
+        } catch(ex) {
+            console.warn('浏览器Ajax不支持指定blob响应类型');
+        }
+        //缓存请求对象（防止重复调用）
+        _xhr = xhr;
+        //
+        xhr.onerror = function (evnt) {
+            //console.error('-- error --');
+            //console.error(evnt);
+            //TODO 提取信息文本
+            var errMsg = 'Ajax方式文件下载出错';
+            if(!_failed) {
+                _failed = true; //设置失败标记
+                //
+                var handler = _failHandler || _doneHandler;
+                if(handler) {
+                    handler({
+                        type: 'error',
+                        message: errMsg
+                    });
+                } else {
+                    console.error(errMsg);
+                }
+            }
+        };
+        xhr.onabort = function (evnt) {
+            //console.warn('-- abort --');
+            //console.warn(evnt);
+            //TODO 提取信息文本
+            var wrnMsg = 'Ajax方式文件下载已主动取消';
+            if(!_failed) {
+                _failed = true; //设置失败标记
+                //
+                var handler = _failHandler || _doneHandler;
+                if(handler) {
+                    handler({
+                        type: 'warn',
+                        message: wrnMsg
+                    });
+                } else {
+                    console.warn(wrnMsg);
+                }
+            }
+        };
+        xhr.ontimeout = function (evnt) {
+            //console.error('-- timeout --');
+            //console.error(evnt);
+            //TODO 提取信息文本
+            var errMsg = 'Ajax方式文件下载超时';
+            if(!_failed) {
+                _failed = true; //设置失败标记
+                //
+                var handler = _failHandler || _doneHandler;
+                if(handler) {
+                    handler({
+                        type: 'error',
+                        message: errMsg
+                    });
+                } else {
+                    console.error(errMsg);
+                }
+            }
+        };
+        //loadstart[, progress, load], loadend
+        xhr.onloadstart = function (evnt) {
+            //console.log('-- loadstart --');
+            //console.log(evnt);
+            //这里evnt.total 和 evnt.loaded 没用
+            var info = { //没有进度和总量信息
+                type: 0,
+                message: '下载开始'
+            };
+            //
+            if(_progressHandler) {
+                _progressHandler(info);
+            } else {
+                console.log(info);
+            }
+        };
+        xhr.onprogress = function (evnt) {
+            //lengthComputable, total, loaded
+            //console.log('-- progress --');
+            //console.log(evnt);
+            //
+            var info = {
+                type: 1,
+                message: '正在下载',
+                fileName: _fileName,
+                loaded: evnt.loaded
+            };
+            if(evnt.lengthComputable) {
+                info.total = evnt.total;
+                if(info.loaded == info.total) { //下载完毕
+                    info.type = 2;
+                    info.message = '下载完毕';
+                } else if(info.loaded == 0) {
+                    info.type = 0;
+                    info.message = '下载开始';
+                }
+            }
+            //
+            if(_progressHandler) {
+                _progressHandler(info);
+            } else {
+                console.log(info);
+            }
+        };
+        xhr.onload = function (evnt) {
+            //console.log('-- loading --');
+            //console.log(evnt);
+            //
+            /* 与 onloadend 重复
+            var info = {
+                type: 2,
+                message: '下载完毕',
+                fileName: _fileName,
+                loaded: evnt.loaded
+            };
+            if(evnt.lengthComputable) {
+                info.total = evnt.total;
+            }
+            //
+            if(_progressHandler) {
+                _progressHandler(info);
+            } else {
+                console.log(info);
+            }
+            */
+        };
+        xhr.onloadend = function (evnt) {
+            //console.log('-- loadend --');
+            //console.log(evnt);
+            //
+            var info = {
+                type: _failed ? -1 : 2,
+                message: _failed ? '下载中止' : '下载完毕',
+                fileName: _fileName,
+                loaded: evnt.loaded
+            };
+            if(evnt.lengthComputable) {
+                info.total = evnt.total;
+            }
+            //
+            if(_progressHandler) {
+                _progressHandler(info);
+            } else {
+                _failed ? console.warn(info) : console.info(info);
+            }
+            //清除请求对象
+            _xhr = null;
+        };
+        //
+        xhr.onreadystatechange = function (evnt) {
+            //console.log('-- readystatechange --');
+            //console.log(evnt);
+            //console.log(this);
+            //
+            if(this.readyState !== 4) { //this.DONE
+                if(this.readyState == 2) { //this.HEADERS_RECEIVED
+                    //console.log('-- response headers --');
+                    //console.log(this.getAllResponseHeaders());
+                    //Content-Disposition 获取不到（Refused to get unsafe header "Content-Disposition"）
+                    if(!_fileName) { //未指定文件名
+                        try { //从自定义响应头获取文件名
+                            _fileName = this.getResponseHeader(custom_filename_header);
+                        } catch(ex) {
+                            console.warn(ex);
+                        }
+                    }
+                    if(!_fileName) { //从url解析文件名
+                        var rspUrl = this.responseURL || _url; //IE Ajax获取不到responseURL
+                        if(rspUrl.endsWith('?')) {
+                            rspUrl = rspUrl.substring(0, rspUrl.length - 1);
+                        }
+                        _fileName = utils.extractShortFileName(rspUrl);
+                    }
+                }
+                //
+                return;
+            }
+            //
+            if(this.status === 200) {
+                var result = {
+                    type: 'info',
+                    message: '文件下载完毕',
+                }
+                result.data = {
+                    fileName: _fileName,
+                    fileBody: this.response //URL.createObjectURL(this.response)
+                };
+                //
+                if(_doneHandler) {
+                    _doneHandler(result);
+                } else {
+                    console.warn('--- 未设置下载结果处理函数 ---');
+                    console.log(result);
+                }
+            }
+            /*else {
+                var errMsg = 'Ajax方式文件下载失败';
+                if(!_failed) {
+                    _failed = true; //设置失败标记
+                    //
+                    var handler = _failHandler || _doneHandler;
+                    if(handler) {
+                        handler({
+                            type: 'error',
+                            message: errMsg
+                        });
+                    } else {
+                        console.error(errMsg);
+                    }
+                }
+            }*/
+        };
+        //
+        var fullUrl = makeUrl(_url, _params);
+        xhr.open(_method, fullUrl, true);
+        if(_timeout) {
+            xhr.timeout = _timeout;
+        }
+        for(var name in _header) {
+            xhr.setRequestHeader(name, _header[name]);
+        }
+        if(_method == 'GET') {
+            xhr.send();
+        } else {
+            if(_contentType == 'form') {
+                var formData = new FormData();
+                if(_data) {
+                    for(var name in _data) {
+                        formData.append(name, _data[name]);
+                    }
+                }
+                xhr.send(formData);
+            } else {
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                //
+                var json = JSON.encode(_data || {});
+                xhr.send(json);
+            }
+        }
+    };
+
+    //是否可取消
+    this.abortable = function () {
+        return _xhr != null;
+    };
+    //取消下载
+    this.abort = function () {
+        if(_xhr != null) {
+            try {
+                _xhr.abort();
+            } catch(ex) {
+                console.log(ex);
+            }
+        }
+    }
+}
+
+//
+Downloader.newOne = function () {
+    return new Downloader();
 };
 
 //
@@ -448,5 +834,6 @@ module.exports = {
     moduleName: moduleName,
     //
     Util: Util,
-    Uploader: Uploader
+    Uploader: Uploader,
+    Downloader: Downloader
 };
