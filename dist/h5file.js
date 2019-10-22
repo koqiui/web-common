@@ -446,9 +446,6 @@ Uploader.newOne = function () {
 
 //====================================================
 function Downloader(options) {
-    //自定义文件名Response头名称
-    var custom_filename_header = 'X-Custom-filename';
-    //
     var THIS = this;
     //
     var _xhr = null;
@@ -726,9 +723,9 @@ function Downloader(options) {
                     //console.log('-- response headers --');
                     //console.log(this.getAllResponseHeaders());
                     //Content-Disposition 获取不到（Refused to get unsafe header "Content-Disposition"）
-                    if(!_fileName) { //未指定文件名
+                    if(!_fileName && Downloader.fileNameHeader) { //未指定文件名（从自定义文件名Response头获取）
                         try { //从自定义响应头获取文件名
-                            _fileName = this.getResponseHeader(custom_filename_header);
+                            _fileName = this.getResponseHeader(Downloader.fileNameHeader);
                         } catch(ex) {
                             console.warn(ex);
                         }
@@ -780,7 +777,7 @@ function Downloader(options) {
             }*/
         };
         //
-        var fullUrl = makeUrl(_url, _params);
+        var fullUrl = utis.makeUrl(_url, _params);
         xhr.open(_method, fullUrl, true);
         if(_timeout) {
             xhr.timeout = _timeout;
