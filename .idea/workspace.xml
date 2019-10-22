@@ -23,8 +23,8 @@
       <file leaf-file-name="h5file.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dist/h5file.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="376">
-              <caret line="832" column="15" lean-forward="true" selection-start-line="832" selection-start-column="15" selection-end-line="832" selection-end-column="15" />
+            <state relative-caret-position="216">
+              <caret line="781" column="22" lean-forward="true" selection-start-line="781" selection-start-column="22" selection-end-line="781" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -34,7 +34,7 @@
         <entry file="file://$PROJECT_DIR$/dist/jqext.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="11151">
-              <caret line="531" column="24" lean-forward="true" selection-start-line="531" selection-start-column="24" selection-end-line="531" selection-end-column="24" />
+              <caret line="531" column="24" lean-forward="false" selection-start-line="531" selection-start-column="24" selection-end-line="531" selection-end-column="24" />
               <folding>
                 <marker date="1547522796988" expanded="true" signature="13329:13488" ph="..." />
                 <marker date="1547522796988" expanded="true" signature="18044:18063" ph="..." />
@@ -46,8 +46,8 @@
       <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="462">
-              <caret line="22" column="6" lean-forward="true" selection-start-line="22" selection-start-column="6" selection-end-line="22" selection-end-column="6" />
+            <state relative-caret-position="504">
+              <caret line="24" column="33" lean-forward="true" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -64,7 +64,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Nat</find>
       <find>Natural</find>
       <find>Naut</find>
       <find>Nau</find>
@@ -94,6 +93,7 @@
       <find>isLeapYear</find>
       <find>FileDownloader</find>
       <find>custom_filename_header</find>
+      <find>utis</find>
     </findStrings>
     <replaceStrings>
       <replace>jQuery.ajax</replace>
@@ -278,8 +278,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -533,14 +533,8 @@
       <workItem from="1562125424938" duration="197000" />
       <workItem from="1571314714714" duration="166000" />
       <workItem from="1571651303502" duration="1905000" />
-      <workItem from="1571727004430" duration="445000" />
-    </task>
-    <task id="LOCAL-00024" summary="coding just in CommonJs style">
-      <created>1492523181074</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1492523181074</updated>
+      <workItem from="1571727004430" duration="487000" />
+      <workItem from="1571730143208" duration="50000" />
     </task>
     <task id="LOCAL-00025" summary="coding just in CommonJs style">
       <created>1492523242438</created>
@@ -878,11 +872,18 @@
       <option name="project" value="LOCAL" />
       <updated>1571656415218</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="修正Ajax Downloader函数引用">
+      <created>1571730030241</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1571730030241</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="186418000" />
+    <option name="totallyTimeSpent" value="186510000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1631" height="1063" extended-state="6" />
@@ -938,7 +939,8 @@
     <MESSAGE value="routes added" />
     <MESSAGE value="coding just in CommonJs style" />
     <MESSAGE value="增加了Ajax Downloader" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加了Ajax Downloader" />
+    <MESSAGE value="修正Ajax Downloader函数引用" />
+    <option name="LAST_COMMIT_MESSAGE" value="修正Ajax Downloader函数引用" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1134,7 +1136,7 @@
     <entry file="file://$PROJECT_DIR$/dist/jqext.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="11151">
-          <caret line="531" column="24" lean-forward="true" selection-start-line="531" selection-start-column="24" selection-end-line="531" selection-end-column="24" />
+          <caret line="531" column="24" lean-forward="false" selection-start-line="531" selection-start-column="24" selection-end-line="531" selection-end-column="24" />
           <folding>
             <marker date="1547522796988" expanded="true" signature="13329:13488" ph="..." />
             <marker date="1547522796988" expanded="true" signature="18044:18063" ph="..." />
@@ -1144,16 +1146,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dist/h5file.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="832" column="15" lean-forward="true" selection-start-line="832" selection-start-column="15" selection-end-line="832" selection-end-column="15" />
+        <state relative-caret-position="216">
+          <caret line="781" column="22" lean-forward="true" selection-start-line="781" selection-start-column="22" selection-end-line="781" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="22" column="6" lean-forward="true" selection-start-line="22" selection-start-column="6" selection-end-line="22" selection-end-column="6" />
+        <state relative-caret-position="504">
+          <caret line="24" column="33" lean-forward="true" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
           <folding />
         </state>
       </provider>

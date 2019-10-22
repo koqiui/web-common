@@ -777,7 +777,7 @@ function Downloader(options) {
             }*/
         };
         //
-        var fullUrl = utis.makeUrl(_url, _params);
+        var fullUrl = utils.makeUrl(_url, _params);
         xhr.open(_method, fullUrl, true);
         if(_timeout) {
             xhr.timeout = _timeout;
