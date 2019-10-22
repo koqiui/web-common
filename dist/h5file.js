@@ -462,6 +462,7 @@ function Downloader(options) {
     var _timeout = null;
     //
     var _fileName = null;
+    var _fileNameHeader = null;
     //
     var _doneHandler = null;
     var _failHandler = null;
@@ -510,7 +511,12 @@ function Downloader(options) {
     this.fileName = function (fileName) {
         _fileName = fileName;
         //
-        return null;
+        return this;
+    };
+    this.fileNameHeader = function (fileNameHeader) {
+        _fileNameHeader = fileNameHeader;
+        //
+        return this;
     };
     this.asJson = function () {
         _contentType = 'json';
@@ -723,9 +729,9 @@ function Downloader(options) {
                     //console.log('-- response headers --');
                     //console.log(this.getAllResponseHeaders());
                     //Content-Disposition 获取不到（Refused to get unsafe header "Content-Disposition"）
-                    if(!_fileName && Downloader.fileNameHeader) { //未指定文件名（从自定义文件名Response头获取）
+                    if(!_fileName && _fileNameHeader) { //未指定文件名（从自定义文件名Response头获取）
                         try { //从自定义响应头获取文件名
-                            _fileName = this.getResponseHeader(Downloader.fileNameHeader);
+                            _fileName = this.getResponseHeader(_fileNameHeader);
                         } catch(ex) {
                             console.warn(ex);
                         }

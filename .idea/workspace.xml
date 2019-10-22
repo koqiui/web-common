@@ -20,34 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="h5file.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="h5file.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dist/h5file.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="781" column="22" lean-forward="true" selection-start-line="781" selection-start-column="22" selection-end-line="781" selection-end-column="22" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="jqext.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dist/jqext.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="11151">
-              <caret line="531" column="24" lean-forward="false" selection-start-line="531" selection-start-column="24" selection-end-line="531" selection-end-column="24" />
-              <folding>
-                <marker date="1547522796988" expanded="true" signature="13329:13488" ph="..." />
-                <marker date="1547522796988" expanded="true" signature="18044:18063" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/package.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
-              <caret line="24" column="33" lean-forward="true" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
+            <state relative-caret-position="342">
+              <caret line="450" column="20" lean-forward="false" selection-start-line="450" selection-start-column="20" selection-end-line="450" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -64,9 +41,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Natural</find>
-      <find>Naut</find>
-      <find>Nau</find>
       <find>Na</find>
       <find>Natu</find>
       <find>Natua</find>
@@ -94,9 +68,11 @@
       <find>FileDownloader</find>
       <find>custom_filename_header</find>
       <find>utis</find>
+      <find>fileNameHeader</find>
+      <find>Downloader.fileNameHeader</find>
+      <find>_fileNameHeader</find>
     </findStrings>
     <replaceStrings>
-      <replace>jQuery.ajax</replace>
       <replace>__warnCallbck</replace>
       <replace>__ajaxWarnCallbck</replace>
       <replace>Utils</replace>
@@ -126,6 +102,7 @@
       <replace>readFileItemsAsFormData</replace>
       <replace>Downloader</replace>
       <replace>Downloader.fileNameHeader</replace>
+      <replace>_fileNameHeader</replace>
     </replaceStrings>
     <dirStrings>
       <dir>E:\NodeWorks\web-common</dir>
@@ -278,7 +255,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -301,6 +277,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -534,14 +511,8 @@
       <workItem from="1571314714714" duration="166000" />
       <workItem from="1571651303502" duration="1905000" />
       <workItem from="1571727004430" duration="487000" />
-      <workItem from="1571730143208" duration="50000" />
-    </task>
-    <task id="LOCAL-00025" summary="coding just in CommonJs style">
-      <created>1492523242438</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1492523242438</updated>
+      <workItem from="1571730143208" duration="234000" />
+      <workItem from="1571750469362" duration="871000" />
     </task>
     <task id="LOCAL-00026" summary="coding just in CommonJs style">
       <created>1492523485680</created>
@@ -879,11 +850,18 @@
       <option name="project" value="LOCAL" />
       <updated>1571730030241</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="修正Ajax Downloader函数引用">
+      <created>1571730198806</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1571730198806</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="186510000" />
+    <option name="totallyTimeSpent" value="187565000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1631" height="1063" extended-state="6" />
@@ -1133,9 +1111,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="8" column="19" lean-forward="true" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/dist/jqext.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11151">
+        <state relative-caret-position="543">
           <caret line="531" column="24" lean-forward="false" selection-start-line="531" selection-start-column="24" selection-end-line="531" selection-end-column="24" />
           <folding>
             <marker date="1547522796988" expanded="true" signature="13329:13488" ph="..." />
@@ -1146,16 +1132,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dist/h5file.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="781" column="22" lean-forward="true" selection-start-line="781" selection-start-column="22" selection-end-line="781" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="24" column="33" lean-forward="true" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
+        <state relative-caret-position="342">
+          <caret line="450" column="20" lean-forward="false" selection-start-line="450" selection-start-column="20" selection-end-line="450" selection-end-column="20" />
           <folding />
         </state>
       </provider>
