@@ -445,6 +445,22 @@ Uploader.newOne = function () {
 };
 
 //====================================================
+//从Content-Disposition响应头解析文件名称
+function parseFileNameFromContentDisposition(contentDisposition) {
+    var cpStr = contentDisposition || null;
+    if(cpStr == null) {
+        return null;
+    }
+    var index = cpStr.toLowerCase().indexOf('filename=');
+    if(index != -1) {//'filename='.length = 9
+        cpStr = cpStr.substring(index + 9);
+        cpStr = cpStr.dequote();
+        return decodeURI(cpStr);
+    } else {
+        return null;
+    }
+}
+
 function Downloader(options) {
     var THIS = this;
     //
@@ -726,16 +742,25 @@ function Downloader(options) {
             //
             if(this.readyState !== 4) { //this.DONE
                 if(this.readyState == 2) { //this.HEADERS_RECEIVED
-                    //console.log('-- response headers --');
-                    //console.log(this.getAllResponseHeaders());
-                    //Content-Disposition 获取不到（Refused to get unsafe header "Content-Disposition"）
-                    if(!_fileName && _fileNameHeader) { //未指定文件名（从自定义文件名Response头获取）
-                        try { //从自定义响应头获取文件名
-                            _fileName = this.getResponseHeader(_fileNameHeader);
-                        } catch(ex) {
-                            console.warn(ex);
+                    if(!_fileName) { //未指定文件名
+                        if(_fileNameHeader) {
+                            try { //从自定义响应头获取文件名
+                                _fileName = this.getResponseHeader(_fileNameHeader);
+                            } catch(ex) {
+                                console.warn(ex);
+                            }
+                        }
+                        if(!_fileName) {
+                            //console.log('-- response headers --');
+                            //console.log(this.getAllResponseHeaders());
+                            var allHeaderStr = this.getAllResponseHeaders() + "" || "";
+                            if(allHeaderStr.toLowerCase().indexOf('content-disposition') != -1) {
+                                var cpStr = this.getResponseHeader('Content-Disposition');
+                                _fileName = parseFileNameFromContentDisposition(cpStr);
+                            }
                         }
                     }
+                    //
                     if(!_fileName) { //从url解析文件名
                         var rspUrl = this.responseURL || _url; //IE Ajax获取不到responseURL
                         if(rspUrl.endsWith('?')) {
