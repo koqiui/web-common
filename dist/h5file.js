@@ -455,7 +455,7 @@ function parseFileNameFromContentDisposition(contentDisposition) {
     if(index != -1) {//'filename='.length = 9
         cpStr = cpStr.substring(index + 9);
         cpStr = cpStr.dequote();
-        return decodeURI(cpStr);
+        return decodeURI(cpStr);//解码
     } else {
         return null;
     }
@@ -742,26 +742,33 @@ function Downloader(options) {
             //
             if(this.readyState !== 4) { //this.DONE
                 if(this.readyState == 2) { //this.HEADERS_RECEIVED
-                    if(!_fileName) { //未指定文件名
-                        if(_fileNameHeader) {
-                            try { //从自定义响应头获取文件名
-                                _fileName = this.getResponseHeader(_fileNameHeader);
-                            } catch(ex) {
-                                console.warn(ex);
+                    var rspFileName = null;//从响应得到的文件名称
+                    //
+                    //console.log('-- response headers --');
+                    //console.log(this.getAllResponseHeaders());
+                    var allHeaderStr = (this.getAllResponseHeaders() + "" || "").toLowerCase();
+                    //1
+                    if(_fileNameHeader && allHeaderStr.indexOf(_fileNameHeader.toLowerCase()) != -1) {
+                        try { //从自定义响应头获取文件名
+                            rspFileName = this.getResponseHeader(_fileNameHeader);
+                            if(rspFileName) {//解码
+                                rspFileName = decodeURI(rspFileName);
                             }
-                        }
-                        if(!_fileName) {
-                            //console.log('-- response headers --');
-                            //console.log(this.getAllResponseHeaders());
-                            var allHeaderStr = this.getAllResponseHeaders() + "" || "";
-                            if(allHeaderStr.toLowerCase().indexOf('content-disposition') != -1) {
-                                var cpStr = this.getResponseHeader('Content-Disposition');
-                                _fileName = parseFileNameFromContentDisposition(cpStr);
-                            }
+                        } catch(ex) {
+                            console.warn(ex);
                         }
                     }
+                    //2
+                    if(!rspFileName && allHeaderStr.indexOf('content-disposition') != -1) {
+                        //从Content-Disposition响应头获取文件名
+                        var cpStr = this.getResponseHeader('Content-Disposition');
+                        rspFileName = parseFileNameFromContentDisposition(cpStr);
+                    }
                     //
-                    if(!_fileName) { //从url解析文件名
+                    if(rspFileName) {//以响应的文件名为主
+                        _fileName = rspFileName;
+                    }
+                    else if(!_fileName) { //3 从url解析文件名
                         var rspUrl = this.responseURL || _url; //IE Ajax获取不到responseURL
                         if(rspUrl.endsWith('?')) {
                             rspUrl = rspUrl.substring(0, rspUrl.length - 1);
