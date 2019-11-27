@@ -859,6 +859,32 @@ function Downloader(options) {
     }
 }
 
+Downloader.downloadHtmlAsXls = function (htmlContent, fileName) {
+    htmlContent = htmlContent || '';
+    if(htmlContent.indexOf('<html') != 0) {
+        //没有被html包裹
+        htmlContent = '<html><head><meta charset="UTF-8" /></head><body>' + htmlContent + '</body></html>';
+    }
+    var blob = new Blob([htmlContent], {
+        type: "application/vnd.ms-excel"
+    });
+
+    if(window.navigator && window.navigator.msSaveBlob) { //IE
+        window.navigator.msSaveBlob(blob, fileName);
+    } else { //非IE
+        var tmpLink = document.createElement('A');
+        document.body.appendChild(tmpLink);
+        tmpLink.style = 'display: none';
+        var fileUrl = window.URL.createObjectURL(blob);
+        tmpLink.href = fileUrl;
+        tmpLink.download = fileName;
+        tmpLink.click();
+        window.URL.revokeObjectURL(tmpLink.href);
+        document.body.removeChild(tmpLink);
+        tmpLink.remove();
+    }
+};
+
 //
 Downloader.newOne = function () {
     return new Downloader();
