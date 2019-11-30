@@ -859,11 +859,12 @@ function Downloader(options) {
     }
 }
 
-Downloader.downloadHtmlAsXls = function (htmlContent, fileName) {
+Downloader.downloadHtmlAsXls = function (htmlContent, fileName, style) {
     htmlContent = htmlContent || '';
     if(htmlContent.indexOf('<html') != 0) {
         //没有被html包裹
-        htmlContent = '<html><head><meta charset="UTF-8" /></head><body>' + htmlContent + '</body></html>';
+        style = style || '';
+        htmlContent = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css">' + style + '</style></head><body>' + htmlContent + '</body></html>';
     }
     var blob = new Blob([htmlContent], {
         type: "application/vnd.ms-excel"

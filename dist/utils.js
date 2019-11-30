@@ -142,18 +142,23 @@ function isFalse(x) {
 
 // ------------------------------------------
 var ___STRING_LTRIM_REG = /^(\s)+/i;
+var ___STRING_LTRIM_REG_EX = /^[\s　]+/i;
 var ___STRING_RTRIM_REG = /(\s)+$/i;
+var ___STRING_RTRIM_REG_EX = /[\s　]+$/i;
 
-function trimLeft(str) {
-    return str.replace(___STRING_LTRIM_REG, "");
+function trimLeft(str, exMode) {
+    exMode = exMode === true;
+    return exMode ? str.replace(___STRING_LTRIM_REG_EX, "") : str.replace(___STRING_LTRIM_REG, "");
 }
 
-function trimRight(str) {
-    return str.replace(___STRING_RTRIM_REG, "");
+function trimRight(str, exMode) {
+    exMode = exMode === true;
+    return exMode ? str.replace(___STRING_RTRIM_REG_EX, "") : str.replace(___STRING_RTRIM_REG, "");
 }
 
-function trim(str) {
-    return str.replace(___STRING_LTRIM_REG, "").replace(___STRING_RTRIM_REG, "");
+function trim(str, exMode) {
+    exMode = exMode === true;
+    return exMode ? str.replace(___STRING_LTRIM_REG_EX, "").replace(___STRING_RTRIM_REG_EX, "") : str.replace(___STRING_LTRIM_REG, "").replace(___STRING_RTRIM_REG, "");
 }
 
 //
@@ -192,16 +197,19 @@ function strEql(val /* , chkVal1, chkVal2,... */) {
     return false;
 }
 
-String.prototype.trimLeft = function () {
-    return trimLeft(this);
+String.prototype.trimLeft = function (exMode) {
+    exMode = exMode === true;
+    return trimLeft(this, exMode);
 };
 
-String.prototype.trimRight = function () {
-    return trimRight(this);
+String.prototype.trimRight = function (exMode) {
+    exMode = exMode === true;
+    return trimRight(this, exMode);
 };
 
-String.prototype.trim = function () {
-    return trim(this);
+String.prototype.trim = function (exMode) {
+    exMode = exMode === true;
+    return trim(this, exMode);
 };
 
 String.prototype.isEmpty = function () {
@@ -3851,6 +3859,32 @@ function makeFuncCallScript(funcName, args) {
     return sb.value;
 }
 
+var ___STRING_LF_CR_REG_EX = /[\r\n]+/ig;
+
+/** 去掉所有位置的换行符 及 前后的中英文空白字符 */
+function filterTitleStr(titleStr) {
+    if(titleStr == null) {
+        return null;
+    }
+    //console.log("---------------");
+    //console.log(enquote(titleStr));
+    // 去掉换行符
+    titleStr = titleStr.replace(___STRING_LF_CR_REG_EX, "");
+    // 去掉开头 和 结尾的空白字符（包含中文和英文）
+    titleStr = trim(titleStr, true);
+    return titleStr;
+}
+
+/** 检查标题性质的字符串 （如果通过返回null，否则返回错误信息）  */
+function checkTitleStr(titleStr, usage) {
+    var filtered = filterTitleStr(titleStr);
+    //console.log(enquote(filtered));
+    if(filtered.length != titleStr.length) {
+        return "【" + usage + "】字符串 既不能包含换行符、前后也不能有空白符";
+    }
+    return null;
+}
+
 // =================================== {{ iframe 对话框传值
 // ===================================
 // 对话框页面参数名称（预定义）
@@ -5012,6 +5046,9 @@ module.exports = {
     base64StrToDataURL: base64StrToDataURL,
     playAudio: playAudio,
     speakText: speakText,
+
+    filterTitleStr: filterTitleStr,
+    checkTitleStr: checkTitleStr,
 
     isInBrowser: isInBrowser,
     global: __global,
