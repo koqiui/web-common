@@ -695,22 +695,22 @@ function Downloader(options) {
             //console.log(evnt);
             //
             /* 与 onloadend 重复
-            var info = {
-                type: 2,
-                message: '下载完毕',
-                fileName: _fileName,
-                loaded: evnt.loaded
-            };
-            if(evnt.lengthComputable) {
-                info.total = evnt.total;
-            }
-            //
-            if(_progressHandler) {
-                _progressHandler(info);
-            } else {
-                console.log(info);
-            }
-            */
+             var info = {
+             type: 2,
+             message: '下载完毕',
+             fileName: _fileName,
+             loaded: evnt.loaded
+             };
+             if(evnt.lengthComputable) {
+             info.total = evnt.total;
+             }
+             //
+             if(_progressHandler) {
+             _progressHandler(info);
+             } else {
+             console.log(info);
+             }
+             */
         };
         xhr.onloadend = function (evnt) {
             //console.log('-- loadend --');
@@ -798,21 +798,21 @@ function Downloader(options) {
                 }
             }
             /*else {
-                var errMsg = 'Ajax方式文件下载失败';
-                if(!_failed) {
-                    _failed = true; //设置失败标记
-                    //
-                    var handler = _failHandler || _doneHandler;
-                    if(handler) {
-                        handler({
-                            type: 'error',
-                            message: errMsg
-                        });
-                    } else {
-                        console.error(errMsg);
-                    }
-                }
-            }*/
+             var errMsg = 'Ajax方式文件下载失败';
+             if(!_failed) {
+             _failed = true; //设置失败标记
+             //
+             var handler = _failHandler || _doneHandler;
+             if(handler) {
+             handler({
+             type: 'error',
+             message: errMsg
+             });
+             } else {
+             console.error(errMsg);
+             }
+             }
+             }*/
         };
         //
         var fullUrl = utils.makeUrl(_url, _params);
@@ -827,13 +827,25 @@ function Downloader(options) {
             xhr.send();
         } else {
             if(_contentType == 'form') {
-                var formData = new FormData();
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                var formData = null;
                 if(_data) {
+                    var formItems = [];
                     for(var name in _data) {
-                        formData.append(name, _data[name]);
+                        var value = _data[name];
+                        if(value != null) {
+                            var formItem = encodeURIComponent(name) + "=" + encodeURIComponent(value + '');
+                            formItems.push(formItem);
+                        }
                     }
+                    formData = formItems.join('&');
                 }
-                xhr.send(formData);
+                if(formData == null) {
+                    xhr.send();
+                }
+                else {
+                    xhr.send(formData);
+                }
             } else {
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 //
