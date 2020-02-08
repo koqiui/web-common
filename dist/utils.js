@@ -4007,10 +4007,7 @@ function formatNum(num, format, debug) {
     if(none0Count > 0) {
         frgStr = frgStr.replace(new RegExp('[0]{' + none0Count + '}$'), '');
     }
-    let frgForcedNum = formatInfo.frgForcedNum;
-    if(formatInfo.percent) { //百分比调整：缩减2位
-        frgForcedNum = frgForcedNum - 2;
-    }
+    var frgForcedNum = formatInfo.frgForcedNum;
     if(frgStr.length < frgForcedNum) { //补齐强制小数位数
         frgStr = padRight(frgStr, frgForcedNum, '0');
     }
