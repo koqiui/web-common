@@ -3857,10 +3857,7 @@ function formatDate(date, format) {
     return isDate(dateObj) ? dateObj.format(format) : (date + '');
 }
 
-/** 格式化数值 */
-var __def_float_format = '#0.00';
-
-function parseNumFormat(format) {
+function parseNumFormat(format, debug) {
     if(format == null || (format = format.trim()) == '') {
         return null;
     }
@@ -3928,8 +3925,8 @@ function parseNumFormat(format) {
             percent = true;
         }
     }
-    //
-    return {
+
+    var formatMeta = {
         prefix: prefix, //前缀
         //
         thousandNum: thousandNum, //千分位位数
@@ -3946,7 +3943,16 @@ function parseNumFormat(format) {
         //
         suffix: suffix //后缀
     };
+    if(debug == true) {
+        console.info('---- [' + format + '] ----');
+        console.info(formatMeta);
+    }
+    //
+    return formatMeta;
 }
+
+/** 格式化数值 */
+var __def_float_format = '#0.00';
 
 function formatNum(num, format, debug) {
     if(num == null) {
@@ -3965,37 +3971,38 @@ function formatNum(num, format, debug) {
         return num + '';
     }
     //
-    var formatInfo = parseNumFormat(format);
-    debug = debug === true;
-    if(debug) {
-        console.log(formatInfo);
+    var formatMeta = null;
+    if(typeof format == 'string') {
+        formatMeta = parseNumFormat(format, debug);
+    } else {
+        formatMeta = format;
     }
     //
-    if(formatInfo.percent) {
+    if(formatMeta.percent) {
         num = num * 100;
     }
     var numSign = num < 0 ? '-' : '';
     num = Math.abs(num);
     //
-    if(formatInfo.frgRoundNum >= 0) {
-        num = num.round(formatInfo.frgRoundNum);
+    if(formatMeta.frgRoundNum >= 0) {
+        num = num.round(formatMeta.frgRoundNum);
     }
     var numStr = num + '';
     var decimalIndex = numStr.indexOf('.');
     var intStr = decimalIndex == -1 ? numStr : numStr.substring(0, decimalIndex);
     var frgStr = decimalIndex == -1 ? '' : numStr.substring(decimalIndex + 1);
-    if(formatInfo.intForcedNum >= 0) {
+    if(formatMeta.intForcedNum >= 0) {
         if(intStr == '0') {
             intStr = '';
         }
-        if(intStr.length < formatInfo.intForcedNum) {
-            intStr = padLeft(intStr, formatInfo.intForcedNum, '0');
+        if(intStr.length < formatMeta.intForcedNum) {
+            intStr = padLeft(intStr, formatMeta.intForcedNum, '0');
         }
     }
-    if(formatInfo.thousandNum > 0 && intStr.length > 0) { //千分位
+    if(formatMeta.thousandNum > 0 && intStr.length > 0) { //千分位
         var intChars = [];
         for(var i = intStr.length - 1, j = 0; i >= 0; i--, j++) {
-            if(j > 0 && j % formatInfo.thousandNum == 0) {
+            if(j > 0 && j % formatMeta.thousandNum == 0) {
                 intChars.unshift(',');
             }
             intChars.unshift(intStr.charAt(i));
@@ -4003,20 +4010,20 @@ function formatNum(num, format, debug) {
         intStr = intChars.join('');
         //console.log(intStr);
     }
-    var none0Count = formatInfo.frgRoundNum > formatInfo.frgForcedNum;
+    var none0Count = formatMeta.frgRoundNum > formatMeta.frgForcedNum;
     if(none0Count > 0) {
         frgStr = frgStr.replace(new RegExp('[0]{' + none0Count + '}$'), '');
     }
-    var frgForcedNum = formatInfo.frgForcedNum;
+    var frgForcedNum = formatMeta.frgForcedNum;
     if(frgStr.length < frgForcedNum) { //补齐强制小数位数
         frgStr = padRight(frgStr, frgForcedNum, '0');
     }
     //
-    if(frgStr.length > 0 || formatInfo.frgDotFlag) {
+    if(frgStr.length > 0 || formatMeta.frgDotFlag) {
         frgStr = '.' + frgStr;
     }
     //
-    return numSign + formatInfo.prefix + intStr + frgStr + formatInfo.suffix;
+    return numSign + formatMeta.prefix + intStr + frgStr + formatMeta.suffix;
 }
 
 // 生成函数调用脚本（函数名称，参数数组，注意：参数只能是数值对象，不能是函数）
@@ -5166,6 +5173,7 @@ module.exports = {
     ValidateRules: ValidateRules,
 
     formatDate: formatDate,
+    parseNumFormat: parseNumFormat,
     formatNum: formatNum,
 
     replace: replace,

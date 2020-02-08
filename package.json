@@ -1,6 +1,6 @@
 {
     "name": "web-common",
-    "version": "1.0.94",
+    "version": "1.0.95",
     "description": "web common js",
     "main": "dist/index.js",
     "scripts": {
