@@ -4001,14 +4001,18 @@ function formatNum(num, format, debug) {
             intChars.unshift(intStr.charAt(i));
         }
         intStr = intChars.join('');
-        console.log(intStr);
+        //console.log(intStr);
     }
     var none0Count = formatInfo.frgRoundNum > formatInfo.frgForcedNum;
     if(none0Count > 0) {
         frgStr = frgStr.replace(new RegExp('[0]{' + none0Count + '}$'), '');
     }
-    if(frgStr.length < formatInfo.frgForcedNum) {
-        frgStr = padRight(frgStr, formatInfo.frgForcedNum, '0');
+    let frgForcedNum = formatInfo.frgForcedNum;
+    if(formatInfo.percent) { //百分比调整：缩减2位
+        frgForcedNum = frgForcedNum - 2;
+    }
+    if(frgStr.length < frgForcedNum) { //补齐强制小数位数
+        frgStr = padRight(frgStr, frgForcedNum, '0');
     }
     //
     if(frgStr.length > 0 || formatInfo.frgDotFlag) {
