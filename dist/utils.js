@@ -2153,6 +2153,8 @@ Date.prototype.format = function (format) {
     /* yyyy-MM-dd HH:mm:ss.SSS */
     if(format == null) {
         format = "yyyy-MM-dd";
+    } else {
+        format = replace(format, "'", "");
     }
     var result = format.replace(/yyyy/, this.getFullYear());
     result = result.replace(/yy/, padLeft(this.getYear(), 2, "0"));
@@ -3362,6 +3364,18 @@ function getDomById(id) {
     return document.getElementById(id);
 }
 
+//dom.offsetWidth (包含 border, padding) = jqDom.width() + border + padding
+//dom.offsetWidth 不包含 margin
+//获得html dom元素的作用/计算样式
+function getDomElStyle(domEl) {
+    if(window.getComputedStyle) {
+        return window.getComputedStyle(domEl);
+    }
+    else {
+        return domEl.currentStyle;
+    }
+}
+
 //
 function getPageInfo() {
     return {
@@ -3831,6 +3845,177 @@ function genUniqueStr() {
 // 给url附加唯一的参数（防止对话框缓存）
 function makeUniqueUrl(url) {
     return concatUrlParams(url, __uniqueRequestName + "=" + genUniqueStr());
+}
+
+/** 格式化日期 */
+function formatDate(date, format) {
+    if(!date) {
+        return '';
+    }
+    format = format || 'yyyy-MM-dd HH:mm:ss';
+    var dateObj = Date.parseAsDate(date);
+    return isDate(dateObj) ? dateObj.format(format) : (date + '');
+}
+
+/** 格式化数值 */
+var __def_float_format = '#0.00';
+
+function parseNumFormat(format) {
+    if(format == null || (format = format.trim()) == '') {
+        return null;
+    }
+    //
+    var prefix = ''; //前缀
+    var thousandNum = 0; //千分位位数
+    var intForcedNum = -1; //整数部分强制位数
+    var frgDotFlag = false; //小数点符号标记
+    var frgRoundNum = 0; //小数部分保留位数
+    var frgForcedNum = 0; //小数部分强制位数
+    var percent = false; //是否有百分比
+    var suffix = ''; //后缀
+    //
+    var matched = /[#0,\.]+/.exec(format);
+    if(matched) {
+        //console.log(matched);
+        var indexFrom = matched.index;
+        var matchStr = matched[0];
+        var indexEnd = indexFrom + matchStr.length;
+        //console.log(matchStr);
+        //console.log(indexFrom + ' - ' + indexEnd);
+        prefix = format.substring(0, indexFrom);
+        suffix = format.substring(indexEnd);
+        //
+        if(prefix.indexOf('%') != -1 || suffix.indexOf('%') != -1) {
+            percent = true;
+        }
+        //
+        var decimalIndex = matchStr.indexOf('.');
+        frgDotFlag = decimalIndex != -1;
+        var intPart = '';
+        var frgPart = '';
+        if(decimalIndex != -1) {
+            intPart = matchStr.substring(0, decimalIndex);
+            frgPart = matchStr.substring(decimalIndex + 1);
+        } else {
+            intPart = matchStr;
+        }
+        var qfwIndex = intPart.lastIndexOf(',');
+        if(qfwIndex != -1) { //千分位数
+            thousandNum = intPart.length - 1 - qfwIndex;
+            if(thousandNum == 0) {
+                thousandNum = 3;
+            }
+            //
+            intPart = replace(intPart, ',', '');
+        }
+        //
+        if(intPart.length > 0) {
+            intPart = intPart.replace(/^#+/, '');
+            intForcedNum = intPart.length;
+        }
+        if(frgPart.length > 0) {
+            if(intForcedNum < 0) {
+                intForcedNum = 0;
+            }
+            //
+            frgRoundNum = frgPart.length;
+            frgPart = frgPart.replace(/#+$/, '');
+            frgForcedNum = frgPart.length;
+        }
+    } else {
+        prefix = format;
+        if(format.indexOf('%') != -1) {
+            percent = true;
+        }
+    }
+    //
+    return {
+        prefix: prefix, //前缀
+        //
+        thousandNum: thousandNum, //千分位位数
+        //
+        intForcedNum: intForcedNum, //整数部分强制位数
+        //
+        frgDotFlag: frgDotFlag, //小数点符号标记
+        //
+        frgRoundNum: frgRoundNum, //小数部分保留位数
+        //
+        frgForcedNum: frgForcedNum, //小数部分强制位数
+        //
+        percent: percent, //是否有百分比
+        //
+        suffix: suffix //后缀
+    };
+}
+
+function formatNum(num, format, debug) {
+    if(num == null) {
+        return '';
+    }
+    if(!isNumber(num)) {
+        return num + '';
+    }
+    //
+    if(!format) {
+        if(!isInt(num)) {
+            format = __def_float_format;
+        }
+    }
+    if(!format) {
+        return num + '';
+    }
+    //
+    var formatInfo = parseNumFormat(format);
+    debug = debug === true;
+    if(debug) {
+        console.log(formatInfo);
+    }
+    //
+    if(formatInfo.percent) {
+        num = num * 100;
+    }
+    var numSign = num < 0 ? '-' : '';
+    num = Math.abs(num);
+    //
+    if(formatInfo.frgRoundNum >= 0) {
+        num = num.round(formatInfo.frgRoundNum);
+    }
+    var numStr = num + '';
+    var decimalIndex = numStr.indexOf('.');
+    var intStr = decimalIndex == -1 ? numStr : numStr.substring(0, decimalIndex);
+    var frgStr = decimalIndex == -1 ? '' : numStr.substring(decimalIndex + 1);
+    if(formatInfo.intForcedNum >= 0) {
+        if(intStr == '0') {
+            intStr = '';
+        }
+        if(intStr.length < formatInfo.intForcedNum) {
+            intStr = padLeft(intStr, formatInfo.intForcedNum, '0');
+        }
+    }
+    if(formatInfo.thousandNum > 0 && intStr.length > 0) { //千分位
+        var intChars = [];
+        for(var i = intStr.length - 1, j = 0; i >= 0; i--, j++) {
+            if(j > 0 && j % formatInfo.thousandNum == 0) {
+                intChars.unshift(',');
+            }
+            intChars.unshift(intStr.charAt(i));
+        }
+        intStr = intChars.join('');
+        console.log(intStr);
+    }
+    var none0Count = formatInfo.frgRoundNum > formatInfo.frgForcedNum;
+    if(none0Count > 0) {
+        frgStr = frgStr.replace(new RegExp('[0]{' + none0Count + '}$'), '');
+        if(frgStr.length < formatInfo.frgForcedNum) {
+            frgStr = padRight(frgStr, formatInfo.frgForcedNum, '0');
+        }
+    }
+    //
+    if(frgStr.length > 0 || formatInfo.frgDotFlag) {
+        frgStr = '.' + frgStr;
+    }
+    //
+    return numSign + formatInfo.prefix + intStr + frgStr + formatInfo.suffix;
 }
 
 // 生成函数调用脚本（函数名称，参数数组，注意：参数只能是数值对象，不能是函数）
@@ -4979,6 +5164,9 @@ module.exports = {
 
     ValidateRules: ValidateRules,
 
+    formatDate: formatDate,
+    formatNum: formatNum,
+
     replace: replace,
     merge: merge,
     guessLineSeperator: guessLineSeperator,
@@ -5005,6 +5193,7 @@ module.exports = {
     makeCrossCombsFor: makeCrossCombsFor,
     forEachTreeNode: forEachTreeNode,
 
+    getDomElStyle: getDomElStyle,
     getPageInfo: getPageInfo,
     setPageTitle: setPageTitle,
     setPageUrl: setPageUrl,
