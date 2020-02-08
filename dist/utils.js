@@ -4006,9 +4006,9 @@ function formatNum(num, format, debug) {
     var none0Count = formatInfo.frgRoundNum > formatInfo.frgForcedNum;
     if(none0Count > 0) {
         frgStr = frgStr.replace(new RegExp('[0]{' + none0Count + '}$'), '');
-        if(frgStr.length < formatInfo.frgForcedNum) {
-            frgStr = padRight(frgStr, formatInfo.frgForcedNum, '0');
-        }
+    }
+    if(frgStr.length < formatInfo.frgForcedNum) {
+        frgStr = padRight(frgStr, formatInfo.frgForcedNum, '0');
     }
     //
     if(frgStr.length > 0 || formatInfo.frgDotFlag) {
