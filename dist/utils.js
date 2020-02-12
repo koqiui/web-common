@@ -2205,6 +2205,10 @@ if(Date._parse == null) {
             dateStr = dateStr.replace(/毫秒/g, '');
             dateStr = dateStr.replace(/\s{2,}/g, " ");
             dateStr = dateStr.replace(/-/g, "/");
+            //修正仅有时间的情形
+            if(dateStr.indexOf('/') == -1) {
+                dateStr = '1970/01/01 ' + dateStr;
+            }
             // 解析毫秒
             var msIndex = dateStr.indexOf(".");
             if(msIndex != -1) {
@@ -4026,6 +4030,19 @@ function formatNum(num, format, debug) {
     return numSign + formatMeta.prefix + intStr + frgStr + formatMeta.suffix;
 }
 
+/** 格式化布尔 */
+function formatBool(bool, format) {
+    if(!format) {
+        return bool;
+    }
+    format = format.trim();
+    var fmtPair = format.split('/');
+    if(fmtPair.length == 1) {
+        fmtPair[1] = '';
+    }
+    return bool ? fmtPair[0] : fmtPair[1];
+}
+
 // 生成函数调用脚本（函数名称，参数数组，注意：参数只能是数值对象，不能是函数）
 // demox("x", {"x" : 5, "y" : 6})
 function makeFuncCallScript(funcName, args) {
@@ -5175,6 +5192,7 @@ module.exports = {
     formatDate: formatDate,
     parseNumFormat: parseNumFormat,
     formatNum: formatNum,
+    formatBool: formatBool,
 
     replace: replace,
     merge: merge,
