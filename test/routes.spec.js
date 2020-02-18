@@ -10,7 +10,7 @@ console.log(JSON.stringify(Routes));
 
 describe('routes', function () {
         it('moduleName', function () {
-            expect(Routes.moduleName).to.equal('Routes');
+            expect(Routes.__name__).to.equal('Routes');
         });
 
         it('init', function () {

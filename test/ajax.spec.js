@@ -5,7 +5,6 @@ var expect = require('chai').expect;
 //
 
 var Ajax = require('../dist/ajax');
-var axios = Ajax.axios;
 var ajaxj = Ajax.jajax;
 
 console.log(JSON.stringify(Ajax));
@@ -25,7 +24,7 @@ describe('default ajax', function () {
             //
             var ajax = Ajax.get('/users/1');
             ajax.header({
-                'x-user' : 'koqiui'
+                'x-user': 'koqiui'
             });
             ajax.done(function (result) {
                 console.log(result);
@@ -47,39 +46,6 @@ describe('default ajax', function () {
                 console.log(error);
             });
             ajax.go();
-        });
-    }
-);
-
-describe('axios ajax', function () {
-        it('moduleName', function () {
-            expect(Ajax.moduleName).to.equal('Ajax');
-        });
-
-        it('not null', function () {
-            expect(axios).to.exist;
-        });
-
-        it('get user', function (done) {
-            axios.get(baseUrl + '/users/1')
-            .then(function (response) {
-                console.log(response);
-                done();
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-        });
-
-        it('get users', function (done) {
-            axios.get(baseUrl + '/users')
-            .then(function (response) {
-                console.log(response);
-                done();
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
         });
     }
 );

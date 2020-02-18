@@ -1,60 +1,77 @@
 /**
  * Created by koqiui on 2017-04-09.
  */
-var moduleName = 'Routes';
-//----------------------------------------------
-var __showDebug = true;
-var __registFunction = null;
-//[{path, component}, ...]
-var __routeMaps = [];
-//是否检查重复或覆盖注册
-var __checkDuplicates = true;
-//{ path => component}
-var __routeMapAll = {};
-var __routeRegistStates = {};
-//
-function makeSubRoutes(subComps) {
-    subComps = subComps || [];
-    var children = [];
-    for(var i = 0; i < subComps.length; i++) {
-        var comp = subComps[i];
-        children[i] = {
-            path: comp.path,
-            component: comp,
-            desc: comp.desc
-        };
+(function (global, factory) {
+    var theExports = null;
+    var hasModuleExports = false;
+    if(typeof module === "object" && typeof module.exports === "object") {
+        theExports = module.exports;
+        hasModuleExports = true;
+    } else {//导出为模块
+        theExports = global['Routes'] = {};
     }
+    factory(theExports, hasModuleExports);
+}(typeof window !== "undefined" ? window : this, function (exports, hasModuleExports) {
+    exports.__name__ = 'Routes';
     //
-    if(children.length > 0) {
-        //插入默认路由
-        var first = children[0];
-        children.unshift({
-            path: '',
-            component: first.component,
-            desc: first.desc
-        });
+    if(hasModuleExports) {
+        console && console.log('以模块方式导入[' + exports.__name__ + ']');
     }
-    //
-    return children;
-}
+    else {
+        console && console.log('以普通方式引入[' + exports.__name__ + ']');
+    }
+    //---------------------------------------------------------------------------------
+    var __showDebug = true;
+    var __registFunction = null;
+    //[{path, component}, ...]
+    var __routeMaps = [];
+    //是否检查重复或覆盖注册
+    var __checkDuplicates = true;
+    //{ path => component}
+    var __routeMapAll = {};
+    var __routeRegistStates = {};
 
-//
-module.exports = {
-    moduleName: moduleName,
     //
-    debug: function (showDebug) {
+    function makeSubRoutes(subComps) {
+        subComps = subComps || [];
+        var children = [];
+        for(var i = 0; i < subComps.length; i++) {
+            var comp = subComps[i];
+            children[i] = {
+                path: comp.path,
+                component: comp,
+                desc: comp.desc
+            };
+        }
+        //
+        if(children.length > 0) {
+            //插入默认路由
+            var first = children[0];
+            children.unshift({
+                path: '',
+                component: first.component,
+                desc: first.desc
+            });
+        }
+        //
+        return children;
+    }
+
+    //----------------------------------- exports -------------------------------------
+    //
+    exports.debug = function (showDebug) {
         __showDebug = showDebug;
-    },
+    };
     //是否检查重复注册
-    checkDuplicates: function (trueOrFalse) {
+    exports.checkDuplicates = function (trueOrFalse) {
         __checkDuplicates = trueOrFalse !== false;
-    },
+    };
     //设置注册函数
-    setRegistFunction: function (registFn) {
+    exports.setRegistFunction = function (registFn) {
         __registFunction = registFn;
-    },
+    };
     //
-    add: function () {
+    exports.add = function () {
         var routeMaps = arguments;
         for(var i = 0; i < routeMaps.length; i++) {
             var routeMap = routeMaps[i];
@@ -173,18 +190,18 @@ module.exports = {
                 __routeMaps.push(routeMap);
             }
         }
-    },
+    };
 
-    get: function (path) {
+    exports.get = function (path) {
         return __routeMapAll[path];
-    },
+    };
 
-    all: function () {
+    exports.all = function () {
         return __routeMaps;
-    },
+    };
 
-    clear: function () {
+    exports.clear = function () {
         __routeMaps.length = 0;
         __routeMapAll = {};
-    }
-};
+    };
+}));

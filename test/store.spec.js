@@ -4,15 +4,11 @@
 var expect = require('chai').expect;
 //
 
-var Store = require('../dist/store');
+var Store = require('../dist/index').Store;
 
 console.log(JSON.stringify(Store));
 
 describe('store', function () {
-        it('moduleName', function () {
-            expect(Store.moduleName).to.equal('Store');
-        });
-
         it('set', function () {
             Store.set('aaaa', 555);
             expect(Store.get('aaaa')).to.equal(555);

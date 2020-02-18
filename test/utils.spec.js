@@ -12,7 +12,7 @@ var StringBuilder = Utils.StringBuilder;
 
 describe('utils>[class] StringBuilder', function () {
         it('moduleName', function () {
-            expect(Utils.moduleName).to.equal('Utils');
+            expect(Utils.__name__).to.equal('Utils');
         });
 
         it('ctor', function () {

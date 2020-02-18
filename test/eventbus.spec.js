@@ -10,7 +10,7 @@ console.log(JSON.stringify(EventBus));
 
 describe('event-bus', function () {
         it('moduleName', function () {
-            expect(EventBus.moduleName).to.equal('EventBus');
+            expect(EventBus.__name__).to.equal('EventBus');
         });
 
         it('init', function () {
