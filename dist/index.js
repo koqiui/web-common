@@ -28,9 +28,9 @@
 
     exports.Utils = hasModuleExports ? require('./utils') : window['Utils'];
 
-    exports.Ajax = hasModuleExports ? require('./ajax') : window['Ajax'];
-
     exports.$ = hasModuleExports ? require('jquery') : window['jQuery'];
+
+    exports.Ajax = hasModuleExports ? require('./ajax') : window['Ajax'];
 
     exports.Jqext = hasModuleExports ? require('./jquery.ext') : window['Jqext'];
 
