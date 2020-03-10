@@ -3596,6 +3596,104 @@
         return new TaskDelayer();
     };
 
+    /** CRUD操作防频、防重类 */
+    function CrudGuard(repeatable) {
+        var minInterval = 500; //防重最小时间间隔ms
+        //操作是否允许重复（不可重复的，如：创建、删除，修改是否允许视情况而定）
+        var repeatable = repeatable || false;
+        //
+        var lastTs = 0;
+        var curCrud = '不明CRUD操作'; //操作
+        //
+        var curState = 0; //0：未开始，1：进行中，2：已完成
+        var curStateText = '';
+        var exeInterval = 1000; //防重时间间隔ms
+        var exeTimes = 0; //执行的总次数
+        var curWhat = '';
+        //标识要做的操作
+        this.todo = function (action, reset) { //注意：todo 是全小写，遵从一般习惯
+            if(curState > 0) {
+                if(!repeatable) {
+                    throw Error('禁止行为：操作不可' + (reset ? '重置' : '重复'));
+                }
+            }
+            if(action) {
+                curCrud = action;
+            }
+            curState = 0;
+            curStateText = '计划 ' + curCrud;
+            if(reset) {
+                console.log('重新 ' + curCrud);
+            } else {
+                console.log(curStateText);
+            }
+            //
+            return this;
+        };
+        //设置防重时间间隔ms
+        this.interval = function (interval) {
+            if(typeof interval == 'number' && interval >= minInterval) {
+                exeInterval = interval;
+            }
+            //
+            return this;
+        };
+        //
+        this.getStateText = function () {
+            return curStateText;
+        };
+        //是否正在做
+        this.isDoing = function () {
+            return curState == 1;
+        };
+        //标为正在做what
+        this.asDoing = function (what) {
+            if(curState != 0) {
+                throw Error('状态错误：' + curStateText);
+            }
+            var currTs = new Date().getTime();
+            if(currTs - lastTs < exeInterval) {
+                lastTs = currTs;
+                //
+                throw Error('禁止行为：操作重复或过于频繁');
+            }
+            exeTimes++;
+            lastTs = currTs;
+            curState = 1;
+            curWhat = what || curWhat || curCrud;
+            curStateText = '正在 ' + curWhat + (repeatable ? '（第' + exeTimes + '次）' : '');
+            console.log(curStateText);
+            //
+            return this;
+        };
+        //是否已经做了
+        this.isDone = function () {
+            return curState == 2;
+        };
+        //标为已经做了what
+        this.asDone = function (what) {
+            if(curState != 1) {
+                throw Error('状态错误：' + curStateText);
+            }
+            lastTs = new Date().getTime(); //计入更新时间戳
+            curState = 2;
+            curWhat = what || curWhat || curCrud;
+            curStateText = '已经 ' + curWhat + (repeatable ? '（第' + exeTimes + '次）' : '');
+            console.log(curStateText);
+            //
+            return this;
+        };
+        //重置状态（注意：前提是 repeatable == true）
+        this.reset = function () {
+            return this.todo(null, true);
+        }
+    }
+
+    //
+    CrudGuard.newOne = function (repeatable) {
+        return new CrudGuard(repeatable);
+    };
+
     // ------------------------------------------------------------------
     //
     /**
@@ -5237,6 +5335,7 @@
     exports.KeyMap = KeyMap;
     exports.LimitedQueue = LimitedQueue;
     exports.TaskDelayer = TaskDelayer;
+    exports.CrudGuard = CrudGuard;
     exports.CondMonitor = CondMonitor;
     exports.makeCrossCombsFor = makeCrossCombsFor;
     exports.forEachTreeNode = forEachTreeNode;
