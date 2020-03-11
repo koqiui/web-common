@@ -694,8 +694,13 @@
                 if(evnt.lengthComputable) {
                     info.total = evnt.total;
                     if(info.loaded == info.total) { //下载完毕
-                        info.type = 2;
-                        info.message = '下载完毕';
+                        if(_failed) {
+                            info.message = '下载失败';
+                        }
+                        else {
+                            info.type = 2;
+                            info.message = '下载完毕';
+                        }
                     } else if(info.loaded == 0) {
                         info.type = 0;
                         info.message = '下载开始';
@@ -711,24 +716,24 @@
             xhr.onload = function (evnt) {
                 //console.log('-- loading --');
                 //console.log(evnt);
+                // 与 onloadend 重复
+                /*
+                var info = {
+                    type: 2,
+                    message: '下载完毕',
+                    fileName: _fileName,
+                    loaded: evnt.loaded
+                };
+                if(evnt.lengthComputable) {
+                    info.total = evnt.total;
+                }
                 //
-                /* 与 onloadend 重复
-                 var info = {
-                 type: 2,
-                 message: '下载完毕',
-                 fileName: _fileName,
-                 loaded: evnt.loaded
-                 };
-                 if(evnt.lengthComputable) {
-                 info.total = evnt.total;
-                 }
-                 //
-                 if(_progressHandler) {
-                 _progressHandler(info);
-                 } else {
-                 console.log(info);
-                 }
-                 */
+                if(_progressHandler) {
+                    _progressHandler(info);
+                } else {
+                    console.log(info);
+                }
+                */
             };
             xhr.onloadend = function (evnt) {
                 //console.log('-- loadend --');
@@ -744,10 +749,24 @@
                     info.total = evnt.total;
                 }
                 //
-                if(_progressHandler) {
-                    _progressHandler(info);
-                } else {
-                    _failed ? console.warn(info) : console.info(info);
+                if(_failed) {
+                    var handler = _failHandler || _doneHandler;
+                    if(handler) {
+                        handler({
+                            type: 'error',
+                            message: '下载失败'
+                        });
+                    } else {
+                        console.error(errMsg);
+                    }
+                }
+                else {
+                    if(_progressHandler) {
+                        _progressHandler(info);
+                    }
+                    else {
+                        console.info(info);
+                    }
                 }
                 //清除请求对象
                 _xhr = null;
@@ -760,49 +779,54 @@
                 //
                 if(this.readyState !== 4) { //this.DONE
                     if(this.readyState == 2) { //this.HEADERS_RECEIVED
-                        var rspFileName = null;//从响应得到的文件名称
-                        //
-                        //console.log('-- response headers --');
-                        //console.log(this.getAllResponseHeaders());
-                        var allHeaderStr = (this.getAllResponseHeaders() + "" || "").toLowerCase();
-                        //1
-                        if(_fileNameHeader && allHeaderStr.indexOf(_fileNameHeader.toLowerCase()) != -1) {
-                            try { //从自定义响应头获取文件名
-                                rspFileName = this.getResponseHeader(_fileNameHeader);
-                                if(rspFileName) {//解码
-                                    rspFileName = decodeURI(rspFileName);
+                        if(this.status == 200) {
+                            var rspFileName = null;//从响应得到的文件名称
+                            //
+                            //console.log('-- response headers --');
+                            //console.log(this.getAllResponseHeaders());
+                            var allHeaderStr = (this.getAllResponseHeaders() + "" || "").toLowerCase();
+                            //1
+                            if(_fileNameHeader && allHeaderStr.indexOf(_fileNameHeader.toLowerCase()) != -1) {
+                                try { //从自定义响应头获取文件名
+                                    rspFileName = this.getResponseHeader(_fileNameHeader);
+                                    if(rspFileName) {//解码
+                                        rspFileName = decodeURI(rspFileName);
+                                    }
+                                } catch(ex) {
+                                    console.warn(ex);
                                 }
-                            } catch(ex) {
-                                console.warn(ex);
+                            }
+                            //2
+                            if(!rspFileName && allHeaderStr.indexOf('content-disposition') != -1) {
+                                //从Content-Disposition响应头获取文件名
+                                var cpStr = this.getResponseHeader('Content-Disposition');
+                                rspFileName = parseFileNameFromContentDisposition(cpStr);
+                            }
+                            //
+                            if(rspFileName) {//以响应的文件名为主
+                                _fileName = rspFileName;
+                            }
+                            else if(!_fileName) { //3 从url解析文件名
+                                var rspUrl = this.responseURL || _url; //IE Ajax获取不到responseURL
+                                if(rspUrl.endsWith('?')) {
+                                    rspUrl = rspUrl.substring(0, rspUrl.length - 1);
+                                }
+                                _fileName = utils.extractShortFileName(rspUrl);
                             }
                         }
-                        //2
-                        if(!rspFileName && allHeaderStr.indexOf('content-disposition') != -1) {
-                            //从Content-Disposition响应头获取文件名
-                            var cpStr = this.getResponseHeader('Content-Disposition');
-                            rspFileName = parseFileNameFromContentDisposition(cpStr);
-                        }
-                        //
-                        if(rspFileName) {//以响应的文件名为主
-                            _fileName = rspFileName;
-                        }
-                        else if(!_fileName) { //3 从url解析文件名
-                            var rspUrl = this.responseURL || _url; //IE Ajax获取不到responseURL
-                            if(rspUrl.endsWith('?')) {
-                                rspUrl = rspUrl.substring(0, rspUrl.length - 1);
-                            }
-                            _fileName = utils.extractShortFileName(rspUrl);
+                        else {
+                            _failed = true;
                         }
                     }
                     //
                     return;
                 }
                 //
-                if(this.status === 200) {
+                if(this.status == 200) {
                     var result = {
                         type: 'info',
                         message: '文件下载完毕',
-                    }
+                    };
                     result.data = {
                         fileName: _fileName,
                         fileBody: this.response //URL.createObjectURL(this.response)
@@ -815,22 +839,23 @@
                         console.log(result);
                     }
                 }
-                /*else {
-                 var errMsg = 'Ajax方式文件下载失败';
-                 if(!_failed) {
-                 _failed = true; //设置失败标记
-                 //
-                 var handler = _failHandler || _doneHandler;
-                 if(handler) {
-                 handler({
-                 type: 'error',
-                 message: errMsg
-                 });
-                 } else {
-                 console.error(errMsg);
-                 }
-                 }
-                 }*/
+                /* else {// 与 onloadend 重复
+                    var errMsg = 'Ajax方式文件下载失败';
+                    if(!_failed) {
+                        _failed = true; //设置失败标记
+                        //
+                        var handler = _failHandler || _doneHandler;
+                        if(handler) {
+                            handler({
+                                type: 'error',
+                                message: errMsg
+                            });
+                        } else {
+                            console.error(errMsg);
+                        }
+                    }
+                }
+                */
             };
             //
             var fullUrl = utils.makeUrl(_url, _params);
