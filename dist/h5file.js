@@ -750,11 +750,12 @@
                 }
                 //
                 if(_failed) {
+                    var errMsg = '下载失败';
                     var handler = _failHandler || _doneHandler;
                     if(handler) {
                         handler({
                             type: 'error',
-                            message: '下载失败'
+                            message: errMsg
                         });
                     } else {
                         console.error(errMsg);
