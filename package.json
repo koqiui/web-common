@@ -18,7 +18,7 @@
     "homepage": "https://github.com/koqiui/web-common#readme",
     "dependencies": {
         "store": "2.0.12",
-        "jquery": "2.2.3"
+        "jquery": "3.5.0"
     },
     "devDependencies": {
         "art-template": "^3.1.3",
