@@ -31,6 +31,7 @@
     var __ajaxSetted = false;
     var __ajaxBaseUrl = "";
     var __ajaxTimeout = 0;
+    var __ajaxPageTokenName = '';
     var __ajaxBeforeSendCallback = null;
     var __ajaxAfterRecvCallback = null;
     var __ajaxErrorCallbck = function (errMsg) {
@@ -55,6 +56,7 @@
         var _params = {};
         var _data = {};
         var _timeout = __ajaxTimeout;
+        var _pageTokenName = __ajaxPageTokenName;
         //
         var _beforeSendCallback = null;
         var _doneHandler = null;
@@ -113,17 +115,22 @@
             return this;
         };
         this.params = function (params) {
-            _params = params;
+            _params = params || {};
             //
             return this;
         };
         this.data = function (data) {
-            _data = data;
+            _data = data || {};
             //
             return this;
         };
         this.timeout = function (timeout) {
             _timeout = timeout;
+            //
+            return this;
+        };
+        this.pageTokenName = function (pageTokenName) {
+            _pageTokenName = pageTokenName || '';
             //
             return this;
         };
@@ -258,6 +265,14 @@
             if(_baseUrl && !url.startsWith("http")) {
                 url = _baseUrl + url;
             }
+            if(_pageTokenName) {//解析并添加页面token
+                var urlParams = utils.extractUrlParams();
+                var pageTokenValue = urlParams[_pageTokenName] || null;
+                if(pageTokenValue) {
+                    _params[_pageTokenName] = pageTokenValue;
+                }
+            }
+            //
             url = utils.makeUrl(url, _params, true);
             //
             var ajaxConf = {
@@ -448,6 +463,9 @@
     };
     exports.timeout = function (timeout) {
         __ajaxTimeout = timeout;
+    };
+    exports.pageTokenName = function (pageTokenName) {
+        __ajaxPageTokenName = pageTokenName || '';
     };
     //callback(errMsg)
     exports.errorCallback = function (callback) {
