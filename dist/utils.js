@@ -903,24 +903,7 @@
         if(frgs === 0) {
             return Math.round(this);
         }
-        var numStr = this + "";
-        var dotIndex = numStr.indexOf(".");
-        if(dotIndex != -1) {
-            var intPart = numStr.substring(0, dotIndex);
-            var frgPart = dotIndex == numStr.length - 1 ? "" : numStr.substring(dotIndex + 1);
-            if(frgPart.length > frgs) {
-                var nextDigit = parseInt(frgPart.charAt(frgs), 10);
-                frgPart = frgPart.substring(0, frgs);
-                if(nextDigit >= 5) {
-                    var lastDigit = parseInt(frgPart.charAt(frgs - 1), 10);
-                    frgPart = frgPart.substring(0, frgs - 1) + (lastDigit + 1);
-                }
-            }
-            numStr = frgPart === "" ? intPart : intPart + "." + frgPart;
-            return parseFloat(numStr);
-        } else {
-            return this;
-        }
+        return Math.round(this * Math.pow(10, frgs)) * 1.0 / Math.pow(10, frgs);
     };
 
     /**
