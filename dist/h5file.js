@@ -76,6 +76,59 @@ var Util = {
         }
         //
         return fileFormData;
+    },
+    //
+    makeBase64DataUrl: function (base64Content, mimeType) {
+        return 'data:' + mimeType + ';base64,' + base64Content;
+    },
+    //data:image/png;base64,xxxxx
+    parseDataUrlStr: function (dataUrl) {
+        var info = {
+            mimeType: null,
+            isBase64: false,
+            content: null
+        };
+
+        info.mimeType = dataUrl.indexOf(':') != -1 && dataUrl.indexOf(';') != -1 ? dataUrl.split(',')[0].split(':')[1].split(';')[0] : null;
+        info.isBase64 = dataUrl.indexOf('base64,') != -1;
+        info.content = dataUrl.indexOf(',') == -1 ? dataUrl : dataUrl.substring(dataUrl.indexOf(',') + 1);
+
+        return info;
+    },
+    base64StrToBlob: function (base64Str, defMimeType) {
+        var dataInfo = typeof base64Str == 'string' ? Util.parseDataUrlStr(base64Str) : base64Str;
+        var mimeType = dataInfo.mimeType || defMimeType || 'image/png';
+        dataInfo.mimeType = dataInfo.mimeType || mimeType; //回设
+        //console.log(base64Str);
+        var byteStr = dataInfo.isBase64 ? atob(dataInfo.content) : unescape(dataInfo.content);
+        var ia = new Uint8Array(byteStr.length); //创建视图
+        for(var i = 0, c = byteStr.length; i < c; i++) {
+            ia[i] = byteStr.charCodeAt(i);
+        }
+        var blob = new Blob([ia], {
+            type: mimeType
+        });
+        return blob;
+    },
+    downloadBase64File: function (base64Str, fileName) {
+        var dataInfo = typeof base64Str == 'string' ? Util.parseDataUrlStr(base64Str) : base64Str;
+        var blob = Util.base64StrToBlob(dataInfo);
+        var mimeType = dataInfo.mimeType;
+        var fileName = fileName || mimeType.replace('/', '.');
+        if(window.navigator && window.navigator.msSaveBlob) { //IE
+            window.navigator.msSaveBlob(blob, fileName);
+        } else { //非IE
+            var tmpLink = document.createElement('A');
+            document.body.appendChild(tmpLink);
+            tmpLink.style = 'display: none';
+            var fileUrl = window.URL.createObjectURL(blob);
+            tmpLink.href = fileUrl;
+            tmpLink.download = fileName;
+            tmpLink.click();
+            window.URL.revokeObjectURL(tmpLink.href);
+            document.body.removeChild(tmpLink);
+            tmpLink.remove();
+        }
     }
 };
 

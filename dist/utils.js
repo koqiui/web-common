@@ -2178,6 +2178,7 @@ if(Date._parse == null) {
             dateStr = dateStr.replace(/-/g, "/");
             return Date._parse(dateStr);
         } else {
+            dateStr = dateStr.replace(/T/g, ' '); //iso
             dateStr = dateStr.replace(/年/g, '-');
             dateStr = dateStr.replace(/月/g, '-');
             dateStr = dateStr.replace(/日/g, '');
@@ -2187,10 +2188,20 @@ if(Date._parse == null) {
             dateStr = dateStr.replace(/秒/g, '');
             dateStr = dateStr.replace(/毫秒/g, '');
             dateStr = dateStr.replace(/\s{2,}/g, " ");
-            dateStr = dateStr.replace(/-/g, "/");
+            dateStr = dateStr.replace(/\//g, "-");
             //修正仅有时间的情形
-            if(dateStr.indexOf('/') == -1) {
-                dateStr = '1970/01/01 ' + dateStr;
+            var hasTimeParts = dateStr.indexOf(':') != -1;
+            var hasDateParts = dateStr.indexOf('-') != -1;
+            if(hasDateParts) {
+                if(!hasTimeParts) { //没有时间
+                    dateStr += ' 00:00:00';
+                }
+            } else { //没有日期
+                if(hasTimeParts) {
+                    dateStr = '1970-01-01 ' + dateStr;
+                } else {
+                    return null;
+                }
             }
             // 解析毫秒
             var msIndex = dateStr.indexOf(".");
@@ -4569,7 +4580,14 @@ function extractFileNameExt(fileName) {
         return "";
     }
     var dotIndex = fileName.lastIndexOf('.');
-    return dotIndex == -1 ? "" : fileName.substring(dotIndex);
+    var leftName = dotIndex == -1 ? "" : fileName.substring(dotIndex);
+    if(leftName) {
+        // 去掉可能的url中的?
+        var qmIndex = leftName.indexOf("?");
+        return qmIndex == -1 ? leftName : leftName.substring(0, qmIndex);
+    } else {
+        return "";
+    }
 }
 
 // 判断给定的文件名是否图片文件
