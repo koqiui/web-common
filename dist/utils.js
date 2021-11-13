@@ -7,7 +7,7 @@
     if(typeof module === "object" && typeof module.exports === "object") {
         theExports = module.exports;
         hasModuleExports = true;
-    } else {//导出为模块
+    } else { //导出为模块
         theExports = global['Utils'] = {};
     }
     factory(theExports, hasModuleExports);
@@ -16,8 +16,7 @@
     //
     if(hasModuleExports) {
         console && console.log('以模块方式导入[' + exports.__name__ + ']');
-    }
-    else {
+    } else {
         console && console.log('以普通方式引入[' + exports.__name__ + ']');
     }
     //---------------------------------------------------------------------------------
@@ -26,14 +25,11 @@
     var __global = null;
     if(isInBrowser) {
         __global = window;
-    }
-    else if(typeof Global != 'undefined') {
+    } else if(typeof Global != 'undefined') {
         __global = Global;
-    }
-    else if(typeof global != 'undefined') {
+    } else if(typeof global != 'undefined') {
         __global = global;
-    }
-    else {
+    } else {
         __global = null;
     }
 
@@ -534,8 +530,7 @@
         if(str != null && !isQuotted(str)) {
             if(quot == "'") {
                 str = replace(str, "'", "\\'");
-            }
-            else {
+            } else {
                 str = replace(str, '"', '\\"');
             }
             str = quot + str + quot;
@@ -572,12 +567,11 @@
             return null;
         }
         //注意：一行以上才能确定换行符是什么
-        if(/\r\n/m.test(str)) {//CRLF : Windows
+        if(/\r\n/m.test(str)) { //CRLF : Windows
             return __line__separators.win;
-        }
-        else if(/\n/m.test(str)) {//LF : UNIX
+        } else if(/\n/m.test(str)) { //LF : UNIX
             return __line__separators.lnx;
-        } else if(/\r/m.test(str)) {//CR : Macintosh
+        } else if(/\r/m.test(str)) { //CR : Macintosh
             return __line__separators.mac;
         }
         //否则：只有一行则无法确定换行符
@@ -691,8 +685,7 @@
                         return i;
                     }
                 }
-            }
-            else {
+            } else {
                 for(var i = 0, c = lines.length; i < c; i++) {
                     if(judgeFn(lines[i])) {
                         return i;
@@ -711,8 +704,7 @@
             var lineCount = lines.length;
             if(lnIndex >= lineCount) {
                 return this.insertln(-1, strs.join(""));
-            }
-            else {
+            } else {
                 lines.insertAt(strs.join(""), lnIndex);
                 this.value = lines.join(this.lineSeparator);
                 //
@@ -1027,11 +1019,11 @@
     };
 
     /*------------------------------------------------------------------------------
- * JavaScript zArray Library
- * Version 1.1
- * by Nicholas C. Zakas, http://www.nczonline.net/
- * Copyright (c) 2004-2005 Nicholas C. Zakas. All Rights Reserved.
- */
+     * JavaScript zArray Library
+     * Version 1.1
+     * by Nicholas C. Zakas, http://www.nczonline.net/
+     * Copyright (c) 2004-2005 Nicholas C. Zakas. All Rights Reserved.
+     */
     var __arrayMethodsToCheck = ["slice", "splice", "shift", "unshift"];
 
     /**
@@ -1427,8 +1419,8 @@
         eval("this.splice(0,0," + aArgs.join(",") + ")");
     };
     /*
- * Assign the necessary methods.
- */
+     * Assign the necessary methods.
+     */
     for(var i = 0, len = __arrayMethodsToCheck.length; i < len; i++) {
         var method = __arrayMethodsToCheck[i];
         if(Array.prototype[method] == null) {
@@ -1466,8 +1458,7 @@
         sortMode = sortMode || 0;
         if(sortMode === false) {
             sortMode = 0;
-        }
-        else if(sortMode === true) {
+        } else if(sortMode === true) {
             sortMode = 1;
         }
         //
@@ -1487,8 +1478,7 @@
             var value = valFunc(elem, i);
             if(value == null) {
                 nulls.push(elem);
-            }
-            else {
+            } else {
                 var valKey = value + '';
                 if(valMap[valKey] == null) {
                     valKeys.push(value);
@@ -1889,8 +1879,7 @@
                 var sortPair = sortItem.split(":");
                 sortProp = sortPair[0].trim();
                 sortOrder = sortPair.length > 1 ? sortPair[1] : null;
-            }
-            else {
+            } else {
                 sortProp = sortItem['field'].trim();
                 sortOrder = sortItem['order'];
             }
@@ -2196,6 +2185,7 @@
                 dateStr = dateStr.replace(/-/g, "/");
                 return Date._parse(dateStr);
             } else {
+                dateStr = dateStr.replace(/T/g, ' '); //iso
                 dateStr = dateStr.replace(/年/g, '-');
                 dateStr = dateStr.replace(/月/g, '-');
                 dateStr = dateStr.replace(/日/g, '');
@@ -2205,10 +2195,20 @@
                 dateStr = dateStr.replace(/秒/g, '');
                 dateStr = dateStr.replace(/毫秒/g, '');
                 dateStr = dateStr.replace(/\s{2,}/g, " ");
-                dateStr = dateStr.replace(/-/g, "/");
+                dateStr = dateStr.replace(/\//g, "-");
                 //修正仅有时间的情形
-                if(dateStr.indexOf('/') == -1) {
-                    dateStr = '1970/01/01 ' + dateStr;
+                var hasTimeParts = dateStr.indexOf(':') != -1;
+                var hasDateParts = dateStr.indexOf('-') != -1;
+                if(hasDateParts) {
+                    if(!hasTimeParts) { //没有时间
+                        dateStr += ' 00:00:00';
+                    }
+                } else { //没有日期
+                    if(hasTimeParts) {
+                        dateStr = '1970-01-01 ' + dateStr;
+                    } else {
+                        return null;
+                    }
                 }
                 // 解析毫秒
                 var msIndex = dateStr.indexOf(".");
@@ -3357,8 +3357,7 @@
             timeEnd: function () {
             }
         };
-    }
-    else {
+    } else {
         __console = console;
     }
 
@@ -3375,8 +3374,7 @@
     function getDomElStyle(domEl) {
         if(window.getComputedStyle) {
             return window.getComputedStyle(domEl);
-        }
-        else {
+        } else {
             return domEl.currentStyle;
         }
     }
@@ -4533,12 +4531,10 @@
         if(path) {
             if(path.indexOf(":") != -1 || path.startsWith("/")) {
                 fullPath = path;
-            }
-            else {
+            } else {
                 if(path.startsWith("./")) {
                     fullPath = folder + path.substring(1);
-                }
-                else {
+                } else {
                     var folderParts = folder.split("/");
                     var index = path.indexOf("../");
                     while(index != -1) {
@@ -4587,7 +4583,14 @@
             return "";
         }
         var dotIndex = fileName.lastIndexOf('.');
-        return dotIndex == -1 ? "" : fileName.substring(dotIndex);
+        var leftName = dotIndex == -1 ? "" : fileName.substring(dotIndex);
+        if(leftName) {
+            // 去掉可能的url中的?
+            var qmIndex = leftName.indexOf("?");
+            return qmIndex == -1 ? leftName : leftName.substring(0, qmIndex);
+        } else {
+            return "";
+        }
     }
 
     // 判断给定的文件名是否图片文件
@@ -5248,8 +5251,8 @@
     }
 
     //----------------------------------- exports -------------------------------------
-    var privateMemKeys = ['__name__', 'exportToWindow'];//不能导出的成员
-    var windowedKeyMap = {//exports 名称 => window 名称
+    var privateMemKeys = ['__name__', 'exportToWindow']; //不能导出的成员
+    var windowedKeyMap = { //exports 名称 => window 名称
         //
     };
     //
@@ -5280,7 +5283,7 @@
     exports.isEmail = isEmail;
     exports.isTelNo = isTelNo; // 固定电话号码
     exports.isMobileNo = isMobileNo; //手机号码
-    exports.isInlandMobileNo = isInlandMobileNo;//是否国内手机号码
+    exports.isInlandMobileNo = isInlandMobileNo; //是否国内手机号码
     exports.isPhoneNo = isPhoneNo; // 电话（固定电话 或 手机）号码
     exports.isHexColor = isHexColor;
     exports.isIdentity = isIdentity;
@@ -5379,7 +5382,7 @@
     exports.parseVersion = parseVersion;
     exports.compareVersion = compareVersion;
     //
-    exports.exportToWindow = function () {//把当前模块的成员导出到window全局
+    exports.exportToWindow = function () { //把当前模块的成员导出到window全局
         if(typeof window !== 'undefined') {
             var winKey = null;
             for(var key in this) {

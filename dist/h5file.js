@@ -8,7 +8,7 @@
     if(typeof module === "object" && typeof module.exports === "object") {
         theExports = module.exports;
         hasModuleExports = true;
-    } else {//导出为模块
+    } else { //导出为模块
         theExports = global['H5file'] = {};
     }
     factory(theExports, hasModuleExports);
@@ -17,8 +17,7 @@
     //
     if(hasModuleExports) {
         console && console.log('以模块方式导入[' + exports.__name__ + ']');
-    }
-    else {
+    } else {
         console && console.log('以普通方式引入[' + exports.__name__ + ']');
     }
     //---------------------------------------------------------------------------------
@@ -94,6 +93,59 @@
             }
             //
             return fileFormData;
+        },
+        //
+        makeBase64DataUrl: function (base64Content, mimeType) {
+            return 'data:' + mimeType + ';base64,' + base64Content;
+        },
+        //data:image/png;base64,xxxxx
+        parseDataUrlStr: function (dataUrl) {
+            var info = {
+                mimeType: null,
+                isBase64: false,
+                content: null
+            };
+
+            info.mimeType = dataUrl.indexOf(':') != -1 && dataUrl.indexOf(';') != -1 ? dataUrl.split(',')[0].split(':')[1].split(';')[0] : null;
+            info.isBase64 = dataUrl.indexOf('base64,') != -1;
+            info.content = dataUrl.indexOf(',') == -1 ? dataUrl : dataUrl.substring(dataUrl.indexOf(',') + 1);
+
+            return info;
+        },
+        base64StrToBlob: function (base64Str, defMimeType) {
+            var dataInfo = typeof base64Str == 'string' ? Util.parseDataUrlStr(base64Str) : base64Str;
+            var mimeType = dataInfo.mimeType || defMimeType || 'image/png';
+            dataInfo.mimeType = dataInfo.mimeType || mimeType; //回设
+            //console.log(base64Str);
+            var byteStr = dataInfo.isBase64 ? atob(dataInfo.content) : unescape(dataInfo.content);
+            var ia = new Uint8Array(byteStr.length); //创建视图
+            for(var i = 0, c = byteStr.length; i < c; i++) {
+                ia[i] = byteStr.charCodeAt(i);
+            }
+            var blob = new Blob([ia], {
+                type: mimeType
+            });
+            return blob;
+        },
+        downloadBase64File: function (base64Str, fileName) {
+            var dataInfo = typeof base64Str == 'string' ? Util.parseDataUrlStr(base64Str) : base64Str;
+            var blob = Util.base64StrToBlob(dataInfo);
+            var mimeType = dataInfo.mimeType;
+            var fileName = fileName || mimeType.replace('/', '.');
+            if(window.navigator && window.navigator.msSaveBlob) { //IE
+                window.navigator.msSaveBlob(blob, fileName);
+            } else { //非IE
+                var tmpLink = document.createElement('A');
+                document.body.appendChild(tmpLink);
+                tmpLink.style = 'display: none';
+                var fileUrl = window.URL.createObjectURL(blob);
+                tmpLink.href = fileUrl;
+                tmpLink.download = fileName;
+                tmpLink.click();
+                window.URL.revokeObjectURL(tmpLink.href);
+                document.body.removeChild(tmpLink);
+                tmpLink.remove();
+            }
         }
     };
 
@@ -470,10 +522,10 @@
             return null;
         }
         var index = cpStr.toLowerCase().indexOf('filename=');
-        if(index != -1) {//'filename='.length = 9
+        if(index != -1) { //'filename='.length = 9
             cpStr = cpStr.substring(index + 9);
             cpStr = cpStr.dequote();
-            return decodeURI(cpStr);//解码
+            return decodeURI(cpStr); //解码
         } else {
             return null;
         }
@@ -696,8 +748,7 @@
                     if(info.loaded == info.total) { //下载完毕
                         if(_failed) {
                             info.message = '下载失败';
-                        }
-                        else {
+                        } else {
                             info.type = 2;
                             info.message = '下载完毕';
                         }
@@ -760,12 +811,10 @@
                     } else {
                         console.error(errMsg);
                     }
-                }
-                else {
+                } else {
                     if(_progressHandler) {
                         _progressHandler(info);
-                    }
-                    else {
+                    } else {
                         console.info(info);
                     }
                 }
@@ -781,7 +830,7 @@
                 if(this.readyState !== 4) { //this.DONE
                     if(this.readyState == 2) { //this.HEADERS_RECEIVED
                         if(this.status == 200) {
-                            var rspFileName = null;//从响应得到的文件名称
+                            var rspFileName = null; //从响应得到的文件名称
                             //
                             //console.log('-- response headers --');
                             //console.log(this.getAllResponseHeaders());
@@ -790,7 +839,7 @@
                             if(_fileNameHeader && allHeaderStr.indexOf(_fileNameHeader.toLowerCase()) != -1) {
                                 try { //从自定义响应头获取文件名
                                     rspFileName = this.getResponseHeader(_fileNameHeader);
-                                    if(rspFileName) {//解码
+                                    if(rspFileName) { //解码
                                         rspFileName = decodeURI(rspFileName);
                                     }
                                 } catch(ex) {
@@ -804,18 +853,16 @@
                                 rspFileName = parseFileNameFromContentDisposition(cpStr);
                             }
                             //
-                            if(rspFileName) {//以响应的文件名为主
+                            if(rspFileName) { //以响应的文件名为主
                                 _fileName = rspFileName;
-                            }
-                            else if(!_fileName) { //3 从url解析文件名
+                            } else if(!_fileName) { //3 从url解析文件名
                                 var rspUrl = this.responseURL || _url; //IE Ajax获取不到responseURL
                                 if(rspUrl.endsWith('?')) {
                                     rspUrl = rspUrl.substring(0, rspUrl.length - 1);
                                 }
                                 _fileName = utils.extractShortFileName(rspUrl);
                             }
-                        }
-                        else {
+                        } else {
                             _failed = true;
                         }
                     }
@@ -886,8 +933,7 @@
                     }
                     if(formData == null) {
                         xhr.send();
-                    }
-                    else {
+                    } else {
                         xhr.send(formData);
                     }
                 } else {
@@ -948,8 +994,8 @@
     };
 
     //----------------------------------- exports -------------------------------------
-    var privateMemKeys = ['__name__', 'exportToWindow', '$'];//不能导出的成员
-    var windowedKeyMap = {//exports 名称 => window 名称
+    var privateMemKeys = ['__name__', 'exportToWindow', '$']; //不能导出的成员
+    var windowedKeyMap = { //exports 名称 => window 名称
         'Util': 'FileUtil',
         'Uploader': 'FileUploader',
         'Downloader': 'FileDownloader'
@@ -960,7 +1006,7 @@
     exports.Downloader = Downloader;
 
     //
-    exports.exportToWindow = function () {//把当前模块的成员导出到window全局
+    exports.exportToWindow = function () { //把当前模块的成员导出到window全局
         if(typeof window !== 'undefined') {
             var winKey = null;
             for(var key in this) {
