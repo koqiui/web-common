@@ -2139,6 +2139,11 @@
     }
 
     //
+    Date.prototype.isValid = function () {
+        var tv = this.getTime();
+        return typeof tv == 'number' && !isNaN(tv) && isFinite(tv);
+    };
+
     Date.prototype.format = function (format) {
         /* yyyy-MM-dd HH:mm:ss.SSS */
         if(format == null) {
@@ -2178,11 +2183,11 @@
                 return null;
             }
             if(isDate(dateStr)) {
-                return dateStr;
+                return dateStr.getTime();
             }
             strictMode = strictMode === true;
             if(strictMode) {
-                dateStr = dateStr.replace(/-/g, "/");
+                dateStr = dateStr.replace(/\//g, "-");
                 return Date._parse(dateStr);
             } else {
                 dateStr = dateStr.replace(/T/g, ' '); //iso
@@ -2242,16 +2247,16 @@
     //
     Date.isValidDate = function (dateStr) {
         if(isDate(dateStr)) {
-            return true;
+            return dateStr.isValid();
         }
-        var result = Date.parse(dateStr, true);
-        return result != null && !isNaN(result);
+        var result = Date.parseAsDate(dateStr);
+        return isDate(result) && result.isValid();
     };
 
     Date.format = function (dateOrStr, format) {
         var date = Date.parseAsDate(dateOrStr);
         if(date) {
-            return date.format(format || "yyyy-MM-dd");
+            return date.isValid() ? date.format(format || "yyyy-MM-dd") : null;
         } else {
             return null;
         }
@@ -2487,6 +2492,7 @@
         try {
             return eval('(' + jsonStr + ')');
         } catch(exp) {
+            console.warn(exp);
             throw new TypeError("JSON parse error !");
         }
     }
@@ -2503,14 +2509,14 @@
         } else if(isString(obj)) {
             return dblQuote + __escapeJsonStr(obj) + dblQuote;
         } else if(isDate(obj)) {
-            return dblQuote + obj.format('yyyy-MM-dd HH:mm:ss') + dblQuote;
+            return obj.isValid() ? dblQuote + obj.format('yyyy-MM-dd HH:mm:ss') + dblQuote : 'null';
         } else if(isArray(obj)) {
             var count = obj.length;
             var elemStrs = [];
             for(var i = 0; i < count; i++) {
                 elemStrs[i] = Callee(obj[i]);
             }
-            return "[" + elemStrs.join(",") + "]";
+            return "[" + elemStrs.join(", ") + "]";
         } else if(typeof(obj.toJSON) == "function") {
             return obj.toJSON();
         } else // if(isPlainObject(obj)) //Strict Check ...
@@ -2524,7 +2530,7 @@
                     attrStrs[index++] = Callee(attr) + ":" + Callee(value);
                 }
             }
-            return "{" + attrStrs.join(",") + "}";
+            return "{" + attrStrs.join(", ") + "}";
         }
     }
 
@@ -2534,8 +2540,6 @@
     // alert("JSON already defined ? "+__isJSONDefined);
 
     function isJSONDefined() {
-        //__isJSONDefined = false;
-        // force to use simple JSON object.(IGNORE browser built-in JSON)
         return __isJSONDefined;
     }
 
@@ -2544,6 +2548,10 @@
         JSON = {};
         JSON.parse = __parseJson;
         JSON.stringify = __stringifyJson;
+    }
+    else {
+        //强制使用eval（fix 属性无效的导致的解析失败）
+        JSON.parse = __parseJson;
     }
 
     if(isFunction(JSON.parse)) {
@@ -2556,6 +2564,9 @@
 
     if(isFunction(JSON.stringify)) {
         JSON.encode = JSON.stringify;
+        JSON.format = function (json) {
+            return JSON.stringify(json, null, 4);
+        }
         //
         JSON.encodeStr = function (str) {
             return str == null ? null : encodeURIComponent(str);
