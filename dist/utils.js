@@ -1650,7 +1650,9 @@
         if(len <= 1) {
             return null;
         }
-        indices = indices || [];
+        if(indices == null) {
+            indices = [];
+        }
         // console.log(">> 1 :: " + indices);
         if(isNum(indices)) {
             indices = [indices];
