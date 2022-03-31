@@ -231,7 +231,7 @@
                 var tmp = [];
                 if(utils.isArray(raw)) {
                     var raws = raw;
-                    for(var i = 0; i < raws.length; i++) {
+                    for(var i = 0, c = raws.length; i < c; i++) {
                         raw = raws[i];
                         if(utils.isPlainObject(raw)) {
                             tmp.add({
@@ -301,7 +301,7 @@
                     fieldHtml = '<input name="{name}" type="{type}" value="{value.value}" checked="checked" /><label>{value.text}</label>'.format(fieldInfo);
                 } else if(fieldInfo.type == "checkbox") {
                     var values = fieldInfo.value;
-                    for(var i = 0; i < values.length; i++) {
+                    for(var i = 0, c = values.length; i < c; i++) {
                         var fieldInfoX = {
                             name: fieldInfo.name,
                             value: values[i],
