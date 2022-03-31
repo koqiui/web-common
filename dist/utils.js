@@ -762,7 +762,7 @@ function StringTokenizer(srcStr, delim, returnDelims) {
     //
     delim = delim || ",";
     var delimChars = [];
-    for(var i = 0; i < delim.length; i++) {
+    for(var i = 0, c = delim.length; i < c; i++) {
         delimChars[i] = delim.charAt(i);
     }
     //
@@ -993,7 +993,7 @@ Array.prototype.nearest = function (vItem, compFunc) {
             };
         }
         var tmpArray = this.sort(compFunc);
-        for(var i = 0; i < tmpArray.length; i++) {
+        for(var i = 0, c = tmpArray.length; i < c; i++) {
             var tmpItem = tmpArray[i];
             if(compFunc(vItem, tmpItem) >= 0) {
                 lastMatch = tmpItem;
@@ -1376,11 +1376,11 @@ Array.prototype._splice = function (iIndex, iLength) {
     for(i = 0; i < iIndex; i++) {
         aResult.push(this[i]);
     }
-    for(i = iIndex; i < iIndex + iLength; i++) {
+    for(i = iIndex, c = iIndex + iLength; i < c; i++) {
         aRemoved.push(this[i]);
     }
     if(arguments.length > 2) {
-        for(i = 2; i < arguments.length; i++) {
+        for(i = 2, c = arguments.length; i < c; i++) {
             aResult.push(arguments[i]);
         }
     }
@@ -1429,7 +1429,7 @@ for(var i = 0, len = __arrayMethodsToCheck.length; i < len; i++) {
  */
 Array.prototype.toMap = function (keyProp) {
     var retMap = {};
-    for(var i = 0; i < this.length; i++) {
+    for(var i = 0, c = this.length; i < c; i++) {
         var vItem = this[i];
         var keyVal = vItem[keyProp];
         retMap[keyVal] = vItem;
@@ -1464,7 +1464,7 @@ Array.prototype.split = function (valFunc, sortMode) {
     var valMap = {};
     var valKeys = [];
     var nulls = [];
-    for(var i = 0; i < this.length; i++) {
+    for(var i = 0, c = this.length; i < c; i++) {
         var elem = this[i];
         var value = valFunc(elem, i);
         if(value == null) {
@@ -1489,7 +1489,7 @@ Array.prototype.split = function (valFunc, sortMode) {
             return v1 == v2 ? 0 : (v1 > v2 ? 1 : -1) * sortMode;
         });
     }
-    for(var i = 0; i < valKeys.length; i++) {
+    for(var i = 0, c = valKeys.length; i < c; i++) {
         var valKey = valKeys[i] + '';
         var values = valMap[valKey];
         //console.log(values);
@@ -1683,7 +1683,7 @@ function moveArrayElementsAt(xArray, indices, where) {
     xArray.clear();
     //
     var indexChanges = [];
-    for(var i = 0; i < indices.length; i++) {
+    for(var i = 0, c = indices.length; i < c; i++) {
         var index = indices[i];
         var indexNew = index + offset;
         xArray[indexNew] = tmpArray[index];
@@ -2026,7 +2026,7 @@ function declare(namespace) {
     var names = namespace.split(".");
     var ns = [];
     var nsName = "";
-    for(var i = 0; i < names.length; i++) {
+    for(var i = 0, c = names.length; i < c; i++) {
         ns[i] = names[i];
         nsName = ns.join(".");
         if(eval('(typeof ' + nsName + ' == "undefined")')) {
@@ -2591,7 +2591,7 @@ function merge(original, overwrite, includeFunc) {
     } else if(isArray(overwrite)) {
         original = [];
         var items = overwrite;
-        for(var i = 0; i < items.length; i++) {
+        for(var i = 0, c = items.length; i < c; i++) {
             original[i] = merge({}, items[i]);
         }
     } else if(typeof overwrite == "function" && includeFunc) {
@@ -2846,7 +2846,7 @@ function makeCrossCombsWith(srcCombs, key, values) {
     var retCombs = [];
     var srcLen = srcCombs.length;
     if(srcLen == 0) {
-        for(var j = 0; j < values.length; j++) {
+        for(var j = 0, c = values.length; j < c; j++) {
             var json = {};
             json[key + ""] = values[j];
             retCombs.add(json);
@@ -2854,7 +2854,7 @@ function makeCrossCombsWith(srcCombs, key, values) {
     } else {
         for(var i = 0; i < srcLen; i++) {
             var srcJson = srcCombs[i];
-            for(var j = 0; j < values.length; j++) {
+            for(var j = 0, c = values.length; j < c; j++) {
                 var json = merge({}, srcJson);
                 json[key + ""] = values[j];
                 retCombs.add(json);
@@ -2871,7 +2871,7 @@ function makeCrossCombsFor(key2ValuesMap) {
     //
     var tmpMap = KeyMap.from(key2ValuesMap);
     var tmpKeys = tmpMap.keys();
-    for(var i = 0; i < tmpKeys.length; i++) {
+    for(var i = 0, c = tmpKeys.length; i < c; i++) {
         var tmpKey = tmpKeys[i];
         var values = tmpMap.get(tmpKey);
         if(values != null && values.length > 0) {
@@ -4160,7 +4160,7 @@ function makeFuncCallScript(funcName, args) {
     } else if(isPlainObject(args)) {
         args = [args];
     }
-    for(var i = 0; i < args.length; i++) {
+    for(var i = 0, c = args.length; i < c; i++) {
         var arg = args[i];
         var argStr = isFunction(arg) ? __stringifyJson(getFuncName(arg)) : __stringifyJson(arg);
         if(i > 0) {

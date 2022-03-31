@@ -12,11 +12,12 @@ var __checkDuplicates = true;
 //{ path => component}
 var __routeMapAll = {};
 var __routeRegistStates = {};
+
 //
 function makeSubRoutes(subComps) {
     subComps = subComps || [];
     var children = [];
-    for(var i = 0; i < subComps.length; i++) {
+    for(var i = 0, c = subComps.length; i < c; i++) {
         var comp = subComps[i];
         children[i] = {
             path: comp.path,
@@ -56,7 +57,7 @@ module.exports = {
     //
     add: function () {
         var routeMaps = arguments;
-        for(var i = 0; i < routeMaps.length; i++) {
+        for(var i = 0, c = routeMaps.length; i < c; i++) {
             var routeMap = routeMaps[i];
             //
             if(routeMap == null) {
@@ -139,7 +140,7 @@ module.exports = {
                     //修正/注册子路由
                     var parentPath = routeMap.path;
                     var children = routeMap.children;
-                    for(var i = 0; i < children.length; i++) {
+                    for(var i = 0, c = children.length; i < c; i++) {
                         var childMap = children[i];
                         var childComp = childMap.component;
                         if(childComp.path.charAt(0) == '/') {
