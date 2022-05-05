@@ -8,7 +8,8 @@
     if(typeof module === "object" && typeof module.exports === "object") {
         theExports = module.exports;
         hasModuleExports = true;
-    } else { //导出为模块
+    }
+    else { //导出为模块
         theExports = global['H5file'] = {};
     }
     factory(theExports, hasModuleExports);
@@ -17,7 +18,8 @@
     //
     if(hasModuleExports) {
         console && console.log('以模块方式导入[' + exports.__name__ + ']');
-    } else {
+    }
+    else {
         console && console.log('以普通方式引入[' + exports.__name__ + ']');
     }
     //---------------------------------------------------------------------------------
@@ -38,16 +40,19 @@
                     //
                     if(typeof dataUrlCallback === 'function') {
                         dataUrlCallback(null, failMsg);
-                    } else {
+                    }
+                    else {
                         console.warn(failMsg);
                     }
-                } else {
+                }
+                else {
                     var fileReader = new FileReader();
                     fileReader.onload = function (evnt) {
                         var dataUrl = evnt.target.result;
                         if(typeof dataUrlCallback === 'function') {
                             dataUrlCallback(dataUrl, imageFile.name);
-                        } else {
+                        }
+                        else {
                             console.warn('未指定dataUrl回调函数');
                         }
                     };
@@ -56,12 +61,14 @@
                     //
                     return;
                 }
-            } else {
+            }
+            else {
                 var failMsg = '非图片文件(' + imageFile.name + ')';
                 //
                 if(typeof dataUrlCallback === 'function') {
                     dataUrlCallback(null, failMsg);
-                } else {
+                }
+                else {
                     console.warn(failMsg);
                 }
             }
@@ -134,7 +141,8 @@
             var fileName = fileName || mimeType.replace('/', '.');
             if(window.navigator && window.navigator.msSaveBlob) { //IE
                 window.navigator.msSaveBlob(blob, fileName);
-            } else { //非IE
+            }
+            else { //非IE
                 var tmpLink = document.createElement('A');
                 document.body.appendChild(tmpLink);
                 tmpLink.style = 'display: none';
@@ -154,6 +162,8 @@
      */
     function Uploader(options) {
         var THIS = this;
+        //
+        var _destroyed = false;
         //是否使用内部（而非file本身的）文件类型检查
         var __useInnerFilter = true;
         //
@@ -162,7 +172,6 @@
         //', '分割的mimetype，如：image/png,image/gif
         var _accept = '*/*';
         var _serverUrl = '';
-
         //
         var _changeHandler = null;
         var _progressHandler = null;
@@ -175,13 +184,11 @@
         var _bindTo = null;
         var _fileCtrl = null;
         var _initFlag = false;
-        var _destroyed = false;
         //
         var _extParams = {};
         var _fileItems = [];
 
         this.destroy = function () {
-            //
             _destroyed = true;
             //
             $id(_bindTo).unbind();
@@ -201,6 +208,8 @@
             _fileItems = [];
             //
             THIS = null;
+            //
+            console.trace('Uploader destroied');
         };
 
         //
@@ -218,10 +227,12 @@
             //
             if(refType !== chkType) {
                 return false;
-            } else {
+            }
+            else {
                 if(refSubType === '*') {
                     return true;
-                } else if(refSubType === chkSubType) {
+                }
+                else if(refSubType === chkSubType) {
                     return true;
                 }
                 return false;
@@ -252,7 +263,8 @@
                         retItems.push(fileItem);
                     }
                 }
-            } else {
+            }
+            else {
                 retItems = Array.prototype.slice.call(fileItems, 0);
             }
             //
@@ -325,7 +337,8 @@
         this.accept = function (accept) {
             if(utils.isArray(accept)) {
                 _accept = accept;
-            } else {
+            }
+            else {
                 _accept = Array.prototype.slice.call(arguments, 0).join(', ');
             }
             if(_fileCtrl !== null && !__useInnerFilter) {
@@ -345,7 +358,8 @@
         this.changeHandler = function (changeHandler) {
             if(typeof changeHandler === 'function') {
                 _changeHandler = changeHandler;
-            } else {
+            }
+            else {
                 _changeHandler = null;
             }
             //
@@ -355,7 +369,8 @@
         this.progressHandler = function (progressHandler) {
             if(typeof progressHandler === 'function') {
                 _progressHandler = progressHandler;
-            } else {
+            }
+            else {
                 _progressHandler = null;
             }
             //
@@ -481,7 +496,8 @@
                     if(_doneHandler) {
                         _doneHandler(result);
                     }
-                } else {
+                }
+                else {
                     var result = {};
                     result.type = 'error';
                     result.message = '文件上传失败 ' + resp.statusText;
@@ -526,13 +542,16 @@
             cpStr = cpStr.substring(index + 9);
             cpStr = cpStr.dequote();
             return decodeURI(cpStr); //解码
-        } else {
+        }
+        else {
             return null;
         }
     }
 
     function Downloader(options) {
         var THIS = this;
+        //
+        var _destroyed = false;
         //
         var _xhr = null;
         //
@@ -635,7 +654,8 @@
         this.progress = function (progressHandler) {
             if(typeof progressHandler === 'function') {
                 _progressHandler = progressHandler;
-            } else {
+            }
+            else {
                 _progressHandler = null;
             }
             //
@@ -643,6 +663,10 @@
         };
         //
         this.go = function () {
+            if(_destroyed) {
+                throw '控件已通过 destroy()销毁，无法再调用';
+            }
+            //
             if(_xhr != null) {
                 console.warn('已经发出了下载请求，本次请求已取消');
                 return;
@@ -653,7 +677,8 @@
             var xhr = new XMLHttpRequest();
             try {
                 xhr.responseType = 'blob';
-            } catch(ex) {
+            }
+            catch(ex) {
                 console.warn('浏览器Ajax不支持指定blob响应类型');
             }
             //缓存请求对象（防止重复调用）
@@ -673,7 +698,8 @@
                             type: 'error',
                             message: errMsg
                         });
-                    } else {
+                    }
+                    else {
                         console.error(errMsg);
                     }
                 }
@@ -692,7 +718,8 @@
                             type: 'warn',
                             message: wrnMsg
                         });
-                    } else {
+                    }
+                    else {
                         console.warn(wrnMsg);
                     }
                 }
@@ -711,7 +738,8 @@
                             type: 'error',
                             message: errMsg
                         });
-                    } else {
+                    }
+                    else {
                         console.error(errMsg);
                     }
                 }
@@ -728,7 +756,8 @@
                 //
                 if(_progressHandler) {
                     _progressHandler(info);
-                } else {
+                }
+                else {
                     console.log(info);
                 }
             };
@@ -748,11 +777,13 @@
                     if(info.loaded == info.total) { //下载完毕
                         if(_failed) {
                             info.message = '下载失败';
-                        } else {
+                        }
+                        else {
                             info.type = 2;
                             info.message = '下载完毕';
                         }
-                    } else if(info.loaded == 0) {
+                    }
+                    else if(info.loaded == 0) {
                         info.type = 0;
                         info.message = '下载开始';
                     }
@@ -760,7 +791,8 @@
                 //
                 if(_progressHandler) {
                     _progressHandler(info);
-                } else {
+                }
+                else {
                     console.log(info);
                 }
             };
@@ -808,13 +840,16 @@
                             type: 'error',
                             message: errMsg
                         });
-                    } else {
+                    }
+                    else {
                         console.error(errMsg);
                     }
-                } else {
+                }
+                else {
                     if(_progressHandler) {
                         _progressHandler(info);
-                    } else {
+                    }
+                    else {
                         console.info(info);
                     }
                 }
@@ -842,7 +877,8 @@
                                     if(rspFileName) { //解码
                                         rspFileName = decodeURI(rspFileName);
                                     }
-                                } catch(ex) {
+                                }
+                                catch(ex) {
                                     console.warn(ex);
                                 }
                             }
@@ -855,14 +891,16 @@
                             //
                             if(rspFileName) { //以响应的文件名为主
                                 _fileName = rspFileName;
-                            } else if(!_fileName) { //3 从url解析文件名
+                            }
+                            else if(!_fileName) { //3 从url解析文件名
                                 var rspUrl = this.responseURL || _url; //IE Ajax获取不到responseURL
                                 if(rspUrl.endsWith('?')) {
                                     rspUrl = rspUrl.substring(0, rspUrl.length - 1);
                                 }
                                 _fileName = utils.extractShortFileName(rspUrl);
                             }
-                        } else {
+                        }
+                        else {
                             _failed = true;
                         }
                     }
@@ -873,7 +911,7 @@
                 if(this.status == 200) {
                     var result = {
                         type: 'info',
-                        message: '文件下载完毕',
+                        message: '文件下载完毕'
                     };
                     result.data = {
                         fileName: _fileName,
@@ -882,7 +920,8 @@
                     //
                     if(_doneHandler) {
                         _doneHandler(result);
-                    } else {
+                    }
+                    else {
                         console.warn('--- 未设置下载结果处理函数 ---');
                         console.log(result);
                     }
@@ -916,7 +955,8 @@
             }
             if(_method == 'GET') {
                 xhr.send();
-            } else {
+            }
+            else {
                 if(_contentType == 'form') {
                     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                     var formData = null;
@@ -933,10 +973,12 @@
                     }
                     if(formData == null) {
                         xhr.send();
-                    } else {
+                    }
+                    else {
                         xhr.send(formData);
                     }
-                } else {
+                }
+                else {
                     xhr.setRequestHeader('Content-Type', 'application/json');
                     //
                     var json = JSON.encode(_data || {});
@@ -954,11 +996,41 @@
             if(_xhr != null) {
                 try {
                     _xhr.abort();
-                } catch(ex) {
+                }
+                catch(ex) {
                     console.log(ex);
                 }
             }
-        }
+        };
+        //
+        this.destroy = function () {
+            this.abort();
+            //
+            _destroyed = true;
+            //
+            if(_xhr != null) {
+                delete _xhr.onerror;
+                delete _xhr.onabort;
+                delete _xhr.ontimeout;
+                delete _xhr.onloadstart;
+                delete _xhr.onprogress;
+                delete _xhr.onload;
+                delete _xhr.onloadend;
+                delete _xhr.onreadystatechange;
+            }
+            _xhr = null;
+            //
+            _header = null;
+            _params = null;
+            _data = null;
+            _doneHandler = null;
+            _failHandler = null;
+            _progressHandler = null;
+            //
+            THIS = null;
+            //
+            console.trace('Downloader destroied');
+        };
     }
 
     Downloader.downloadHtmlAsXls = function (htmlContent, fileName, style) {
@@ -974,7 +1046,8 @@
 
         if(window.navigator && window.navigator.msSaveBlob) { //IE
             window.navigator.msSaveBlob(blob, fileName);
-        } else { //非IE
+        }
+        else { //非IE
             var tmpLink = document.createElement('A');
             document.body.appendChild(tmpLink);
             tmpLink.style = 'display: none';

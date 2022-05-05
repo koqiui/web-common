@@ -7,7 +7,8 @@
     if(typeof module === "object" && typeof module.exports === "object") {
         theExports = module.exports;
         hasModuleExports = true;
-    } else {//导出为模块
+    }
+    else {//导出为模块
         theExports = global['EventBus'] = {};
     }
     factory(theExports, hasModuleExports);
@@ -87,8 +88,10 @@
                 for(var i = curHandlers.length - 1; i >= 0; i--) {
                     handler = curHandlers[i];
                     delete handler['__this_context__'];
+                    //
+                    curHandlers.splice(i, 1);
                 }
-                curHandlers.length = 0;
+                curHandlers.length = 0; //保险起见
                 //
                 trace && console.log(trace);
                 console.log('给定的 ' + event + ' 事件处理函数已*全部*解绑');
@@ -115,7 +118,6 @@
             event = event || '';
             //
             if(event === '') {
-                trace && console.log(trace);
                 console.warn('触发的的事件名称不可为空！');
                 //
                 return this;
@@ -139,6 +141,26 @@
             }
             //
             return this;
+        };
+
+        //
+        this.destroy = function () {
+            for(var event in _handlers) {
+                var curHandlers = _handlers[event] || null;
+                if(curHandlers != null) {
+                    var handler;
+                    for(var i = curHandlers.length - 1; i >= 0; i--) {
+                        handler = curHandlers[i];
+                        delete handler['__this_context__'];
+                        //
+                        curHandlers.splice(i, 1);
+                    }
+                    delete _handlers[event]; //删除
+                    console.log('事件：' + event + ' 相关处理函数已*全部*解绑');
+                }
+            }
+            //
+            console.log('EventBus ' + _name + ' destroied');
         };
     }
 
@@ -167,6 +189,19 @@
     };
     exports.trigger = function (event, payload, extra) {
         return __defaultBus.trigger(payload, extra);
+    };
+    //
+    exports.destroy = function () {
+        return __defaultBus.destroy();
+    };
+    //
+    exports.destroyAll = function () {
+        for(var name in __cachedBuses) {
+            var tmpBus = __cachedBuses[name];
+            tmpBus.destroy();
+            delete __cachedBuses[name];
+        }
+        console.log('EventBus All destroied');
     };
 
 }));
