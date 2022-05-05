@@ -4,14 +4,15 @@
 var moduleName = 'Ajax';
 //----------------------------------------------
 var utils = require('./utils');
-var axios = require('axios');
-var jajax = require('jquery').ajax;
+var jquery = require('jquery');
 
 //
 var __ajaxDebug = false;
 var __ajaxSetted = false;
 var __ajaxBaseUrl = "";
 var __ajaxTimeout = 0;
+var __ajaxPageTokenName = '';
+var __ajaxParamsFilter = null;
 var __ajaxBeforeSendCallback = null;
 var __ajaxAfterRecvCallback = null;
 var __ajaxErrorCallbck = function (errMsg) {
@@ -50,6 +51,38 @@ function AjaxCoreFn() {
     //
     var _jqXHR = null;
 
+    // clean
+    function destroyThis(ajaxConf) {
+        if(ajaxConf) {
+            for(var key in ajaxConf) {
+                delete ajaxConf[key];
+            }
+            ajaxConf = null;
+        }
+        //
+        for(var key in THIS) {
+            delete THIS[key];
+        }
+        THIS = null;
+        _jqXHR = null;
+        //
+        _baseUrl = null;
+        _header = null;
+        _params = null;
+        _data = null;
+        _beforeSendCallback = null;
+        _doneHandler = null;
+        _failHandler = null;
+        _alwaysHandler = null;
+        for(var key in _statusHandler) {
+            delete _statusHandler[key];
+        }
+        _statusMessage = null;
+        _triggerStates = null;
+        //
+        //console.log('ajax destroied');
+    }
+
     // var logger = console && console.log ? console.log : null;
     this.baseUrl = function (baseUrl) {
         _baseUrl = baseUrl || "";
@@ -84,7 +117,8 @@ function AjaxCoreFn() {
         //
         if(_jqXHR == null) {
             _header = utils.merge(_header, header);
-        } else { //已经发出请求（设置_header已无效）
+        }
+        else { //已经发出请求（设置_header已无效）
             for(var name in header) {
                 var value = header[name];
                 _jqXHR.setRequestHeader(name, value);
@@ -94,12 +128,12 @@ function AjaxCoreFn() {
         return this;
     };
     this.params = function (params) {
-        _params = params;
+        _params = params || {};
         //
         return this;
     };
     this.data = function (data) {
-        _data = data;
+        _data = data || {};
         //
         return this;
     };
@@ -167,7 +201,8 @@ function AjaxCoreFn() {
     this.fail = function (callback) {
         if(utils.isString(callback)) {
             _failMessage = callback;
-        } else {
+        }
+        else {
             _failHandler = callback;
         }
         //
@@ -183,11 +218,15 @@ function AjaxCoreFn() {
     this.onStatus = function (status, callback) {
         if(utils.isString(callback)) {
             _statusMessage[status] = callback;
-        } else {
+        }
+        else {
             _statusHandler[status] = callback;
         }
         //
         return this;
+    };
+    this.on400 = function (callback) {
+        return this.onStatus(400, callback);
     };
     this.on401 = function (callback) {
         return this.onStatus(401, callback);
@@ -210,7 +249,12 @@ function AjaxCoreFn() {
     this.on502 = function (callback) {
         return this.onStatus(502, callback);
     };
-
+    this.on503 = function (callback) {
+        return this.onStatus(503, callback);
+    };
+    this.on504 = function (callback) {
+        return this.onStatus(504, callback);
+    };
     //event:done, fail, always
     this.trigger = function (event, result, jqXHR) {
         _jqXHR = null; // clear !!!
@@ -220,12 +264,14 @@ function AjaxCoreFn() {
                 _triggerStates["done"] = true;
                 _doneHandler(result, jqXHR);
             }
-        } else if(event == "fail") {
+        }
+        else if(event == "fail") {
             if(typeof _failHandler == "function") {
                 _triggerStates["fail"] = true;
                 _failHandler(result, jqXHR);
             }
-        } else if(event == "always") {
+        }
+        else if(event == "always") {
             if(typeof _alwaysHandler == "function") {
                 _triggerStates["always"] = true;
                 _alwaysHandler(jqXHR);
@@ -239,6 +285,17 @@ function AjaxCoreFn() {
         if(_baseUrl && !url.startsWith("http")) {
             url = _baseUrl + url;
         }
+        if(__ajaxPageTokenName) {//解析并添加页面token
+            var urlParams = utils.extractUrlParams();
+            var pageTokenValue = urlParams[__ajaxPageTokenName] || null;
+            if(pageTokenValue) {
+                _params[__ajaxPageTokenName] = pageTokenValue;
+            }
+        }
+        if(__ajaxParamsFilter) {
+            _params = __ajaxParamsFilter(_params);
+        }
+        //
         url = utils.makeUrl(url, _params, true);
         //
         var ajaxConf = {
@@ -285,7 +342,7 @@ function AjaxCoreFn() {
             console.log(ajaxConf);
         }
         //
-        var ajax = jajax(ajaxConf);
+        var ajax = jquery.ajax(ajaxConf);
         //jqXHR.done(function( data, textStatus, jqXHR ) {})
         ajax.done(function (data, type, jqXHR) {
             if(typeof __ajaxAfterRecvCallback == 'function') {
@@ -293,10 +350,9 @@ function AjaxCoreFn() {
             }
             //
             if(typeof _doneHandler == "function") {
-                if(_triggerStates["done"] == true) {
-                    return;
+                if(_triggerStates["done"] !== true) {
+                    _doneHandler(data, jqXHR);
                 }
-                _doneHandler(data, jqXHR);
             }
         });
         //jqXHR.fail(function( jqXHR, textStatus, errorThrown ) {})
@@ -310,7 +366,8 @@ function AjaxCoreFn() {
                     errInfo.code = responseX.code;
                     errInfo.message = responseX.message;
                 }
-            } catch(ex) {
+            }
+            catch(ex) {
                 //
             }
             if(errInfo.message == "error") {
@@ -333,16 +390,16 @@ function AjaxCoreFn() {
                 continueNext = handleResult !== false;
             }
             if(continueNext) {
-                if(_triggerStates["fail"] == true) {
-                    return;
-                }
-                if(_failMessage) {
-                    errInfo.message = _failMessage;
-                }
-                if(_failHandler != null) {
-                    _failHandler(errInfo, jqXHR, status);
-                } else {
-                    __ajaxErrorCallbck(errInfo.message);
+                if(_triggerStates["fail"] != true) {
+                    if(_failMessage) {
+                        errInfo.message = _failMessage;
+                    }
+                    if(_failHandler != null) {
+                        _failHandler(errInfo, jqXHR, status);
+                    }
+                    else {
+                        __ajaxErrorCallbck(errInfo.message);
+                    }
                 }
             }
         });
@@ -351,20 +408,24 @@ function AjaxCoreFn() {
         ajax.always(function (jqXHR, type, statusText) {
             _jqXHR = null; // clear !!!
             //
-            if(_triggerStates["always"] == true) {
-                return;
+            if(_triggerStates["always"] !== true) {
+                if(_alwaysHandler != null) {
+                    try {
+                        _alwaysHandler(jqXHR);
+                    }
+                    catch(ex) {
+                        console.error(ex)
+                    }
+                }
             }
-            if(_alwaysHandler != null) {
-                _alwaysHandler(jqXHR);
-            }
+            //
+            destroyThis(ajaxConf);
         });
-        //
-        return ajax;
     }
 
     //返回原生ajax
     this.go = function () {
-        return sendRequest();
+        sendRequest();
     };
     //
     {
@@ -374,7 +435,11 @@ function AjaxCoreFn() {
             //
             __ajaxErrorCallbck(errMsg);
         });
-
+        this.on400(function (errInfo, jqXHR, status) {
+            var errMsg = "无效/错误请求";
+            //
+            __ajaxErrorCallbck(errMsg);
+        });
         this.on401(function (errInfo, jqXHR, status) {
             var errMsg = "未登录/未能认证";
             //
@@ -406,7 +471,17 @@ function AjaxCoreFn() {
             __ajaxErrorCallbck(errMsg);
         });
         this.on502(function (errInfo, jqXHR, status) {
+            var errMsg = errInfo.message || "网关未收到响应";
+            //
+            __ajaxErrorCallbck(errMsg);
+        });
+        this.on503(function (errInfo, jqXHR, status) {
             var errMsg = errInfo.message || "服务器维护中...";
+            //
+            __ajaxErrorCallbck(errMsg);
+        });
+        this.on504(function (errInfo, jqXHR, status) {
+            var errMsg = errInfo.message || "网关响应接收超时";
             //
             __ajaxErrorCallbck(errMsg);
         });
@@ -418,10 +493,6 @@ function AjaxCoreFn() {
 //
 module.exports = {
     moduleName: moduleName,
-    //
-    axios: axios,
-    jajax: jajax,
-
     //
     setted: function () {
         return __ajaxSetted;

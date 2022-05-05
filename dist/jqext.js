@@ -16,10 +16,12 @@ function $id(selector) {
     if(typeof selector == "string") {
         if(__classNameReg.test(selector)) {
             return $(selector);
-        } else if(__alphaPrefixReg.test(selector)) {
+        }
+        else if(__alphaPrefixReg.test(selector)) {
             if(__noneAlphaReg.test(selector)) {
                 return $('[id="' + selector + '"]');
-            } else {
+            }
+            else {
                 return $("#" + selector);
             }
         }
@@ -69,7 +71,8 @@ function isEventFromWithin(evnt, checkEl, excludeSelf) {
         if(isChild) {
             return true;
         }
-    } else {
+    }
+    else {
         var isSelfOrChild = checkEl.is(function () {
             return this == evnt.target || $.contains(this, evnt.target);
         });
@@ -97,7 +100,8 @@ function borrowOrReturnDomNode(targetNode, toBorrow) {
         if(orignalParent == targetNode.parentNode) {
             targetNode = targetNode.parentNode.removeChild(targetNode);
         }
-    } else {
+    }
+    else {
         if(orignalParent != targetNode.parentNode) {
             targetNode = targetNode.parentNode.removeChild(targetNode);
             orignalParent.appendChild(targetNode);
@@ -144,7 +148,8 @@ function HiddenFormCoreFn() {
     this.id = function (id) {
         if(typeof id == "undefined") {
             return _formId;
-        } else {
+        }
+        else {
             _formId = id;
             if(_formName == null) {
                 _formName = _formId;
@@ -155,7 +160,8 @@ function HiddenFormCoreFn() {
     this.name = function (name) {
         if(typeof name == "undefined") {
             return _formName;
-        } else {
+        }
+        else {
             _formName = name;
             return this;
         }
@@ -163,7 +169,8 @@ function HiddenFormCoreFn() {
     this.method = function (method) {
         if(typeof method == "undefined") {
             return _fromMethod;
-        } else {
+        }
+        else {
             _fromMethod = method;
             return this;
         }
@@ -171,7 +178,8 @@ function HiddenFormCoreFn() {
     this.target = function (target) {
         if(typeof target == "undefined") {
             return _formTarget;
-        } else {
+        }
+        else {
             _formTarget = target;
             return this;
         }
@@ -179,7 +187,8 @@ function HiddenFormCoreFn() {
     this.action = function (action) {
         if(typeof action == "undefined") {
             return _formAction;
-        } else {
+        }
+        else {
             _formAction = action;
             return this;
         }
@@ -201,14 +210,16 @@ function HiddenFormCoreFn() {
                     value: raw.value,
                     text: raw.text || raw.value
                 };
-            } else {
+            }
+            else {
                 tmp = {
                     value: raw,
                     text: raw
                 };
             }
             fieldInfo.value = tmp;
-        } else if(fieldInfo.type == "checkbox") {
+        }
+        else if(fieldInfo.type == "checkbox") {
             var raw = fieldInfo.value;
             var tmp = [];
             if(utils.isArray(raw)) {
@@ -220,20 +231,23 @@ function HiddenFormCoreFn() {
                             value: raw.value,
                             text: raw.text || raw.value
                         });
-                    } else {
+                    }
+                    else {
                         tmp.add({
                             value: raw,
                             text: raw
                         });
                     }
                 }
-            } else {
+            }
+            else {
                 if(utils.isPlainObject(raw)) {
                     tmp.add({
                         value: raw.value,
                         text: raw.text || raw.value
                     });
-                } else {
+                }
+                else {
                     tmp.add({
                         value: raw,
                         text: raw
@@ -249,7 +263,8 @@ function HiddenFormCoreFn() {
     this.visible = function (visible) {
         if(typeof visible == "undefined") {
             return _formVisible;
-        } else {
+        }
+        else {
             _formVisible = visible;
             if(_formDom != null) {
                 _formDom.style.display = _formVisible ? "" : "none";
@@ -281,7 +296,8 @@ function HiddenFormCoreFn() {
             var fieldHtml = "";
             if(fieldInfo.type == "radio") {
                 fieldHtml = '<input name="{name}" type="{type}" value="{value.value}" checked="checked" /><label>{value.text}</label>'.format(fieldInfo);
-            } else if(fieldInfo.type == "checkbox") {
+            }
+            else if(fieldInfo.type == "checkbox") {
                 var values = fieldInfo.value;
                 for(var i = 0, c = values.length; i < c; i++) {
                     var fieldInfoX = {
@@ -291,7 +307,8 @@ function HiddenFormCoreFn() {
                     }
                     fieldHtml += '<input name="{name}" type="{type}" value="{value.value}" checked="checked" /><label>{value.text}</label>'.format(fieldInfoX);
                 }
-            } else {
+            }
+            else {
                 fieldHtml = '<input name="{name}" type="{type}" value="{value}" />'.format(fieldInfo);
             }
             //
@@ -333,7 +350,8 @@ function centerInView(domId, targetView, vtAdjust) {
         refTop = jqDoc.scrollTop();
         refWid = jqRefView.width();
         refHgt = jqRefView.height();
-    } else {
+    }
+    else {
         var refOffset = jqRefView.offset();
         refLeft = refOffset.left;
         refTop = refOffset.top;
@@ -421,7 +439,8 @@ function ToastCoreFn() {
         if(typeof theCallback == "function") {
             try {
                 theCallback();
-            } catch(ex) {
+            }
+            catch(ex) {
                 //
             }
         }
@@ -512,14 +531,16 @@ function TopMsgCoreFn() {
                 if(speakerVersionCheck > spearkerVersion) {
                     Store.set(speakerVersionCookie, speakerVersionCheck);
                     Store.set(speakerIsMuteCookie, speakerIsMute);
-                } else {
+                }
+                else {
                     speakerIsMute = Store.get(speakerIsMuteCookie, speakerIsMute);
                 }
             }
             if(speakerIsMute) {
                 jqSpeaker.addClass("mute");
                 jqSpeaker.attr("title", "有声通知 未开启");
-            } else {
+            }
+            else {
                 jqSpeaker.removeClass("mute");
                 $(this).attr("title", "已开启 有声通知");
             }
@@ -530,7 +551,8 @@ function TopMsgCoreFn() {
                     $(this).attr("title", "已开启 有声通知");
                     //
                     speakerIsMute = false;
-                } else {
+                }
+                else {
                     $(this).addClass("mute");
                     $(this).attr("title", "有声通知 未开启");
                     //
@@ -597,13 +619,15 @@ function TopMsgCoreFn() {
             soundTxt = "您有一条" + msgSender + "链接消息";
             msgTxt = msgTxt || msgUrl;
             html += "<a href='{1}' target='{2}'>{0}</a>".format(utils.escapeHtmlStr(msgTxt), utils.escapeXmlValueStr(msgUrl), linkTarget);
-        } else if(msgTypeName == "Image") {
+        }
+        else if(msgTypeName == "Image") {
             soundTxt = "您有一条" + msgSender + "图片消息";
             msgTxt = msgTxt || "<无图片说明>";
             jqContent.css("padding-left", "40px");
             html += "<div style='margin-bottom:10px;'>{0}</div>".format(utils.escapeHtmlStr(msgTxt));
             html += '<img src="{0}" />'.format(utils.escapeXmlValueStr(msgUrl));
-        } else { //Text
+        }
+        else { //Text
             soundTxt = msgSender + "消息:" + msgTxt;
             html += utils.escapeHtmlStr(msgTxt);
         }

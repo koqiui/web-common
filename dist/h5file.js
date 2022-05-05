@@ -21,16 +21,19 @@ var Util = {
                 //
                 if(typeof dataUrlCallback === 'function') {
                     dataUrlCallback(null, failMsg);
-                } else {
+                }
+                else {
                     console.warn(failMsg);
                 }
-            } else {
+            }
+            else {
                 var fileReader = new FileReader();
                 fileReader.onload = function (evnt) {
                     var dataUrl = evnt.target.result;
                     if(typeof dataUrlCallback === 'function') {
                         dataUrlCallback(dataUrl, imageFile.name);
-                    } else {
+                    }
+                    else {
                         console.warn('未指定dataUrl回调函数');
                     }
                 };
@@ -39,12 +42,14 @@ var Util = {
                 //
                 return;
             }
-        } else {
+        }
+        else {
             var failMsg = '非图片文件(' + imageFile.name + ')';
             //
             if(typeof dataUrlCallback === 'function') {
                 dataUrlCallback(null, failMsg);
-            } else {
+            }
+            else {
                 console.warn(failMsg);
             }
         }
@@ -117,7 +122,8 @@ var Util = {
         var fileName = fileName || mimeType.replace('/', '.');
         if(window.navigator && window.navigator.msSaveBlob) { //IE
             window.navigator.msSaveBlob(blob, fileName);
-        } else { //非IE
+        }
+        else { //非IE
             var tmpLink = document.createElement('A');
             document.body.appendChild(tmpLink);
             tmpLink.style = 'display: none';
@@ -137,6 +143,8 @@ var Util = {
  */
 function Uploader(options) {
     var THIS = this;
+    //
+    var _destroyed = false;
     //是否使用内部（而非file本身的）文件类型检查
     var __useInnerFilter = true;
     //
@@ -145,7 +153,6 @@ function Uploader(options) {
     //', '分割的mimetype，如：image/png,image/gif
     var _accept = '*/*';
     var _serverUrl = '';
-
     //
     var _changeHandler = null;
     var _progressHandler = null;
@@ -158,13 +165,11 @@ function Uploader(options) {
     var _bindTo = null;
     var _fileCtrl = null;
     var _initFlag = false;
-    var _destroyed = false;
     //
     var _extParams = {};
     var _fileItems = [];
 
     this.destroy = function () {
-        //
         _destroyed = true;
         //
         $id(_bindTo).unbind();
@@ -184,6 +189,8 @@ function Uploader(options) {
         _fileItems = [];
         //
         THIS = null;
+        //
+        console.trace('Uploader destroied');
     };
 
     //
@@ -201,10 +208,12 @@ function Uploader(options) {
         //
         if(refType !== chkType) {
             return false;
-        } else {
+        }
+        else {
             if(refSubType === '*') {
                 return true;
-            } else if(refSubType === chkSubType) {
+            }
+            else if(refSubType === chkSubType) {
                 return true;
             }
             return false;
@@ -235,7 +244,8 @@ function Uploader(options) {
                     retItems.push(fileItem);
                 }
             }
-        } else {
+        }
+        else {
             retItems = Array.prototype.slice.call(fileItems, 0);
         }
         //
@@ -308,7 +318,8 @@ function Uploader(options) {
     this.accept = function (accept) {
         if(utils.isArray(accept)) {
             _accept = accept;
-        } else {
+        }
+        else {
             _accept = Array.prototype.slice.call(arguments, 0).join(', ');
         }
         if(_fileCtrl !== null && !__useInnerFilter) {
@@ -328,7 +339,8 @@ function Uploader(options) {
     this.changeHandler = function (changeHandler) {
         if(typeof changeHandler === 'function') {
             _changeHandler = changeHandler;
-        } else {
+        }
+        else {
             _changeHandler = null;
         }
         //
@@ -338,7 +350,8 @@ function Uploader(options) {
     this.progressHandler = function (progressHandler) {
         if(typeof progressHandler === 'function') {
             _progressHandler = progressHandler;
-        } else {
+        }
+        else {
             _progressHandler = null;
         }
         //
@@ -464,7 +477,8 @@ function Uploader(options) {
                 if(_doneHandler) {
                     _doneHandler(result);
                 }
-            } else {
+            }
+            else {
                 var result = {};
                 result.type = 'error';
                 result.message = '文件上传失败 ' + resp.statusText;
@@ -505,17 +519,20 @@ function parseFileNameFromContentDisposition(contentDisposition) {
         return null;
     }
     var index = cpStr.toLowerCase().indexOf('filename=');
-    if(index != -1) {//'filename='.length = 9
+    if(index != -1) { //'filename='.length = 9
         cpStr = cpStr.substring(index + 9);
         cpStr = cpStr.dequote();
-        return decodeURI(cpStr);//解码
-    } else {
+        return decodeURI(cpStr); //解码
+    }
+    else {
         return null;
     }
 }
 
 function Downloader(options) {
     var THIS = this;
+    //
+    var _destroyed = false;
     //
     var _xhr = null;
     //
@@ -618,7 +635,8 @@ function Downloader(options) {
     this.progress = function (progressHandler) {
         if(typeof progressHandler === 'function') {
             _progressHandler = progressHandler;
-        } else {
+        }
+        else {
             _progressHandler = null;
         }
         //
@@ -626,6 +644,10 @@ function Downloader(options) {
     };
     //
     this.go = function () {
+        if(_destroyed) {
+            throw '控件已通过 destroy()销毁，无法再调用';
+        }
+        //
         if(_xhr != null) {
             console.warn('已经发出了下载请求，本次请求已取消');
             return;
@@ -636,7 +658,8 @@ function Downloader(options) {
         var xhr = new XMLHttpRequest();
         try {
             xhr.responseType = 'blob';
-        } catch(ex) {
+        }
+        catch(ex) {
             console.warn('浏览器Ajax不支持指定blob响应类型');
         }
         //缓存请求对象（防止重复调用）
@@ -656,7 +679,8 @@ function Downloader(options) {
                         type: 'error',
                         message: errMsg
                     });
-                } else {
+                }
+                else {
                     console.error(errMsg);
                 }
             }
@@ -675,7 +699,8 @@ function Downloader(options) {
                         type: 'warn',
                         message: wrnMsg
                     });
-                } else {
+                }
+                else {
                     console.warn(wrnMsg);
                 }
             }
@@ -694,7 +719,8 @@ function Downloader(options) {
                         type: 'error',
                         message: errMsg
                     });
-                } else {
+                }
+                else {
                     console.error(errMsg);
                 }
             }
@@ -711,7 +737,8 @@ function Downloader(options) {
             //
             if(_progressHandler) {
                 _progressHandler(info);
-            } else {
+            }
+            else {
                 console.log(info);
             }
         };
@@ -736,7 +763,8 @@ function Downloader(options) {
                         info.type = 2;
                         info.message = '下载完毕';
                     }
-                } else if(info.loaded == 0) {
+                }
+                else if(info.loaded == 0) {
                     info.type = 0;
                     info.message = '下载开始';
                 }
@@ -744,7 +772,8 @@ function Downloader(options) {
             //
             if(_progressHandler) {
                 _progressHandler(info);
-            } else {
+            }
+            else {
                 console.log(info);
             }
         };
@@ -792,7 +821,8 @@ function Downloader(options) {
                         type: 'error',
                         message: errMsg
                     });
-                } else {
+                }
+                else {
                     console.error(errMsg);
                 }
             }
@@ -816,7 +846,7 @@ function Downloader(options) {
             if(this.readyState !== 4) { //this.DONE
                 if(this.readyState == 2) { //this.HEADERS_RECEIVED
                     if(this.status == 200) {
-                        var rspFileName = null;//从响应得到的文件名称
+                        var rspFileName = null; //从响应得到的文件名称
                         //
                         //console.log('-- response headers --');
                         //console.log(this.getAllResponseHeaders());
@@ -825,10 +855,11 @@ function Downloader(options) {
                         if(_fileNameHeader && allHeaderStr.indexOf(_fileNameHeader.toLowerCase()) != -1) {
                             try { //从自定义响应头获取文件名
                                 rspFileName = this.getResponseHeader(_fileNameHeader);
-                                if(rspFileName) {//解码
+                                if(rspFileName) { //解码
                                     rspFileName = decodeURI(rspFileName);
                                 }
-                            } catch(ex) {
+                            }
+                            catch(ex) {
                                 console.warn(ex);
                             }
                         }
@@ -839,7 +870,7 @@ function Downloader(options) {
                             rspFileName = parseFileNameFromContentDisposition(cpStr);
                         }
                         //
-                        if(rspFileName) {//以响应的文件名为主
+                        if(rspFileName) { //以响应的文件名为主
                             _fileName = rspFileName;
                         }
                         else if(!_fileName) { //3 从url解析文件名
@@ -861,7 +892,7 @@ function Downloader(options) {
             if(this.status == 200) {
                 var result = {
                     type: 'info',
-                    message: '文件下载完毕',
+                    message: '文件下载完毕'
                 };
                 result.data = {
                     fileName: _fileName,
@@ -870,7 +901,8 @@ function Downloader(options) {
                 //
                 if(_doneHandler) {
                     _doneHandler(result);
-                } else {
+                }
+                else {
                     console.warn('--- 未设置下载结果处理函数 ---');
                     console.log(result);
                 }
@@ -904,7 +936,8 @@ function Downloader(options) {
         }
         if(_method == 'GET') {
             xhr.send();
-        } else {
+        }
+        else {
             if(_contentType == 'form') {
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 var formData = null;
@@ -925,7 +958,8 @@ function Downloader(options) {
                 else {
                     xhr.send(formData);
                 }
-            } else {
+            }
+            else {
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 //
                 var json = JSON.encode(_data || {});
@@ -943,11 +977,41 @@ function Downloader(options) {
         if(_xhr != null) {
             try {
                 _xhr.abort();
-            } catch(ex) {
+            }
+            catch(ex) {
                 console.log(ex);
             }
         }
-    }
+    };
+    //
+    this.destroy = function () {
+        this.abort();
+        //
+        _destroyed = true;
+        //
+        if(_xhr != null) {
+            delete _xhr.onerror;
+            delete _xhr.onabort;
+            delete _xhr.ontimeout;
+            delete _xhr.onloadstart;
+            delete _xhr.onprogress;
+            delete _xhr.onload;
+            delete _xhr.onloadend;
+            delete _xhr.onreadystatechange;
+        }
+        _xhr = null;
+        //
+        _header = null;
+        _params = null;
+        _data = null;
+        _doneHandler = null;
+        _failHandler = null;
+        _progressHandler = null;
+        //
+        THIS = null;
+        //
+        console.trace('Downloader destroied');
+    };
 }
 
 Downloader.downloadHtmlAsXls = function (htmlContent, fileName, style) {
@@ -963,7 +1027,8 @@ Downloader.downloadHtmlAsXls = function (htmlContent, fileName, style) {
 
     if(window.navigator && window.navigator.msSaveBlob) { //IE
         window.navigator.msSaveBlob(blob, fileName);
-    } else { //非IE
+    }
+    else { //非IE
         var tmpLink = document.createElement('A');
         document.body.appendChild(tmpLink);
         tmpLink.style = 'display: none';

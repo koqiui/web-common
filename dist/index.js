@@ -7,8 +7,6 @@ var moduleName = 'WC';
 module.exports = {
     moduleName: moduleName,
     //
-    Lodash: require('lodash'),
-
     Utils: require('./utils'),
     Ajax: require('./ajax'),
     Routes: require('./routes'),

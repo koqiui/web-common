@@ -93,7 +93,8 @@ function isPlainObject(obj, bLooseCheck) {
 
     if(bLooseCheck === true) {
         return true;
-    } else {
+    }
+    else {
         var key;
         for(key in obj) {
             // just pass
@@ -111,7 +112,8 @@ function isEmptyObject(obj, ignorePropertyPrefix) {
                 return false;
             }
         }
-    } else {
+    }
+    else {
         for(var name in obj) {
             return false;
         }
@@ -165,9 +167,11 @@ function trim(str, exMode) {
 function __strEql(valX, valY) {
     if(valX == null) {
         return valY == null;
-    } else if(valY == null) {
+    }
+    else if(valY == null) {
         return valX == null;
-    } else {
+    }
+    else {
         return toStr(valX) === toStr(valY);
     }
 }
@@ -186,7 +190,8 @@ function strEql(val /* , chkVal1, chkVal2,... */) {
                 return true;
             }
         }
-    } else {
+    }
+    else {
         chkCount++;
         for(i = 1; i < chkCount; i++) {
             if(__strEql(val, arguments[i])) {
@@ -235,8 +240,8 @@ function replace(srcStr, what, byWhat) {
     if(byWhat == null) {
         byWhat = "";
     }
-    var tmpStr = srcStr.split(what);
-    return tmpStr.join(byWhat);
+    var tmpStrs = srcStr.split(what);
+    return tmpStrs.join(byWhat);
 }
 
 function left(str, length) {
@@ -246,7 +251,8 @@ function left(str, length) {
     var strLen = str.length;
     if(length >= strLen) {
         return str;
-    } else {
+    }
+    else {
         return str.substring(0, length);
     }
 }
@@ -258,7 +264,8 @@ function right(str, length) {
     var strLen = str.length;
     if(length >= strLen) {
         return str;
-    } else {
+    }
+    else {
         return str.substring(strLen - length);
     }
 }
@@ -382,6 +389,7 @@ String.prototype.contains = function (chkStr, bIgnoreCase) {
 
 // 形如{abc.dedss[0].zzz.(aaa.xxx).aaa}的字符串key路径
 // [abc , dedss[0], zzz, aaa.xxx, aaa]
+//{prop1 . subprop [6] .xx. (a.b) . c}
 function __extractTemplateHolderParts(holderStr) {
     var holder = holderStr.substring(1, holderStr.length - 1).trim();
     var holderLen = holder.length;
@@ -396,44 +404,80 @@ function __extractTemplateHolderParts(holderStr) {
                 inKh = true;
                 tmpPart = tmpPart.trim();
                 if(tmpPart !== "") {
-                    holderParts.add(tmpPart);
+                    holderParts.push(tmpPart);
                     tmpPart = "";
                 }
-            } else {
+            }
+            else {
                 tmpPart += tmpChar;
             }
-        } else if(tmpChar == ")") {
+        }
+        else if(tmpChar == ")") {
             if(inKh) {
                 tmpPart = tmpPart.trim();
                 if(tmpPart !== "") {
-                    holderParts.add(tmpPart);
+                    holderParts.push(tmpPart);
                     tmpPart = "";
                 }
                 inKh = false;
-            } else {
+            }
+            else {
                 tmpPart += tmpChar;
             }
-        } else if(tmpChar == ".") {
+        }
+        else if(tmpChar == ".") {
             if(inKh) {
                 tmpPart += tmpChar;
-            } else {
+            }
+            else {
                 tmpPart = tmpPart.trim();
                 if(tmpPart !== "") {
-                    holderParts.add(tmpPart);
+                    holderParts.push(tmpPart);
                     tmpPart = "";
                 }
             }
-        } else {
+        }
+        else {
             tmpPart += tmpChar;
         }
         tmpIndex++;
     }
     tmpPart = tmpPart.trim();
     if(tmpPart !== "") {
-        holderParts.add(tmpPart);
+        holderParts.push(tmpPart);
         tmpPart = "";
     }
     return holderParts;
+}
+
+function __parse_format_holder_part(holderPart) {
+    //console.log(holderPart);
+    var partInfo = {};
+    var index1 = holderPart.indexOf('[');
+    if(index1 == -1) {
+        partInfo.name = holderPart.trim();
+    }
+    else {
+        var index2 = holderPart.indexOf(']', index1 + 1);
+        if(index2 == -1) {
+            partInfo.name = holderPart.trim();
+        }
+        else {
+            partInfo.name = holderPart.substring(0, index1).trim();
+            var index = holderPart.substring(index1 + 1, index2).trim();
+            if(index.length > 0) {
+                partInfo.index = ParseInt(index);
+            }
+        }
+    }
+    return partInfo;
+}
+
+//在 for 循环中为append构建新追加的字符串，用法：
+//循环外初始化 var result = '';
+//循环里追加  result += appendStrFor(i, ',', newStr);
+function appendStrFor(index, joinStr, newStr) {
+    return index == 0 ? newStr : joinStr + newStr;
 }
 
 /**
@@ -457,33 +501,37 @@ function format(template) {
         xReg = /\{(\(?[a-zA-Z_]+(\.[a-zA-Z_]+)*\)?)+(\.(\(?[a-zA-Z_]+(\.[a-zA-Z_]+)*\)?)|\[\d+\])*\}?/mg;
         resultStr = template.replace(xReg, function (match) {
             var holderParts = __extractTemplateHolderParts(match);
-            var param = null;
-            var curKey = "";
+            //console.log(holderParts.join(', ')); //
+            var theVal = null;
             for(var i = 0, len = holderParts.length; i < len; i++) {
-                var tmpPart = holderParts[i];
-                if(tmpPart.indexOf(".") != -1) {
-                    curKey += "[\"" + tmpPart + "\"]";
-                } else {
-                    curKey += "." + tmpPart;
+                var tmpPart = __parse_format_holder_part(holderParts[i]);
+                if(i == 0) {
+                    theVal = params[tmpPart.name];
                 }
-                param = eval("params" + curKey);
-                if(param == null) {
+                else {
+                    theVal = theVal[tmpPart.name];
+                }
+                if(tmpPart.index != null && theVal != null) {//取索引
+                    theVal = theVal[tmpPart.index];
+                }
+                if(theVal == null) {
                     break;
                 }
             }
-            // alert(match +" : "+param);
-            return "" + (param == null ? nullAs : param);
+            return "" + (theVal == null ? nullAs : theVal);
         });
-    } else {
+    }
+    else {
         xReg = /\{\d+}?/mg;
         resultStr = template.replace(xReg, function (m) {
             var holder = m.substring(1, m.length - 1).trim();
             var index = parseInt(holder, 10);
             if(index >= 0 && index < paramCount) {
-                var param = params[index];
-                // alert(holder +" : "+param);
-                return "" + (param == null ? nullAs : param);
-            } else {
+                var theVal = params[index];
+                // alert(holder +" : "+theVal);
+                return "" + (theVal == null ? nullAs : theVal);
+            }
+            else {
                 return m;
             }
         });
@@ -554,12 +602,13 @@ function guessLineSeperator(str) {
         return null;
     }
     //注意：一行以上才能确定换行符是什么
-    if(/\r\n/m.test(str)) {//CRLF : Windows
+    if(/\r\n/m.test(str)) { //CRLF : Windows
         return __line__separators.win;
     }
-    else if(/\n/m.test(str)) {//LF : UNIX
+    else if(/\n/m.test(str)) { //LF : UNIX
         return __line__separators.lnx;
-    } else if(/\r/m.test(str)) {//CR : Macintosh
+    }
+    else if(/\r/m.test(str)) { //CR : Macintosh
         return __line__separators.mac;
     }
     //否则：只有一行则无法确定换行符
@@ -595,7 +644,8 @@ var __escapeStrReg = {
 function __escapeJsonStr(src, useSingleQutoe) {
     if(src == null || src === "") {
         return src;
-    } else {
+    }
+    else {
         useSingleQutoe = useSingleQutoe === true;
         // backslash
         __escapeStrReg.backslash.lastIndex = -1;
@@ -604,7 +654,8 @@ function __escapeJsonStr(src, useSingleQutoe) {
             // quote
             __escapeStrReg.quote.lastIndex = -1;
             src = src.replace(__escapeStrReg.quote, "\\'");
-        } else {
+        }
+        else {
             // dblquote
             __escapeStrReg.dblquote.lastIndex = -1;
             src = src.replace(__escapeStrReg.dblquote, '\\"');
@@ -783,7 +834,8 @@ function StringTokenizer(srcStr, delim, returnDelims) {
             if(returnDelims) {
                 allTokens.push(tmpChar);
             }
-        } else {
+        }
+        else {
             //正常字符
             if(!tmpTokenStarted) {
                 tmpTokenStarted = true;
@@ -840,7 +892,8 @@ function parseDimen(dim) {
     if(isNum(dim)) {
         ret.value = dim;
         ret.unit = "px";
-    } else if(isString(dim)) {
+    }
+    else if(isString(dim)) {
         var rawNum = ParseFloat(dim);
         if(isNum(rawNum)) {
             ret.value = rawNum;
@@ -915,7 +968,8 @@ Array.prototype.flatten = function () {
             for(var j = 0, jlen = els.length; j < jlen; j++) {
                 retArray[tmpIndex++] = els[j];
             }
-        } else {
+        }
+        else {
             retArray[tmpIndex++] = el;
         }
     }
@@ -960,7 +1014,8 @@ Array.prototype.nextCycleElement = function (vItem) {
     var index = this.indexOf(vItem);
     if(index == -1) {
         index = 0;
-    } else {
+    }
+    else {
         index++;
     }
     return this[index % this.length];
@@ -969,7 +1024,8 @@ Array.prototype.nextCycleElement = function (vItem) {
 Array.prototype.first = function () {
     if(this.length > 0) {
         return this[0];
-    } else {
+    }
+    else {
         return undefined;
     }
 };
@@ -977,7 +1033,8 @@ Array.prototype.first = function () {
 Array.prototype.last = function () {
     if(this.length > 0) {
         return this[this.length - 1];
-    } else {
+    }
+    else {
         return undefined;
     }
 };
@@ -997,7 +1054,8 @@ Array.prototype.nearest = function (vItem, compFunc) {
             var tmpItem = tmpArray[i];
             if(compFunc(vItem, tmpItem) >= 0) {
                 lastMatch = tmpItem;
-            } else {
+            }
+            else {
                 break;
             }
         }
@@ -1009,11 +1067,11 @@ Array.prototype.nearest = function (vItem, compFunc) {
 };
 
 /*------------------------------------------------------------------------------
- * JavaScript zArray Library
- * Version 1.1
- * by Nicholas C. Zakas, http://www.nczonline.net/
- * Copyright (c) 2004-2005 Nicholas C. Zakas. All Rights Reserved.
- */
+     * JavaScript zArray Library
+     * Version 1.1
+     * by Nicholas C. Zakas, http://www.nczonline.net/
+     * Copyright (c) 2004-2005 Nicholas C. Zakas. All Rights Reserved.
+     */
 var __arrayMethodsToCheck = ["slice", "splice", "shift", "unshift"];
 
 /**
@@ -1125,7 +1183,8 @@ Array.prototype.indexOf = function (vItem, fromIndex, isFunc) {
     if(typeof fromIndex == "function") {
         isFunc = fromIndex;
         fromIndex = defaultIndex;
-    } else if(fromIndex == null || fromIndex < 0) {
+    }
+    else if(fromIndex == null || fromIndex < 0) {
         fromIndex = defaultIndex;
     }
     var i;
@@ -1135,7 +1194,8 @@ Array.prototype.indexOf = function (vItem, fromIndex, isFunc) {
                 return i;
             }
         }
-    } else {
+    }
+    else {
         for(i = fromIndex, len = this.length; i < len; i++) {
             if(this[i] == vItem) {
                 return i;
@@ -1202,18 +1262,20 @@ Array.prototype.lastIndexOf = function (vItem, fromIndex, isFunc) {
     if(typeof fromIndex == "function") {
         isFunc = fromIndex;
         fromIndex = defaultIndex;
-    } else if(fromIndex == null || fromIndex >= this.length) {
+    }
+    else if(fromIndex == null || fromIndex >= this.length) {
         fromIndex = defaultIndex;
     }
     //
     var i;
-    if(typeof(isFunc) == "function") {
+    if(typeof (isFunc) == "function") {
         for(i = fromIndex; i >= 0; i--) {
             if(isFunc(this[i], vItem, i)) {
                 return i;
             }
         }
-    } else {
+    }
+    else {
         for(i = fromIndex; i >= 0; i--) {
             if(this[i] == vItem) {
                 return i;
@@ -1250,7 +1312,8 @@ Array.prototype.pluck = function (propName) {
     var fnExec = null;
     if(typeof propName == 'function') {
         fnExec = propName;
-    } else {
+    }
+    else {
         fnExec = function (vItem) {
             return vItem == null ? undefined : vItem[propName];
         };
@@ -1299,7 +1362,8 @@ Array.prototype.some = function (fnTest, context, minCount) {
     if(typeof context == "number") {
         minCount = context || 1;
         context = __global;
-    } else {
+    }
+    else {
         minCount = minCount || 1;
         context = context || __global;
     }
@@ -1409,8 +1473,8 @@ Array.prototype._unshift = function () {
     eval("this.splice(0,0," + aArgs.join(",") + ")");
 };
 /*
- * Assign the necessary methods.
- */
+     * Assign the necessary methods.
+     */
 for(var i = 0, len = __arrayMethodsToCheck.length; i < len; i++) {
     var method = __arrayMethodsToCheck[i];
     if(Array.prototype[method] == null) {
@@ -1516,7 +1580,8 @@ Array.prototype.sum = function (fnEval, context) {
         fnEval = function (vItem) {
             return vItem;
         };
-    } else {
+    }
+    else {
         initVal = fnEval();
     }
     var result = initVal;
@@ -1551,7 +1616,8 @@ Array.prototype.where = function (filterProps) {
         // 按列值完全比较
         if(vItem == proxyProps) {
             return true;
-        } else if(proxyProps != null && vItem != null) {
+        }
+        else if(proxyProps != null && vItem != null) {
             for(var i = 0; i < keyCount; i++) {
                 var key = proxyKeys[i];
                 if(proxyProps[key] != vItem[key]) {
@@ -1559,7 +1625,8 @@ Array.prototype.where = function (filterProps) {
                 }
             }
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     };
@@ -1577,7 +1644,8 @@ function sortArray() {
     }
     try {
         xArray = xArray.clone();
-    } catch(ex) {
+    }
+    catch(ex) {
         //
     }
     var compFunc = null;
@@ -1588,7 +1656,8 @@ function sortArray() {
             if(args.length > 2 && typeof args[2] == "function") {
                 compFunc = args[2];
             }
-        } else if(typeof args[1] == "function") {
+        }
+        else if(typeof args[1] == "function") {
             compFunc = args[1];
             if(args.length > 2 && typeof args[2] == "boolean") {
                 bDesc = args[2];
@@ -1665,13 +1734,17 @@ function moveArrayElementsAt(xArray, indices, where) {
     var offset = -1;
     if(where === "first") {
         offset = 0 - minIndex;
-    } else if(where === "prev") {
+    }
+    else if(where === "prev") {
         offset = -1;
-    } else if(where === "next") {
+    }
+    else if(where === "next") {
         offset = 1;
-    } else if(where === "last") {
+    }
+    else if(where === "last") {
         offset = (len - 1) - maxIndex;
-    } else {
+    }
+    else {
         return null;
     }
     //
@@ -1716,7 +1789,7 @@ Array.prototype.move = function (indices, where) {
 // 不改变当前数组，返回元素不重复的新数组
 Array.prototype.unique = function (eqlFunc) {
     var retArray = [];
-    if(typeof(eqlFunc) != "function") {
+    if(typeof (eqlFunc) != "function") {
         eqlFunc = function (A, B) {
             return A == B;
         };
@@ -1734,7 +1807,7 @@ Array.prototype.unique = function (eqlFunc) {
 // 查找重复的元素，返回重复元素组成的新数组
 Array.prototype.findDuplicated = function (eqlFunc) {
     var retArray = [];
-    if(typeof(eqlFunc) != "function") {
+    if(typeof (eqlFunc) != "function") {
         eqlFunc = function (A, B) {
             return A == B;
         };
@@ -1746,7 +1819,8 @@ Array.prototype.findDuplicated = function (eqlFunc) {
         var tmpItem = this[i];
         if(uniqueOnes.indexOf(tmpItem, 0, eqlFunc) == -1) {
             uniqueOnes[k++] = tmpItem;
-        } else {
+        }
+        else {
             retArray[m++] = tmpItem;
         }
     }
@@ -1760,7 +1834,8 @@ function makeCsvLine(fields, minCols, nullAsEmpty) {
     //
     if(typeof minCols == 'boolean') {
         nullAsEmpty = minCols;
-    } else if(isInt(minCols) && fields.length < minCols) {
+    }
+    else if(isInt(minCols) && fields.length < minCols) {
         for(var i = fields.length; i < minCols; i++) {
             fields[i] = null;
         }
@@ -1775,7 +1850,8 @@ function makeCsvLine(fields, minCols, nullAsEmpty) {
         var field = fields[i];
         if(field == null) {
             sb.append(nullAsEmpty ? "" : "null");
-        } else {
+        }
+        else {
             var sb2 = String.builder();
             var needQuoted = false;
             var chCount = field.length;
@@ -1784,16 +1860,19 @@ function makeCsvLine(fields, minCols, nullAsEmpty) {
                 sb2.append(ch);
                 if(ch == '\r' || ch == '\n') {
                     needQuoted = true;
-                } else if(ch == ',') {
+                }
+                else if(ch == ',') {
                     needQuoted = true;
-                } else if(ch == '"') {
+                }
+                else if(ch == '"') {
                     needQuoted = true;
                     sb2.append('"');
                 }
             }
             if(needQuoted) {
                 sb.append('"').append(sb2).append('"');
-            } else {
+            }
+            else {
                 sb.append(sb2);
             }
         }
@@ -1818,7 +1897,8 @@ function parseCsvLine(lineStr) {
                 var field = null;
                 if(fieldLen > 1 && sb.charAt(0) == '\"' && sb.charAt(fieldLen - 1) == '\"') {
                     field = sb.toString().substring(1, fieldLen - 1);
-                } else {
+                }
+                else {
                     field = sb.toString();
                 }
                 if(field.indexOf('\"') > -1) {
@@ -1827,7 +1907,8 @@ function parseCsvLine(lineStr) {
                 results.add(field);
                 sb = String.builder();
                 lastIsSepChar = true;
-            } else {
+            }
+            else {
                 for(var i = 0; i < tockenLen; i++) {
                     var ch = tocken.charAt(i);
                     if(ch == '\"') {
@@ -1840,12 +1921,14 @@ function parseCsvLine(lineStr) {
         }
         if(lastIsSepChar) {
             results.add("");
-        } else {
+        }
+        else {
             var fieldLen = sb.length();
             var field = null;
             if(fieldLen > 1 && sb.charAt(0) == '\"' && sb.charAt(fieldLen - 1) == '\"') {
                 field = sb.toString.substring(1, fieldLen - 1);
-            } else {
+            }
+            else {
                 field = sb.toString();
             }
             if(field.indexOf('\"') > -1) {
@@ -1883,7 +1966,8 @@ function toPaginatedData(dataRows, pagination, sortItem) {
         }
         if(sortOrder != null && sortOrder.startsWith("DESC")) {
             sortOrder = "DESC";
-        } else {
+        }
+        else {
             sortOrder = "ASC"
         }
         //
@@ -1894,15 +1978,19 @@ function toPaginatedData(dataRows, pagination, sortItem) {
             if(val1 == null) {
                 if(val2 == null) {
                     return 0;
-                } else {
+                }
+                else {
                     return -1 * retSign;
                 }
-            } else {
+            }
+            else {
                 if(val2 == null) {
                     return 1 * retSign;
-                } else if(val1 == val2) {
+                }
+                else if(val1 == val2) {
                     return 0;
-                } else {
+                }
+                else {
                     return val1 > val2 ? 1 * retSign : -1 * retSign;
                 }
             }
@@ -2000,7 +2088,8 @@ function copyByFilter(src, dest, propFilter, nameOrIndex, parentNameOrIndex, par
                 dest.push(tmpSrcVal);
             }
         }
-    } else if(isPlainObject(src)) {
+    }
+    else if(isPlainObject(src)) {
         for(var key in src) {
             var tmpSrcVal = src[key];
             tmpSrcVal = propFilter(key, tmpSrcVal, nameOrIndex, src);
@@ -2008,7 +2097,8 @@ function copyByFilter(src, dest, propFilter, nameOrIndex, parentNameOrIndex, par
                 dest[key] = tmpSrcVal;
             }
         }
-    } else {
+    }
+    else {
         dest = (nameOrIndex != null) ? propFilter(nameOrIndex, src, parentNameOrIndex, parent) : src;
     }
     return dest;
@@ -2032,7 +2122,8 @@ function declare(namespace) {
         if(eval('(typeof ' + nsName + ' == "undefined")')) {
             if(i === 0) {
                 isInBrowser ? eval("var " + nsName + " = window." + nsName + " = {};") : eval("var " + nsName + " = global." + nsName + " = {};");
-            } else {
+            }
+            else {
                 eval(nsName + " = {};");
             }
         }
@@ -2065,7 +2156,8 @@ function isLeapYear(chkYear) {
     var theYear = null;
     if(isDate(chkYear)) {
         chkYear = chkYear.getFullYear();
-    } else {
+    }
+    else {
         theYear = ParseInt(chkYear);
     }
     if(!isNum(theYear)) {
@@ -2143,7 +2235,8 @@ Date.prototype.format = function (format) {
     /* yyyy-MM-dd HH:mm:ss.SSS */
     if(format == null) {
         format = "yyyy-MM-dd";
-    } else {
+    }
+    else {
         format = replace(format, "'", "");
     }
     var result = format.replace(/yyyy/, this.getFullYear());
@@ -2184,7 +2277,8 @@ if(Date._parse == null) {
         if(strictMode) {
             dateStr = dateStr.replace(/\//g, "-");
             return Date._parse(dateStr);
-        } else {
+        }
+        else {
             dateStr = dateStr.replace(/T/g, ' '); //iso
             dateStr = dateStr.replace(/年/g, '-');
             dateStr = dateStr.replace(/月/g, '-');
@@ -2203,10 +2297,12 @@ if(Date._parse == null) {
                 if(!hasTimeParts) { //没有时间
                     dateStr += ' 00:00:00';
                 }
-            } else { //没有日期
+            }
+            else { //没有日期
                 if(hasTimeParts) {
                     dateStr = '1970-01-01 ' + dateStr;
-                } else {
+                }
+                else {
                     return null;
                 }
             }
@@ -2217,10 +2313,12 @@ if(Date._parse == null) {
                 dateStr = dateStr.substring(0, msIndex);
                 if(isNum(ms) && ms > 0) {
                     return Date._parse(dateStr) + ms;
-                } else {
+                }
+                else {
                     return Date._parse(dateStr);
                 }
-            } else {
+            }
+            else {
                 return Date._parse(dateStr);
             }
         }
@@ -2231,11 +2329,14 @@ if(Date._parse == null) {
 Date.parseAsDate = function (dateStr) {
     if(!dateStr) {
         return null;
-    } else if(isDate(dateStr)) {
+    }
+    else if(isDate(dateStr)) {
         return dateStr;
-    } else if(isNum(dateStr)) {
+    }
+    else if(isNum(dateStr)) {
         return new Date(dateStr);
-    } else {
+    }
+    else {
         return new Date(Date.parse(dateStr));
     }
 };
@@ -2252,7 +2353,8 @@ Date.format = function (dateOrStr, format) {
     var date = Date.parseAsDate(dateOrStr);
     if(date) {
         return date.isValid() ? date.format(format || "yyyy-MM-dd") : null;
-    } else {
+    }
+    else {
         return null;
     }
 };
@@ -2270,7 +2372,8 @@ if(Date.prototype._toString == null) {
     Date.prototype.toString = function (format) {
         if(typeof format == "undefined") {
             return this._toString();
-        } else {
+        }
+        else {
             return this.format(format);
         }
     };
@@ -2448,10 +2551,12 @@ function calcDiffHours(dtFrom, dtTo, dayValve) {
     if(toDate >= fromDate) {
         if(diffDays >= dayValve) {
             diffHours = diffHours - diffDays * 24;
-        } else {
+        }
+        else {
             diffDays = 0;
         }
-    } else {
+    }
+    else {
         diffDays = diffHours = 0;
     }
     //
@@ -2468,28 +2573,34 @@ function makeDiffHoursStr(dtFrom, dtTo, dayValve) {
     var diffHoursStr;
     if(diff.days != 0 && diff.hours != 0) {
         diffHoursStr = (diff.days > 0) ? diff.days + "天" : diff.hours + "小时";
-    } else {
+    }
+    else {
         diffHoursStr = "0天"
     }
     return diffHoursStr;
 }
 
-//
-function getObjAttr(_objToEval, attrName) {
-    var tmpAttrName = __escapeJsonStr(attrName);
-    var evalStr = '( _objToEval["' + trim(tmpAttrName) + '"] )';
-    // alert(evalStr);
-    return eval(evalStr);
-}
 
 // ------------
 function __parseJson(jsonStr) {
-    try {
-        return eval('(' + jsonStr + ')');
-    } catch(exp) {
-        console.warn(exp);
-        throw new TypeError("JSON parse error !");
+    if(jsonStr == null || jsonStr == '') {
+        return null;
     }
+    try {
+        if(JSON.__parse) {
+            try {
+                return JSON.__parse(jsonStr);
+            }
+            catch(exp) {
+                //
+            }
+        }
+        return eval('(' + jsonStr + ')');
+    }
+    catch(exp) {
+        console.error(exp);
+    }
+    return null;
 }
 
 function __stringifyJson(obj) {
@@ -2497,24 +2608,31 @@ function __stringifyJson(obj) {
     var Callee = arguments.callee;
     if(obj == null) {
         return 'null';
-    } else if(isBoolean(obj)) {
+    }
+    else if(isBoolean(obj)) {
         return obj.toString();
-    } else if(isNumber(obj)) {
+    }
+    else if(isNumber(obj)) {
         return isFinite(obj) ? obj.toString() : 'null';
-    } else if(isString(obj)) {
+    }
+    else if(isString(obj)) {
         return dblQuote + __escapeJsonStr(obj) + dblQuote;
-    } else if(isDate(obj)) {
+    }
+    else if(isDate(obj)) {
         return obj.isValid() ? dblQuote + obj.format('yyyy-MM-dd HH:mm:ss') + dblQuote : 'null';
-    } else if(isArray(obj)) {
+    }
+    else if(isArray(obj)) {
         var count = obj.length;
         var elemStrs = [];
         for(var i = 0; i < count; i++) {
             elemStrs[i] = Callee(obj[i]);
         }
         return "[" + elemStrs.join(", ") + "]";
-    } else if(typeof(obj.toJSON) == "function") {
+    }
+    else if(typeof (obj.toJSON) == "function") {
         return obj.toJSON();
-    } else // if(isPlainObject(obj)) //Strict Check ...
+    }
+    else // if(isPlainObject(obj)) //Strict Check ...
     {
         var attrStrs = [];
         var index = 0;
@@ -2530,7 +2648,7 @@ function __stringifyJson(obj) {
 }
 
 //
-var __isJSONDefined = typeof(JSON) !== "undefined" && isFunction(JSON.parse) && isFunction(JSON.stringify);
+var __isJSONDefined = typeof (JSON) !== "undefined" && isFunction(JSON.parse) && isFunction(JSON.stringify);
 
 // alert("JSON already defined ? "+__isJSONDefined);
 
@@ -2545,8 +2663,11 @@ if(!isJSONDefined()) {
     JSON.stringify = __stringifyJson;
 }
 else {
-    //强制使用eval（fix 属性无效的导致的解析失败）
-    JSON.parse = __parseJson;
+    //兼容非标准json
+    if(JSON.__parse == null) {
+        JSON.__parse = JSON.parse;
+        JSON.parse = __parseJson;
+    }
 }
 
 if(isFunction(JSON.parse)) {
@@ -2580,7 +2701,8 @@ function merge(original, overwrite, includeFunc) {
     //
     if(overwrite == null) {
         original = null;
-    } else if(isPlainObject(overwrite)) {
+    }
+    else if(isPlainObject(overwrite)) {
         for(var key in overwrite) {
             if(hasOwnProperty.call(overwrite, key)) {
                 var orgVal = original[key];
@@ -2588,15 +2710,18 @@ function merge(original, overwrite, includeFunc) {
                 original[key] = merge(orgVal, value);
             }
         }
-    } else if(isArray(overwrite)) {
+    }
+    else if(isArray(overwrite)) {
         original = [];
         var items = overwrite;
         for(var i = 0, c = items.length; i < c; i++) {
             original[i] = merge({}, items[i]);
         }
-    } else if(typeof overwrite == "function" && includeFunc) {
+    }
+    else if(typeof overwrite == "function" && includeFunc) {
         original = overwrite;
-    } else {
+    }
+    else {
         original = overwrite;
     }
     //
@@ -2675,9 +2800,11 @@ function KeyMap(name) {
         var argCount = arguments.length;
         if(argCount == 0) {
             return __data;
-        } else if(argCount == 1) {
+        }
+        else if(argCount == 1) {
             return this.get(key);
-        } else if(argCount == 2) {
+        }
+        else if(argCount == 2) {
             this.set(key, value);
         }
     };
@@ -2851,7 +2978,8 @@ function makeCrossCombsWith(srcCombs, key, values) {
             json[key + ""] = values[j];
             retCombs.add(json);
         }
-    } else {
+    }
+    else {
         for(var i = 0; i < srcLen; i++) {
             var srcJson = srcCombs[i];
             for(var j = 0, c = values.length; j < c; j++) {
@@ -2908,7 +3036,8 @@ function LimitedQueue(limitSize) {
                 dataList[i] = dataList[i - 1];
             }
             dataList[0] = el;
-        } else {
+        }
+        else {
             dataList.unshift(el);
             if(dataList.length > dataSize) {
                 dataList.length = dataSize;
@@ -2933,7 +3062,8 @@ function syncDataBy(jsonData, keyValSetter) {
         if(hasOwnProperty.call(jsonData, key)) {
             try {
                 keyValSetter(key, jsonData[key], jsonData);
-            } catch(ex) {
+            }
+            catch(ex) {
                 //
             }
         }
@@ -2967,15 +3097,17 @@ function compareArrays(theArray, refArray, isFunc, eqlFunc) {
     var theCount = theArray.length;
     if(refCount === 0) {
         result.more = theArray;
-    } else if(theCount === 0) {
+    }
+    else if(theCount === 0) {
         result.less = refArray;
-    } else {
-        if(typeof(isFunc) != "function") {
+    }
+    else {
+        if(typeof (isFunc) != "function") {
             isFunc = function (A, B) {
                 return A == B;
             };
         }
-        if(typeof(eqlFunc) != "function") {
+        if(typeof (eqlFunc) != "function") {
             eqlFunc = isFunc;
         }
         //
@@ -2994,19 +3126,22 @@ function compareArrays(theArray, refArray, isFunc, eqlFunc) {
                     theObj = theArray[theIndex];
                     if(eqlFunc(theObj, refObj)) {
                         same[same.length] = theObj;
-                    } else {
+                    }
+                    else {
                         diff[diff.length] = theObj;
                     }
                     theArray.removeAt(theIndex);
                     refArray.removeAt(i);
                     i--;
                     j--;
-                } else {
+                }
+                else {
                     less[less.length] = refObj;
                     refArray.removeAt(i);
                     i--;
                 }
-            } else {
+            }
+            else {
                 more[more.length] = theObj;
                 theArray.removeAt(j);
                 j--;
@@ -3027,36 +3162,41 @@ function compareArrays(theArray, refArray, isFunc, eqlFunc) {
  */
 function compareRecordsById(newRecords, oldRecords, idColNameOrIdEqlFunc, recEqlFunc) {
     var idEqlFunc = null;
-    if(typeof(idColNameOrIdEqlFunc) == "function") {
+    if(typeof (idColNameOrIdEqlFunc) == "function") {
         idEqlFunc = idColNameOrIdEqlFunc;
-    } else {
+    }
+    else {
         var idColName = idColNameOrIdEqlFunc;
-        if(typeof(idColName) == "string") {
+        if(typeof (idColName) == "string") {
             if((idColName = idColName.trim()) === "") {
                 idColName = "id";
             }
-        } else {
+        }
+        else {
             idColName = "id";
         }
         idEqlFunc = function (record1, record2) {
             // 按 idColName 标识两个列表中的同一条记录
             if(record1 == record2) {
                 return true;
-            } else if(record1 != null && record2 != null) {
+            }
+            else if(record1 != null && record2 != null) {
                 return record1[idColName] == record2[idColName];
-            } else {
+            }
+            else {
                 return false;
             }
         };
     }
     //
     // var hasOwnProperty = Object.hasOwnProperty;
-    if(typeof(recEqlFunc) != "function") {
+    if(typeof (recEqlFunc) != "function") {
         recEqlFunc = function (record1, record2) {
             // 按列值完全比较
             if(record1 == record2) {
                 return true;
-            } else if(record1 != null && record2 != null) {
+            }
+            else if(record1 != null && record2 != null) {
                 var colName;
                 for(colName in record1) {
                     // if(hasOwnProperty.call(record1, colName)) {
@@ -3073,7 +3213,8 @@ function compareRecordsById(newRecords, oldRecords, idColNameOrIdEqlFunc, recEql
                     // }
                 }
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
         };
@@ -3097,7 +3238,8 @@ function getClassOf(obj) {
     }
     if(isFunction(obj)) {
         return Function;
-    } else {
+    }
+    else {
         return obj.constructor;
     }
 }
@@ -3289,10 +3431,12 @@ function isIdentity(code, checksum) {
     if(!code || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(code)) {
         // console.log("身份证号格式错误");
         return false;
-    } else if(!__cityCodeForIdentity[code.substr(0, 2)]) {
+    }
+    else if(!__cityCodeForIdentity[code.substr(0, 2)]) {
         //console.log("省份编码错误");
         return false;
-    } else {
+    }
+    else {
         // 18位身份证需要验证最后一位校验位
         if(code.length == 18 && checksum) {
             code = code.split('');
@@ -3338,39 +3482,6 @@ function checkPassword(chkStr, strict) {
 }
 
 // ------------------------- 浏览器页面专用 -------------------------
-var __console = null;
-if(typeof console == 'undefined') {
-    __console = {
-        // 防止浏览器不支持时报错
-        log: function () {
-        },
-        trace: function () {
-        },
-        debug: function () {
-        },
-        info: function () {
-        },
-        warn: function () {
-        },
-        error: function () {
-        },
-        assert: function () {
-        },
-        dir: function () {
-        },
-        time: function () {
-        },
-        timeEnd: function () {
-        }
-    };
-}
-else {
-    __console = console;
-}
-
-var console = __console;
-
-//
 function getDomById(id) {
     return document.getElementById(id);
 }
@@ -3459,13 +3570,15 @@ function playAudio(dataOrUrl, useProxy) {
         tmpAudio.onended = function () {
             tmpAudio.remove();
         };
-    } else {
+    }
+    else {
         tmpAudio = new Audio();
     }
     tmpAudio.src = dataOrUrl;
     try {
         tmpAudio.play();
-    } catch(ex) {
+    }
+    catch(ex) {
         console.error(ex);
     }
 }
@@ -3479,10 +3592,12 @@ function speakText(text, useProxy, failToDefaultAudio) {
         if(typeof makeTextAudioUrl == "function") {
             var textAudioUrl = makeTextAudioUrl(text, true);
             playAudio(textAudioUrl, true);
-        } else {
+        }
+        else {
             console.warn("没有找到 function makeTextAudioUrl(text, failToDefaultAudio) 的实现");
         }
-    } else {
+    }
+    else {
         // 创建一个 SpeechSynthesisUtterance的实例
         var newUtterance = new window.SpeechSynthesisUtterance();
         // 设置文本
@@ -3529,10 +3644,12 @@ function setPageUrl(url, target, beforeOpen) {
             };
         }
         dom.click();
-    } else {
+    }
+    else {
         if(target === true) {
             window.location.replace(url);
-        } else {
+        }
+        else {
             window.location.assign(url);
         }
     }
@@ -3556,7 +3673,8 @@ function __RepeatChecker() {
         cachedCodeTimeMap[uniqueCode] = curTime;
         if(lastTime == null) {
             return true;
-        } else {
+        }
+        else {
             if(typeof interval == "undefined") {
                 interval = defaultInterval;
             }
@@ -3613,7 +3731,8 @@ function CrudGuard(repeatable) {
         curStateText = '计划 ' + curCrud;
         if(reset) {
             console.log('重新 ' + curCrud);
-        } else {
+        }
+        else {
             console.log(curStateText);
         }
         //
@@ -3695,7 +3814,8 @@ function getHostWindow() {
         var hostWin = window.parent;
         if(hostWin != null && hostWin != window) {
             __cachedHostWin = hostWin.window;
-        } else {
+        }
+        else {
             __cachedHostWin = null;
         }
     }
@@ -3719,7 +3839,8 @@ function isIframePage() {
 function getWindowFrame() {
     if(hasHostWindow()) {
         return window.frameElement;
-    } else {
+    }
+    else {
         return null;
     }
 }
@@ -3770,7 +3891,8 @@ function parseUrl(url, toDecode) {
     toDecode = toDecode === true;
     if(typeof url == "undefined") {
         url = window.location.href;
-    } else if(typeof url == "boolean") {
+    }
+    else if(typeof url == "boolean") {
         toDecode = url;
         url = window.location.href;
     }
@@ -3789,7 +3911,8 @@ function parseUrl(url, toDecode) {
         result.host = portIndex != -1 ? serverPart.substring(0, portIndex) : serverPart;
         result.port = portIndex != -1 ? parseInt(serverPart.substring(portIndex + 1), 10) : 80;
         remainUrl = url.substring(slashIndex2);
-    } else {
+    }
+    else {
         remainUrl = url;
     }
     //
@@ -3810,7 +3933,8 @@ function parseUrl(url, toDecode) {
         }
         //
         remainUrl = remainUrl.substring(0, fragIndex);
-    } else {
+    }
+    else {
         result.url = remainUrl;
     }
     //
@@ -3883,7 +4007,8 @@ function concatUrlParams(baseUrl, params, toEncode) {
     var appendStr = "";
     if(typeof params == "string") {
         appendStr = params;
-    } else {
+    }
+    else {
         var hasOwnProperty = Object.hasOwnProperty;
         var paramStrs = [];
         var index = 0;
@@ -3901,19 +4026,23 @@ function concatUrlParams(baseUrl, params, toEncode) {
                     for(var i = 0; i < len; i++) {
                         if(toEncode) {
                             paramStrs[index++] = encodeURIComponent(attr) + "=" + encodeURIComponent(value[i]);
-                        } else {
+                        }
+                        else {
                             paramStrs[index++] = attr + "=" + value[i];
                         }
                     }
-                } else {
+                }
+                else {
                     if(isDate(value)) {
                         value = value.format('yyyy-MM-dd HH:mm:ss');
-                    } else if(isPlainObject(value)) {
+                    }
+                    else if(isPlainObject(value)) {
                         value = JSON.encode(value);
                     }
                     if(toEncode) {
                         paramStrs[index++] = encodeURIComponent(attr) + "=" + encodeURIComponent(value);
-                    } else {
+                    }
+                    else {
                         paramStrs[index++] = attr + "=" + value;
                     }
                 }
@@ -3924,9 +4053,11 @@ function concatUrlParams(baseUrl, params, toEncode) {
     var cntStr = "";
     if(baseUrl == null) {
         baseUrl = "";
-    } else if(baseUrl.indexOf("?") == -1) {
+    }
+    else if(baseUrl.indexOf("?") == -1) {
         cntStr = "?";
-    } else if(!baseUrl.endsWith("?")) {
+    }
+    else if(!baseUrl.endsWith("?")) {
         cntStr = "&";
     }
     return baseUrl + cntStr + appendStr + (fragStr == null ? "" : "#" + fragStr);
@@ -4002,7 +4133,8 @@ function parseNumFormat(format, debug) {
         if(decimalIndex != -1) {
             intPart = matchStr.substring(0, decimalIndex);
             frgPart = matchStr.substring(decimalIndex + 1);
-        } else {
+        }
+        else {
             intPart = matchStr;
         }
         var qfwIndex = intPart.lastIndexOf(',');
@@ -4028,7 +4160,8 @@ function parseNumFormat(format, debug) {
             frgPart = frgPart.replace(/#+$/, '');
             frgForcedNum = frgPart.length;
         }
-    } else {
+    }
+    else {
         prefix = format;
         if(format.indexOf('%') != -1) {
             percent = true;
@@ -4083,7 +4216,8 @@ function formatNum(num, format, debug) {
     var formatMeta = null;
     if(typeof format == 'string') {
         formatMeta = parseNumFormat(format, debug);
-    } else {
+    }
+    else {
         formatMeta = format;
     }
     //
@@ -4157,7 +4291,8 @@ function makeFuncCallScript(funcName, args) {
     //
     if(args == null) {
         args = [];
-    } else if(isPlainObject(args)) {
+    }
+    else if(isPlainObject(args)) {
         args = [args];
     }
     for(var i = 0, c = args.length; i < c; i++) {
@@ -4250,23 +4385,23 @@ function getDlgArgForMe() {
  */
 function openWindow(pageUrl, options) {
     var args = '';
-    if(typeof(options) == 'undefined') {
+    if(typeof (options) == 'undefined') {
         options = {};
     }
-    if(typeof(options.name) == 'undefined') {
+    if(typeof (options.name) == 'undefined') {
         options.name = 'win' + Math.round(Math.random() * 100000);
     }
-    if(typeof(options.height) != 'undefined' && typeof(options.fullscreen) == 'undefined') {
+    if(typeof (options.height) != 'undefined' && typeof (options.fullscreen) == 'undefined') {
         args += "height=" + options.height + ",";
     }
-    if(typeof(options.width) != 'undefined' && typeof(options.fullscreen) == 'undefined') {
+    if(typeof (options.width) != 'undefined' && typeof (options.fullscreen) == 'undefined') {
         args += "width=" + options.width + ",";
     }
-    if(typeof(options.fullscreen) != 'undefined') {
+    if(typeof (options.fullscreen) != 'undefined') {
         args += "width=" + screen.availWidth + ",";
         args += "height=" + screen.availHeight + ",";
     }
-    if(typeof(options.center) == 'undefined') {
+    if(typeof (options.center) == 'undefined') {
         options.x = 0;
         options.y = 0;
         args += "screenx=" + options.x + ",";
@@ -4274,7 +4409,7 @@ function openWindow(pageUrl, options) {
         args += "left=" + options.x + ",";
         args += "top=" + options.y + ",";
     }
-    if(typeof(options.center) != 'undefined' && typeof(options.fullscreen) == 'undefined') {
+    if(typeof (options.center) != 'undefined' && typeof (options.fullscreen) == 'undefined') {
         options.y = Math.floor((screen.availHeight - (options.height || screen.height)) / 2) - (screen.height - screen.availHeight);
         options.x = Math.floor((screen.availWidth - (options.width || screen.width)) / 2) - (screen.width - screen.availWidth);
         args += "screenx=" + options.x + ",";
@@ -4282,16 +4417,16 @@ function openWindow(pageUrl, options) {
         args += "left=" + options.x + ",";
         args += "top=" + options.y + ",";
     }
-    if(typeof(options.scrollbars) != 'undefined') {
+    if(typeof (options.scrollbars) != 'undefined') {
         args += "scrollbars=1,";
     }
-    if(typeof(options.menubar) != 'undefined') {
+    if(typeof (options.menubar) != 'undefined') {
         args += "menubar=1,";
     }
-    if(typeof(options.locationbar) != 'undefined') {
+    if(typeof (options.locationbar) != 'undefined') {
         args += "location=1,";
     }
-    if(typeof(options.resizable) != 'undefined') {
+    if(typeof (options.resizable) != 'undefined') {
         args += "resizable=1,";
     }
 
@@ -4361,7 +4496,8 @@ function loadJs(jsSrc, parent, id) {
         var tmpParents = document.getElementsByTagName(parent);
         if(tmpParents.length > 0) {
             parent = tmpParents[0];
-        } else {
+        }
+        else {
             parent = null;
         }
     }
@@ -4386,7 +4522,8 @@ function loadJs(jsSrc, parent, id) {
             if(dotIndex == -1) {
                 dotIndex = jsSrc.indexOf("?", 0);
             }
-        } else {
+        }
+        else {
             dotIndex = jsSrc.indexOf(".js", lastSlashIndex + 1);
             if(dotIndex == -1) {
                 dotIndex = jsSrc.indexOf("?", lastSlashIndex + 1);
@@ -4416,7 +4553,8 @@ function loadJs(jsSrc, parent, id) {
                 };
             }
             existedJs.src = jsSrc;
-        } else {
+        }
+        else {
             //console.log("已经加载过：" + jsSrc);
             if(loadCallback != null) {
                 loadCallback(false, jsSrc);
@@ -4451,7 +4589,8 @@ function loadCss(cssSrc, parent, id) {
         var tmpParents = document.getElementsByTagName(parent);
         if(tmpParents.length > 0) {
             parent = tmpParents[0];
-        } else {
+        }
+        else {
             parent = null;
         }
     }
@@ -4476,7 +4615,8 @@ function loadCss(cssSrc, parent, id) {
             if(dotIndex == -1) {
                 dotIndex = cssSrc.indexOf("?", 0);
             }
-        } else {
+        }
+        else {
             dotIndex = cssSrc.indexOf(".css", lastSlashIndex + 1);
             if(dotIndex == -1) {
                 dotIndex = cssSrc.indexOf("?", lastSlashIndex + 1);
@@ -4506,7 +4646,8 @@ function loadCss(cssSrc, parent, id) {
                 };
             }
             existedCss.href = cssSrc;
-        } else {
+        }
+        else {
             //console.log("已经加载过：" + cssSrc);
             if(loadCallback != null) {
                 loadCallback(false, cssSrc);
@@ -4580,7 +4721,8 @@ function extractShortFileName(filePath) {
     if(pos != -1) {
         // any sort of path separator found
         return filePath.substring(pos + 1);
-    } else {
+    }
+    else {
         // plain name
         return filePath;
     }
@@ -4598,7 +4740,8 @@ function extractFileNameExt(fileName) {
         // 去掉可能的url中的?
         var qmIndex = leftName.indexOf("?");
         return qmIndex == -1 ? leftName : leftName.substring(0, qmIndex);
-    } else {
+    }
+    else {
         return "";
     }
 }
@@ -4688,14 +4831,18 @@ function getPasswordStrength(password) {
     if(password.length >= 6) {
         if(/[a-zA-Z]+/.test(password) && /[0-9]+/.test(password) && /\W+\D+/.test(password)) {
             return "S";
-        } else if(/[a-zA-Z]+/.test(password) || /[0-9]+/.test(password) || /\W+\D+/.test(password)) {
+        }
+        else if(/[a-zA-Z]+/.test(password) || /[0-9]+/.test(password) || /\W+\D+/.test(password)) {
             if(/[a-zA-Z]+/.test(password) && /[0-9]+/.test(password)) {
                 return "M";
-            } else if(/\[a-zA-Z]+/.test(password) && /\W+\D+/.test(password)) {
+            }
+            else if(/\[a-zA-Z]+/.test(password) && /\W+\D+/.test(password)) {
                 return "M";
-            } else if(/[0-9]+/.test(password) && /\W+\D+/.test(password)) {
+            }
+            else if(/[0-9]+/.test(password) && /\W+\D+/.test(password)) {
                 return "M";
-            } else {
+            }
+            else {
                 return "W";
             }
         }
@@ -4812,7 +4959,8 @@ function CondMonitor(name) {
                 if(curTime - _startTime >= _timeout) {
                     if(_timeoutHandler != null) {
                         _timeoutHandler();
-                    } else {
+                    }
+                    else {
                         console.warn(_name + ">> 超时已取消执行");
                     }
                     //
@@ -4872,7 +5020,8 @@ function downloadFile(linkCtrlOrUrl, params) {
         var html = "<iframe id='" + targetIframeName + "' name='" + targetIframeName + "' src='about:blank' style='display:none;position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;'></iframe>";
         targetIframeDiv.innerHTML = html;
         targetIframe = document.getElementById(targetIframeName);
-    } else {
+    }
+    else {
         targetIframe.src = "about:blank";
     }
     //
@@ -4884,7 +5033,8 @@ function downloadFile(linkCtrlOrUrl, params) {
     }
     if(linkCtrl == null) {
         baseUrl = linkCtrlOrUrl;
-    } else {
+    }
+    else {
         baseUrl = linkCtrl.href;
         linkCtrl.target = targetIframeName;
     }
@@ -4977,7 +5127,8 @@ var ValidateRules = {
         var isDate = Date.isValidDate(value);
         if(!isDate) {
             return false;
-        } else {
+        }
+        else {
             var date = Date.parseAsDate(value);
             minDate = Date.parseAsDate(minDate);
             return date >= minDate;
@@ -4988,7 +5139,8 @@ var ValidateRules = {
         var isDate = Date.isValidDate(value);
         if(!isDate) {
             return false;
-        } else {
+        }
+        else {
             var date = Date.parseAsDate(value);
             maxDate = Date.parseAsDate(maxDate);
             return date <= maxDate;
@@ -4999,7 +5151,8 @@ var ValidateRules = {
         var isDate = Date.isValidDate(value);
         if(!isDate) {
             return false;
-        } else {
+        }
+        else {
             var date = Date.parseAsDate(value);
             minDate = Date.parseAsDate(minDate);
             maxDate = Date.parseAsDate(maxDate);
@@ -5086,7 +5239,8 @@ function forEachTreeNode(treeNodes, callback, childrenKey) {
         treeNodes.forEach(function (treeNode, i) {
             forEachTreeNode(treeNode, callback, childrenKey);
         });
-    } else {
+    }
+    else {
         var treeNode = treeNodes;
         callback(treeNode);
         //
@@ -5094,7 +5248,8 @@ function forEachTreeNode(treeNodes, callback, childrenKey) {
         if(isFunction(childrenKey)) {
             var childrenFn = childrenKey;
             children = childrenFn(treeNode);
-        } else {
+        }
+        else {
             children = treeNode[childrenKey];
         }
         forEachTreeNode(children, callback, childrenKey);
@@ -5214,7 +5369,8 @@ var Browser;
         //
         if(userAgent.indexOf("QQ/") != -1) {
             Browser.envName = "QQ";
-        } else if(userAgent.indexOf("MicroMessenger/") != -1) {
+        }
+        else if(userAgent.indexOf("MicroMessenger/") != -1) {
             Browser.envName = "WX";
         }
     }

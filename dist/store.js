@@ -47,7 +47,8 @@ var __Store = (function () {
         }
         try {
             return JSON.parse(value)
-        } catch(e) {
+        }
+        catch(e) {
             return value || undefined
         }
     };
@@ -56,8 +57,9 @@ var __Store = (function () {
     // See https://github.com/marcuswestin/store.js/issues#issue/13
     function isLocalStorageNameSupported() {
         try {
-            return ( localStorageName in win && win[localStorageName])
-        } catch(err) {
+            return (localStorageName in win && win[localStorageName])
+        }
+        catch(err) {
             return false
         }
     }
@@ -94,7 +96,8 @@ var __Store = (function () {
                 callback(key, Store.get(key))
             }
         }
-    } else if(doc.documentElement.addBehavior) {
+    }
+    else if(doc.documentElement.addBehavior) {
         var storageOwner, storageContainer;
         // Since #userData storage applies only to specific paths, we need to
         // somehow link our data to a specific path.  We choose /favicon.ico
@@ -113,7 +116,8 @@ var __Store = (function () {
             storageContainer.close();
             storageOwner = storageContainer.w.frames[0].document;
             storage = storageOwner.createElement('div')
-        } catch(e) {
+        }
+        catch(e) {
             // somehow ActiveXObject instantiation failed (perhaps some special
             // security settings or otherwse), fall back to per-path storage
             storage = doc.createElement('div');
@@ -189,7 +193,8 @@ var __Store = (function () {
             Store.disabled = true
         }
         Store.remove(testKey)
-    } catch(e) {
+    }
+    catch(e) {
         Store.disabled = true
     }
     Store.enabled = !Store.disabled;
