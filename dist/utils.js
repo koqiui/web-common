@@ -5455,6 +5455,7 @@ module.exports = {
     ParseInt: ParseInt,
     ParseFloat: ParseFloat,
 
+    appendStrFor: appendStrFor,
     ValidateRules: ValidateRules,
 
     formatDate: formatDate,
