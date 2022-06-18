@@ -149,7 +149,6 @@
             return false;
         }
         x = (x + '').toLowerCase();
-        console.log(x.enquote());
         return __true_values.indexOf(x) != -1;
     }
 
