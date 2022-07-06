@@ -3721,6 +3721,126 @@
         return new TaskDelayer();
     };
 
+    /**
+     * 比较json对象是否相等
+     * @param {Object} obj1
+     * @param {Object} obj2
+     * @param {Object} ignore_nulls 是否忽略值为null的属性（默认 false）
+     * @param {Object} ignore_props 忽略的属性名称列表（以_开头的属性总是被忽略）
+     */
+    function obj_val_equal(obj1, obj2, ignore_nulls, ignore_props) {
+        if(obj1 == null) {
+            return obj2 == null;
+        }
+        else if(obj2 == null) {
+            return obj1 == null;
+        }
+        //
+        if(isPrimitive(obj1)) { //string, number, boolean
+            if(!isPrimitive(obj2)) {
+                return false;
+            }
+            return obj1 + '' == obj2 + '';
+        }
+        if(isDate(obj1)) { //date
+            if(!isDate(obj2)) {
+                return false;
+            }
+            return obj1.getTime() == obj2.getTime();
+        }
+        if(isArray(ignore_nulls)) { //ignore_props 传值到了  ignore_nulls 位置上了
+            ignore_props = ignore_nulls;
+            ignore_nulls = false;
+        }
+        else {
+            ignore_nulls = ignore_nulls == true;
+            //忽略的属性名
+            ignore_props = ignore_props || [];
+        }
+        ignore_propCount = ignore_props.length;
+        //
+        if(isArray(obj1)) { // array
+            if(!isArray(obj2)) {
+                return false;
+            }
+            var len1 = obj1.length;
+            var len2 = obj2.length;
+            if(len1 != len2) { //长度不等
+                return false;
+            }
+            var lenx = len1;
+            for(var i = 0; i < lenx; i++) {
+                if(!obj_val_equal(obj1[i], obj2[i], ignore_nulls, ignore_props)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        //
+        if(isPlainObject(obj1)) { // object
+            if(!isPlainObject(obj2)) {
+                return false;
+            }
+            var props1 = [];
+            var props2 = [];
+            for(var prop in obj1) {
+                if(prop.indexOf('_') == 0) { //自动忽略_开头的属性
+                    continue;
+                }
+                if(ignore_propCount > 0 && ignore_props.indexOf(prop) != -1) {
+                    continue;
+                }
+                if(ignore_nulls && obj1[prop] == null) {
+                    continue;
+                }
+                props1.push(prop);
+            }
+            for(var prop in obj2) {
+                if(prop.indexOf('_') == 0) { //自动忽略_开头的属性
+                    continue;
+                }
+                if(ignore_propCount > 0 && ignore_props.indexOf(prop) != -1) {
+                    continue;
+                }
+                if(ignore_nulls && obj2[prop] == null) {
+                    continue;
+                }
+                props2.push(prop);
+            }
+            //
+            var len1 = props1.length;
+            var len2 = props2.length;
+            if(len1 != len2) { //属性数量不等
+                return false;
+            }
+            var lenx = len1;
+            // 比较属性名
+            var compInfo = compareArrays(props1, props2);
+            if(compInfo.same.length != lenx) {
+                return false;
+            }
+            var propsX = props1;
+            //比较属性值
+            for(var i = 0; i < lenx; i++) {
+                var prop = propsX[i];
+                if(!obj_val_equal(obj1[prop], obj2[prop], ignore_nulls, ignore_props)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        //
+        if(isRegExp(obj1)) { //regexp
+            if(!isRegExp(obj2)) {
+                return false;
+            }
+            return obj1 + '' == obj2 + '';
+        }
+
+        //其他类型的比较
+        return obj1 == obj2;
+    }
+
     /** CRUD操作防频、防重类 */
     function CrudGuard(repeatable) {
         var minInterval = 500; //防重最小时间间隔ms
@@ -5506,6 +5626,7 @@
     exports.KeyMap = KeyMap;
     exports.LimitedQueue = LimitedQueue;
     exports.TaskDelayer = TaskDelayer;
+    exports.obj_val_equal = obj_val_equal;
     exports.CrudGuard = CrudGuard;
     exports.CondMonitor = CondMonitor;
     exports.makeCrossCombsFor = makeCrossCombsFor;
