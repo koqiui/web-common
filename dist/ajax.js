@@ -31,6 +31,7 @@
     var __ajaxTimeout = 0;
     var __ajaxPageTokenName = '';
     var __ajaxParamsFilter = null;
+    var __ajaxHeaderFilter = null;
     var __ajaxBeforeSendCallback = null;
     var __ajaxAfterRecvCallback = null;
     var __ajaxErrorCallbck = function (errMsg) {
@@ -338,6 +339,10 @@
                 ajaxConf.timeout = _timeout;
             }
             //
+            if(__ajaxHeaderFilter) {
+                _header = __ajaxHeaderFilter(_header);
+            }
+            //
             ajaxConf.headers = _header;
             //
             ajaxConf.beforeSend = function (jqXHR) {
@@ -525,6 +530,9 @@
     };
     exports.paramsFilter = function (paramsFilter) {
         __ajaxParamsFilter = paramsFilter || null;
+    };
+    exports.headerFilter = function (headerFilter) {
+        __ajaxHeaderFilter = headerFilter || null;
     };
     //callback(errMsg)
     exports.errorCallback = function (callback) {
