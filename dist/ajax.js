@@ -13,6 +13,7 @@ var __ajaxBaseUrl = "";
 var __ajaxTimeout = 0;
 var __ajaxPageTokenName = '';
 var __ajaxParamsFilter = null;
+var __ajaxHeaderFilter = null;
 var __ajaxBeforeSendCallback = null;
 var __ajaxAfterRecvCallback = null;
 var __ajaxErrorCallbck = function (errMsg) {
@@ -53,14 +54,14 @@ function AjaxCoreFn() {
 
     // clean
     function destroyThis(ajaxConf) {
-        if(ajaxConf) {
-            for(var key in ajaxConf) {
+        if (ajaxConf) {
+            for (var key in ajaxConf) {
                 delete ajaxConf[key];
             }
             ajaxConf = null;
         }
         //
-        for(var key in THIS) {
+        for (var key in THIS) {
             delete THIS[key];
         }
         THIS = null;
@@ -74,7 +75,7 @@ function AjaxCoreFn() {
         _doneHandler = null;
         _failHandler = null;
         _alwaysHandler = null;
-        for(var key in _statusHandler) {
+        for (var key in _statusHandler) {
             delete _statusHandler[key];
         }
         _statusMessage = null;
@@ -115,11 +116,10 @@ function AjaxCoreFn() {
     this.header = function (header) {
         header = header || {};
         //
-        if(_jqXHR == null) {
+        if (_jqXHR == null) {
             _header = utils.merge(_header, header);
-        }
-        else { //已经发出请求（设置_header已无效）
-            for(var name in header) {
+        } else { //已经发出请求（设置_header已无效）
+            for (var name in header) {
                 var value = header[name];
                 _jqXHR.setRequestHeader(name, value);
             }
@@ -199,10 +199,9 @@ function AjaxCoreFn() {
     };
     //callback(errInfo, jqXHR, status)
     this.fail = function (callback) {
-        if(utils.isString(callback)) {
+        if (utils.isString(callback)) {
             _failMessage = callback;
-        }
-        else {
+        } else {
             _failHandler = callback;
         }
         //
@@ -216,10 +215,9 @@ function AjaxCoreFn() {
     };
     //callback(errInfo, jqXHR, status)
     this.onStatus = function (status, callback) {
-        if(utils.isString(callback)) {
+        if (utils.isString(callback)) {
             _statusMessage[status] = callback;
-        }
-        else {
+        } else {
             _statusHandler[status] = callback;
         }
         //
@@ -259,20 +257,18 @@ function AjaxCoreFn() {
     this.trigger = function (event, result, jqXHR) {
         _jqXHR = null; // clear !!!
         //
-        if(event == "done") {
-            if(typeof _doneHandler == "function") {
+        if (event == "done") {
+            if (typeof _doneHandler == "function") {
                 _triggerStates["done"] = true;
                 _doneHandler(result, jqXHR);
             }
-        }
-        else if(event == "fail") {
-            if(typeof _failHandler == "function") {
+        } else if (event == "fail") {
+            if (typeof _failHandler == "function") {
                 _triggerStates["fail"] = true;
                 _failHandler(result, jqXHR);
             }
-        }
-        else if(event == "always") {
-            if(typeof _alwaysHandler == "function") {
+        } else if (event == "always") {
+            if (typeof _alwaysHandler == "function") {
                 _triggerStates["always"] = true;
                 _alwaysHandler(jqXHR);
             }
@@ -282,17 +278,17 @@ function AjaxCoreFn() {
     //
     function sendRequest() {
         var url = _url;
-        if(_baseUrl && !url.startsWith("http")) {
+        if (_baseUrl && !url.startsWith("http")) {
             url = _baseUrl + url;
         }
-        if(__ajaxPageTokenName) {//解析并添加页面token
+        if (__ajaxPageTokenName) {//解析并添加页面token
             var urlParams = utils.extractUrlParams();
             var pageTokenValue = urlParams[__ajaxPageTokenName] || null;
-            if(pageTokenValue) {
+            if (pageTokenValue) {
                 _params[__ajaxPageTokenName] = pageTokenValue;
             }
         }
-        if(__ajaxParamsFilter) {
+        if (__ajaxParamsFilter) {
             _params = __ajaxParamsFilter(_params);
         }
         //
@@ -307,17 +303,21 @@ function AjaxCoreFn() {
         };
         //
         var data = _data;
-        if(_method != 'GET') {
+        if (_method != 'GET') {
             ajaxConf.contentType = _contentType;
             //
-            if(_contentType.endsWith("/json")) {
+            if (_contentType.endsWith("/json")) {
                 data = JSON.encode(data);
             }
             //
             ajaxConf.data = data;
         }
-        if(typeof _timeout == "number" && _timeout > 0) {
+        if (typeof _timeout == "number" && _timeout > 0) {
             ajaxConf.timeout = _timeout;
+        }
+        //
+        if (__ajaxHeaderFilter) {
+            _header = __ajaxHeaderFilter(_header);
         }
         //
         ajaxConf.headers = _header;
@@ -326,31 +326,31 @@ function AjaxCoreFn() {
             _jqXHR = jqXHR; // cache !!!
             //
             var continueIt = true;
-            if(typeof __ajaxBeforeSendCallback == 'function') {
+            if (typeof __ajaxBeforeSendCallback == 'function') {
                 continueIt = __ajaxBeforeSendCallback(jqXHR, THIS);
             }
-            if(continueIt !== false && typeof _beforeSendCallback == 'function') {
+            if (continueIt !== false && typeof _beforeSendCallback == 'function') {
                 continueIt = _beforeSendCallback(jqXHR, THIS);
             }
             //
-            if(continueIt === false) {
+            if (continueIt === false) {
                 return false;
             }
         };
         //
-        if(__ajaxDebug) {
+        if (__ajaxDebug) {
             console.log(ajaxConf);
         }
         //
         var ajax = jquery.ajax(ajaxConf);
         //jqXHR.done(function( data, textStatus, jqXHR ) {})
         ajax.done(function (data, type, jqXHR) {
-            if(typeof __ajaxAfterRecvCallback == 'function') {
+            if (typeof __ajaxAfterRecvCallback == 'function') {
                 __ajaxAfterRecvCallback(data, jqXHR);
             }
             //
-            if(typeof _doneHandler == "function") {
-                if(_triggerStates["done"] !== true) {
+            if (typeof _doneHandler == "function") {
+                if (_triggerStates["done"] !== true) {
                     _doneHandler(data, jqXHR);
                 }
             }
@@ -362,42 +362,40 @@ function AjaxCoreFn() {
             errInfo.message = statusText || jqXHR.statusText;
             try {
                 var responseX = jqXHR.responseJSON || JSON.decode(jqXHR.responseText);
-                if(responseX != null && responseX.message) {
+                if (responseX != null && responseX.message) {
                     errInfo.code = responseX.code;
                     errInfo.message = responseX.message;
                 }
-            }
-            catch(ex) {
+            } catch (ex) {
                 //
             }
-            if(errInfo.message == "error") {
+            if (errInfo.message == "error") {
                 errInfo.message = "未知错误";
             }
             var status = jqXHR.status;
-            if(typeof status == 'undefined') {
+            if (typeof status == 'undefined') {
                 status = jqXHR.status = 408;
                 errInfo.code = -1;
                 errInfo.message = "请求超时";
             }
             var statusHandler = _statusHandler[status];
             var continueNext = true;
-            if(statusHandler != null) {
+            if (statusHandler != null) {
                 var statusMessage = _statusMessage[status];
-                if(statusMessage) {
+                if (statusMessage) {
                     errInfo.message = statusMessage;
                 }
                 var handleResult = statusHandler(errInfo, jqXHR, status);
                 continueNext = handleResult !== false;
             }
-            if(continueNext) {
-                if(_triggerStates["fail"] != true) {
-                    if(_failMessage) {
+            if (continueNext) {
+                if (_triggerStates["fail"] != true) {
+                    if (_failMessage) {
                         errInfo.message = _failMessage;
                     }
-                    if(_failHandler != null) {
+                    if (_failHandler != null) {
                         _failHandler(errInfo, jqXHR, status);
-                    }
-                    else {
+                    } else {
                         __ajaxErrorCallbck(errInfo.message);
                     }
                 }
@@ -408,12 +406,11 @@ function AjaxCoreFn() {
         ajax.always(function (jqXHR, type, statusText) {
             _jqXHR = null; // clear !!!
             //
-            if(_triggerStates["always"] !== true) {
-                if(_alwaysHandler != null) {
+            if (_triggerStates["always"] !== true) {
+                if (_alwaysHandler != null) {
                     try {
                         _alwaysHandler(jqXHR);
-                    }
-                    catch(ex) {
+                    } catch (ex) {
                         console.error(ex)
                     }
                 }
@@ -505,9 +502,18 @@ module.exports = {
     timeout: function (timeout) {
         __ajaxTimeout = timeout;
     },
+    pageTokenName: function (pageTokenName) {
+        __ajaxPageTokenName = pageTokenName || '';
+    },
+    paramsFilter: function (paramsFilter) {
+        __ajaxParamsFilter = paramsFilter || null;
+    },
+    headerFilter: function (headerFilter) {
+        __ajaxHeaderFilter = headerFilter || null;
+    },
     //callback(errMsg)
     errorCallback: function (callback) {
-        if(typeof callback == 'function') {
+        if (typeof callback == 'function') {
             __ajaxErrorCallbck = callback;
         }
     },
