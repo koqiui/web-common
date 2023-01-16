@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d077fdf0-df2a-4925-8198-98cda50461f0" name="Default" comment="">
+    <list default="true" id="d077fdf0-df2a-4925-8198-98cda50461f0" name="Default" comment="Ajax 增加 全局 paramsFilter 设置">
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -453,14 +453,7 @@
       <workItem from="1575090468077" duration="427000" />
       <workItem from="1622742224917" duration="219000" />
       <workItem from="1651766892984" duration="23000" />
-      <workItem from="1673837131884" duration="97000" />
-    </task>
-    <task id="LOCAL-00030" summary="coding just in CommonJs style">
-      <created>1494326648359</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1494326648359</updated>
+      <workItem from="1673837131884" duration="896000" />
     </task>
     <task id="LOCAL-00031" summary="coding just in CommonJs style">
       <created>1494327918274</created>
@@ -798,7 +791,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622741815268</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="Ajax 增加 全局 paramsFilter 设置">
+      <created>1673837252428</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1673837252429</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -849,6 +849,17 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="test -&gt; browser" />
