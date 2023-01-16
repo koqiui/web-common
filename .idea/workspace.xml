@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d077fdf0-df2a-4925-8198-98cda50461f0" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/dist/ajax.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/ajax.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/eventbus.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/eventbus.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/h5file.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/h5file.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/utils.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -276,11 +272,12 @@
     <property name="JavaScriptPreferStrict" value="false" />
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="javascript.nodejs.core.library.configured.version" value="12.13.1" />
-    <property name="javascript.nodejs.core.library.typings.version" value="12.20.50" />
+    <property name="javascript.nodejs.core.library.configured.version" value="14.12.0" />
+    <property name="javascript.nodejs.core.library.typings.version" value="14.18.36" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs.mocha.mocha_node_package_dir" value="$PROJECT_DIR$/node_modules/mocha" />
     <property name="nodejs_interpreter_path" value="node" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="Settings.JavaScript" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -456,6 +453,7 @@
       <workItem from="1575090468077" duration="427000" />
       <workItem from="1622742224917" duration="219000" />
       <workItem from="1651766892984" duration="23000" />
+      <workItem from="1673837131884" duration="97000" />
     </task>
     <task id="LOCAL-00030" summary="coding just in CommonJs style">
       <created>1494326648359</created>
