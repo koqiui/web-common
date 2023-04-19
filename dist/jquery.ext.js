@@ -417,7 +417,7 @@
             duration = duration || 2000;
             //
             jqContent.text(msg);
-            jqContent.removeClass("info warning error");
+            jqContent.removeClass("info warning error loading");
             jqContent.addClass("content");
             jqContent.addClass(iconClass);
             //

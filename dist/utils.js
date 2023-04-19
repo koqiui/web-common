@@ -5554,6 +5554,24 @@
         return 0;
     }
 
+    /** 获取utf8字符串字节长度 */
+    function getUtf8StrLen(str) {
+        var cnt = 0;
+        if (str != null) {
+            for (var i = 0, c = str.length; i < c; i++) {
+                var value = str.charCodeAt(i);
+                if (value < 0x080) {
+                    cnt += 1;
+                } else if (value < 0x0800) {
+                    cnt += 2;
+                } else {
+                    cnt += 3;
+                }
+            }
+        }
+        return cnt;
+    }
+
     //----------------------------------- exports -------------------------------------
     var privateMemKeys = ['__name__', 'exportToWindow']; //不能导出的成员
     var windowedKeyMap = { //exports 名称 => window 名称
@@ -5687,6 +5705,7 @@
     exports.Browser = Browser;
     exports.parseVersion = parseVersion;
     exports.compareVersion = compareVersion;
+    exports.getUtf8StrLen = getUtf8StrLen;
     //
     exports.exportToWindow = function () { //把当前模块的成员导出到window全局
         if(typeof window !== 'undefined') {
