@@ -5535,6 +5535,24 @@ function compareVersion(v1, v2) {
     return 0;
 }
 
+/** 获取utf8字符串字节长度 */
+function getUtf8StrLen(str) {
+    var cnt = 0;
+    if (str != null) {
+        for (var i = 0, c = str.length; i < c; i++) {
+            var value = str.charCodeAt(i);
+            if (value < 0x080) {
+                cnt += 1;
+            } else if (value < 0x0800) {
+                cnt += 2;
+            } else {
+                cnt += 3;
+            }
+        }
+    }
+    return cnt;
+}
+
 module.exports = {
     moduleName: moduleName,
     //
@@ -5664,5 +5682,6 @@ module.exports = {
     downloadLink: downloadLink,
     Browser: Browser,
     parseVersion: parseVersion,
-    compareVersion: compareVersion
+    compareVersion: compareVersion,
+    getUtf8StrLen: getUtf8StrLen
 };
